@@ -95,7 +95,7 @@
 		</if>
 		<!-- 数据范围过滤 -->
 		${dataScope}
-		ORDER BY o.code, a.name
+		ORDER BY a.create_date
 	</select>
 	
 	<select id="findAllList" resultType="Role">
@@ -104,7 +104,7 @@
 		FROM sys_role a
 		LEFT JOIN sys_office o ON o.id = a.office_id
 		WHERE a.del_flag = #{DEL_FLAG_NORMAL}
-		ORDER BY o.code, a.name
+        ORDER BY a.create_date
 	</select>
 	
 	<insert id="insert">

@@ -60,7 +60,7 @@
 					        }
 					       
 					    }, {
-					        field: 'remark',
+					        field: 'remarks',
 					        title: '备注'
 					    }, {
 	                        field: 'operate',
