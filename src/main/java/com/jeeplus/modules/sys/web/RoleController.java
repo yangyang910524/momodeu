@@ -3,24 +3,6 @@
  */
 package com.jeeplus.modules.sys.web;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.shiro.authz.annotation.Logical;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import com.jeeplus.common.config.Global;
 import com.jeeplus.common.json.AjaxJson;
 import com.jeeplus.common.utils.StringUtils;
@@ -30,6 +12,21 @@ import com.jeeplus.modules.sys.entity.Role;
 import com.jeeplus.modules.sys.entity.User;
 import com.jeeplus.modules.sys.service.SystemService;
 import com.jeeplus.modules.sys.utils.UserUtils;
+import org.apache.shiro.authz.annotation.Logical;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 角色Controller
@@ -105,6 +102,11 @@ public class RoleController extends BaseController {
 	@RequestMapping(value = "save")
 	public AjaxJson save(Role role, Model model) {
 		AjaxJson j = new AjaxJson();
+		if("1c54e003c1fc4dcd9b087ef8d48abac3".equals(role.getId())||"system".equals(role.getEnname())){
+            j.setSuccess(false);
+            j.setMsg("超级管理员无法修改！");
+            return j;
+        }
 		if(!UserUtils.getUser().isAdmin()&&role.getSysData().equals(Global.YES)){
 			j.setSuccess(false);
 			j.setMsg("越权操作，只有超级管理员才能修改此数据！");
@@ -127,11 +129,6 @@ public class RoleController extends BaseController {
 		if (!"true".equals(checkName(role.getOldName(), role.getName()))){
 			j.setSuccess(false);
 			j.setMsg( "保存角色'" + role.getName() + "'失败, 角色名已存在");
-			return j;
-		}
-		if (!"true".equals(checkEnname(role.getOldEnname(), role.getEnname()))){
-			j.setSuccess(false);
-			j.setMsg("保存角色'" + role.getName() + "'失败, 英文名已存在");
 			return j;
 		}
 		systemService.saveRole(role);
@@ -157,6 +154,13 @@ public class RoleController extends BaseController {
 		StringBuffer msg = new StringBuffer();
 		for(String id : idArray){
 			Role role = systemService.getRole(id);
+
+            if("1c54e003c1fc4dcd9b087ef8d48abac3".equals(role.getId())||"system".equals(role.getEnname())){
+                j.setSuccess(false);
+                j.setMsg("超级管理员无法删除！");
+                return j;
+            }
+
 			if(!UserUtils.getUser().isAdmin() && role.getSysData().equals(Global.YES)){
 				msg.append( "越权操作，只有超级管理员才能修改["+role.getName()+"]数据！<br/>");
 			}else{
@@ -190,7 +194,6 @@ public class RoleController extends BaseController {
 	 * 角色分配 -- 从角色中移除用户
 	 * @param userId
 	 * @param roleId
-	 * @param redirectAttributes
 	 * @return
 	 */
 	@ResponseBody

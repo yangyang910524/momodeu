@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
@@ -95,6 +94,7 @@ public class OfficeController extends BaseController {
 	@RequiresPermissions(value={"sys:office:add","sys:office:edit"},logical=Logical.OR)
 	@RequestMapping(value = "save")
 	public AjaxJson save(Office office, Model model) {
+        office.setParent(new Office());
 		AjaxJson j = new AjaxJson();
 		if(Global.isDemoMode()){
 			j.setSuccess(false);

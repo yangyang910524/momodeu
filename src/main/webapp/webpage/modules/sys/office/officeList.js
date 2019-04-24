@@ -31,7 +31,7 @@
 	});
 	
 	function del(con,id){  
-		jp.confirm('确认要删除机构吗？', function(){
+		jp.confirm('确认要删除班级吗？', function(){
 			jp.loading();
        	  	$.get("${ctx}/sys/office/delete?id="+id, function(data){
        	  		if(data.success){
@@ -71,10 +71,7 @@
     }
 </script>
 <script type="text/html" id="officeItemTpl">
-<td><a  href="#" onclick="jp.openViewDialog('查看机构', '${ctx}/sys/office/form?id={{d.id}}','800px', '600px')">{{d.name}}</a></td>
-<td>{{# if(d.area){ }} {{d.area.name}} {{# } }}</td>
-<td>{{d.code  === undefined ? "": d.code}}</td>
-<td>{{d.typeLabel === undefined ? "": d.typeLabel }}</td>
+<td><a  href="#" onclick="jp.openViewDialog('查看班级', '${ctx}/sys/office/form?id={{d.id}}','800px', '600px')">{{d.name}}</a></td>
 <td>{{d.remarks === undefined ? "":d.remarks}}</td>
 <td>
 	<div class="btn-group">
@@ -84,16 +81,13 @@
 		</button>
 	  <ul class="dropdown-menu" role="menu">
 		<shiro:hasPermission name="sys:office:view">
-			<li><a href="#" onclick="jp.openViewDialog('查看机构', '${ctx}/sys/office/form?id={{d.id}}','800px', '600px')"  ><i class="fa fa-search-plus"></i>  查看</a></li>
+			<li><a href="#" onclick="jp.openViewDialog('查看班级', '${ctx}/sys/office/form?id={{d.id}}','800px', '600px')"  ><i class="fa fa-search-plus"></i>  查看</a></li>
 		</shiro:hasPermission>
 		<shiro:hasPermission name="sys:office:edit">
-			<li><a href="#" onclick="jp.openSaveDialog('修改机构', '${ctx}/sys/office/form?id={{d.id}}','800px', '600px')" ><i class="fa fa-edit"></i> 修改</a></li>
+			<li><a href="#" onclick="jp.openSaveDialog('修改班级', '${ctx}/sys/office/form?id={{d.id}}','800px', '600px')" ><i class="fa fa-edit"></i> 修改</a></li>
 		</shiro:hasPermission>
 		<shiro:hasPermission name="sys:office:del">
 			<li><a  onclick="return del(this, '{{d.id}}')"><i class="fa fa-trash"></i> 删除</a></li>
-		</shiro:hasPermission>
-		<shiro:hasPermission name="sys:office:add">
-			<li><a href="#" onclick="jp.openSaveDialog('添加下级机构', '${ctx}/sys/office/form?parent.id={{d.id}}','800px', '600px')"><i class="fa fa-plus"></i> 添加下级机构</a></li>
 		</shiro:hasPermission>
 	  </ul>
 	</div>

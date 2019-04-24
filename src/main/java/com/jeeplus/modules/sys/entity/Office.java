@@ -3,13 +3,10 @@
  */
 package com.jeeplus.modules.sys.entity;
 
-import java.util.List;
-
-import javax.validation.constraints.NotNull;
-
+import com.jeeplus.core.persistence.TreeEntity;
 import org.hibernate.validator.constraints.Length;
 
-import com.jeeplus.core.persistence.TreeEntity;
+import java.util.List;
 
 /**
  * 机构Entity
@@ -83,7 +80,6 @@ public class Office extends TreeEntity<Office> {
 		this.parent = parent;
 	}
 
-	@NotNull
 	public Area getArea() {
 		return area;
 	}

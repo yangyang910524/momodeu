@@ -60,17 +60,8 @@
 					        }
 					       
 					    }, {
-					        field: 'enname',
-					        title: '英文名称'
-					    }, {
-					        field: 'office.name',
-					        title: '归属机构'
-					    }, {
-					        field: 'useable',
-					        title: '状态',
-					        formatter:function(value, row , index){
-					        	return value=="0" ? '<font color="red">禁用</font>':'<font color="green">正常</font>';
-					        }
+					        field: 'remark',
+					        title: '备注'
 					    }, {
 	                        field: 'operate',
 	                        title: '操作',
@@ -87,16 +78,6 @@
 	            		        },
 	            		        'click .auth': function (e, value, row, index) {
 	            		        	jp.openSaveDialog('权限设置', '${ctx}/sys/role/auth?id=' + row.id,'350px', '700px');
-	            		        },
-	            		        'click .assign': function (e, value, row, index) {
-	            		        	
-	            					$("#left").attr("class", "col-sm-6");
-	            					setTimeout(function(){
-	            						$("#right").fadeIn(500);
-	            					},500)
-	            					$("#roleLabel").html(row.name);
-	            					$("#roleId").val(row.id);
-	            					$('#userTable').bootstrapTable("refresh",{query:{id:row.id}})
 	            		        }
 	            		    },
 	                        formatter:  function operateFormatter(value, row, index) {
@@ -114,9 +95,6 @@
 	        						</shiro:hasPermission>
 	        						<shiro:hasPermission name="sys:role:assign"> 
 	        							'<a href="#" class="auth"  title="权限设置"><i class="fa fa-cog"></i> </a>', 
-	        						</shiro:hasPermission>
-	        						<shiro:hasPermission name="sys:role:assign"> 
-	        							'<a href="#" class="assign"  title="分配用户"><i class="fa fa-users"></i> </a>'
 	        						</shiro:hasPermission>
 	            		        ].join('');
 	            		    }
