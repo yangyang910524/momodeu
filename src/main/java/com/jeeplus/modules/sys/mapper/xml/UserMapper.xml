@@ -24,6 +24,7 @@
         <result property="updateBy.id" column="updateBy.id" />
         <result property="updateDate" column="updateDate" />
         <result property="delFlag" column="delFlag" />
+        <result property="userType" column="userType" />
 		<collection property="roleList" ofType="Role">
 			<id property="id" column="role.id" />
 			<result property="name" column="role.name"/>
@@ -41,6 +42,7 @@
 		a.name,
 		a.english_name AS "englishName",
 		a.score,
+		a.user_type as "userType",
 		a.email,
 		a.phone,
 		a.mobile,
@@ -259,6 +261,7 @@
 			name,
 			english_name,
 			score,
+			user_type,
 			email, 
 			phone, 
 			mobile, 
@@ -281,6 +284,7 @@
 			#{name},
 			#{englishName},
 			#{score},
+			#{userType},
 			#{email}, 
 			#{phone}, 
 			#{mobile}, 
@@ -307,7 +311,7 @@
 			name = #{name},
 			english_name = #{englishName},
 			score = #{score},
-			email = #{email}, 
+			email = #{email},
 			phone = #{phone}, 
 			mobile = #{mobile}, 
 			update_by = #{updateBy.id}, 

@@ -142,8 +142,20 @@ public class UserController extends BaseController {
 			j.setMsg("保存用户'" + user.getLoginName() + "'失败，登录名已存在!");
 			return j;
 		}
+
 		// 角色数据有效性验证，过滤不在授权内的角色
 		List<Role> roleList = Lists.newArrayList();
+		switch (user.getRole().getId()){
+            case "1c54e003c1fc4dcd9b087ef8d48abac3":
+                user.setUserType("1");
+                break;
+            case "49af2d771c134b9c9d5b3d2daf60f956":
+                user.setUserType("2");
+                break;
+            case "f89f1a4157b249a2a621c37ab3941cdb":
+                user.setUserType("3");
+                break;
+        }
         roleList.add(user.getRole());
 		user.setRoleList(roleList);
 		//生成用户二维码，使用登录名
@@ -172,7 +184,7 @@ public class UserController extends BaseController {
 		AjaxJson j = new AjaxJson();
         if("1".equals(user.getId())){
             j.setSuccess(false);
-            j.setMsg("超级管理员不能修改!");
+            j.setMsg("超级管理员不能删除!");
             return j;
         }
 		if(Global.isDemoMode()){
@@ -213,9 +225,7 @@ public class UserController extends BaseController {
 		for(String id : idArray){
 			User user = systemService.getUser(id);
             if("1".equals(user.getId())){
-                j.setSuccess(false);
-                j.setMsg("超级管理员不能修改!");
-                return j;
+                continue;
             }
 			if (UserUtils.getUser().getId().equals(user.getId())){
 				j.setSuccess(false);

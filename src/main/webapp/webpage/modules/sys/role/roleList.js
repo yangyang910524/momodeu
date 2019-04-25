@@ -11,16 +11,16 @@
 		                striped: true,
 		                //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）     
 		                cache: false,
-				        showSearch: true,
+				        showSearch: false,
 						//显示刷新按钮
-						showRefresh: true,
+						showRefresh: false,
 						//显示切换手机试图按钮
-						showToggle: true,
+						showToggle: false,
 						//显示 内容列下拉框
-						showColumns: true,
+						showColumns: false,
 						//显示切换分页按钮
 		                //是否显示分页（*）  
-		                pagination: false,   
+		                pagination: false,
 		                //这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据  
 		                url: "${ctx}/sys/role/data",
 		                //默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
@@ -49,52 +49,33 @@
 		                       
 		                    } 
 		                },
-		                columns: [{
-					        checkbox: true
-					       
-					    }, {
-					        field: 'name',
-					        title: '角色名称',
-					        formatter:function(value, row, index){
-					        	return '<a  href="#" onclick="jp.openViewDialog(\'查看角色\', \'${ctx}/sys/role/form?id='+row.id+'\',\'800px\', \'500px\')">'+value+'</a>'
-					        }
-					       
-					    }, {
-					        field: 'remarks',
-					        title: '备注'
-					    }, {
+		                columns: [ {
+                            field: '',
+                            title: '序号',
+                            formatter:function(value, row, index){
+                                return index+1;
+                            }
+
+                        },{
+                            field: 'name',
+                            title: '角色名称',
+                            formatter:function(value, row, index){
+                                return '<a  href="#" onclick="jp.openViewDialog(\'查看角色\', \'${ctx}/sys/role/form?id='+row.id+'\',\'800px\', \'500px\')">'+value+'</a>'
+                            }
+
+                        }, {
 	                        field: 'operate',
 	                        title: '操作',
 	                        align: 'center',
 	                        events: {
-	            		        'click .view': function (e, value, row, index) {
-	            		        	jp.openViewDialog('查看角色', '${ctx}/sys/role/form?id=' + row.id,'800px', '500px');
-	            		        },
-	            		        'click .edit': function (e, value, row, index) {
-	            		        	jp.openSaveDialog('编辑角色', '${ctx}/sys/role/form?id=' + row.id,'800px', '500px');
-	            		        },
-	            		        'click .del': function (e, value, row, index) {
-	            		        	del(row.id);
-	            		        },
 	            		        'click .auth': function (e, value, row, index) {
 	            		        	jp.openSaveDialog('权限设置', '${ctx}/sys/role/auth?id=' + row.id,'350px', '700px');
 	            		        }
 	            		    },
 	                        formatter:  function operateFormatter(value, row, index) {
 	            		        return [
-	            		        	<shiro:hasPermission name="sys:role:view">
-	        						'<a href="#" class="view" title="查看" ><i class="fa fa-eye"></i> </a>',
-	        						</shiro:hasPermission>
-	        						<shiro:hasPermission name="sys:role:edit"> 
-	        						<c:if test="${(role.sysData eq fns:getDictValue('是', 'yes_no', '1') && fns:getUser().admin)||!(role.sysData eq fns:getDictValue('是', 'yes_no', '1'))}">
-	        							'<a href="#" class="edit" title="修改"><i class="fa fa-edit"></i> </a>',
-	        						</c:if>
-	        						</shiro:hasPermission>
-	        						<shiro:hasPermission name="sys:role:del"> 
-	        						    '<a href="#" class="del" title="删除"><i class="fa fa-trash"></i> </a>',
-	        						</shiro:hasPermission>
-	        						<shiro:hasPermission name="sys:role:assign"> 
-	        							'<a href="#" class="auth"  title="权限设置"><i class="fa fa-cog"></i> </a>', 
+	        						<shiro:hasPermission name="sys:role:assign">
+	        							'<a href="#" class="auth"  title="权限设置">权限设置</i> </a>',
 	        						</shiro:hasPermission>
 	            		        ].join('');
 	            		    }
@@ -106,11 +87,7 @@
 					  $('#table').bootstrapTable("toggleView");
 					}
 				  
-				  $('#table').on('check.bs.table uncheck.bs.table load-success.bs.table ' +
-			                'check-all.bs.table uncheck-all.bs.table', function () {
-			            $('#remove').prop('disabled', ! $('#table').bootstrapTable('getSelections').length);
-			            $('#edit, #auth').prop('disabled', $('#table').bootstrapTable('getSelections').length!=1);
-			        });
+
 		
 				  $("#search").click("click", function() {// 绑定查询按扭
 					  $('#table').bootstrapTable('refresh');

@@ -53,6 +53,7 @@ public class User extends DataEntity<User> {
 
     private Integer score ; // 分数情况
     private String englishName ; // 分数情况
+    private String userType ; // 分数情况
 
 	public User() {
 		super();
@@ -345,5 +346,13 @@ public class User extends DataEntity<User> {
 
     public void setEnglishName(String englishName) {
         this.englishName = englishName;
+    }
+
+    public String getUserType() {
+        return userType;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
     }
 }

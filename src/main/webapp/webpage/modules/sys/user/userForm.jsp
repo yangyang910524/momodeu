@@ -53,10 +53,23 @@
 		         <td class="width-35">
 						<sys:fileUpload path="photo" value="${user.photo}" type="image" uploadPath="/photo" fileNumLimit="1" readonly="false"/>
                  </td>
-                  <td class="active"><label class="pull-right"><font color="red">*</font>是否允许登录:</label></td>
-                  <td><form:select path="loginFlag"  class="form-control">
-                      <form:options items="${fns:getDictList('yes_no')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
-                  </form:select></td>
+                  <td class="active"><label class="pull-right"><font color="red">*</font><c:if test="${not empty user.id}">(不可修改)</c:if>角色:</label></td>
+                  <td>
+                      <c:if test="${not empty user.id}">
+                          <select class="form-control required" name="role.id" >
+                              <c:forEach items="${user.roleList}" var="role" varStatus="status">
+                                  <option value="${role.id}">${role.name}</option>
+                              </c:forEach>--%>
+                          </select>
+                      </c:if>
+                      <c:if test="${empty user.id}">
+                          <select class="form-control required" name="role.id" >
+                              <c:forEach items="${allRoles}" var="role" varStatus="status">
+                                  <option value="${role.id}">${role.name}</option>
+                              </c:forEach>--%>
+                          </select>
+                      </c:if>
+                  </td>
               </tr>
 		      
 		      <tr>
@@ -71,7 +84,7 @@
                   <td><input id="oldLoginName" name="oldLoginName" type="hidden" value="${user.loginName}">
                       <form:input path="loginName" htmlEscape="false" maxlength="50" class="form-control required userName" autocomplete="off"/></td>
                   <td class="active"><label class="pull-right"><font color="red">*</font>分数:</label></td>
-                  <td><form:input path="score" htmlEscape="false"  maxlength="50" class="form-control required digits"  autocomplete="off"/></td>
+                  <td><form:input path="score" htmlEscape="false"  maxlength="50" class="form-control required digits" /></td>
               </tr>
 		      
 		      <tr>
@@ -86,30 +99,22 @@
 		         <td class="active"><label class="pull-right">邮箱:</label></td>
 		         <td><form:input path="email" htmlEscape="false" maxlength="100" class="form-control email" autocomplete="off"/></td>
 		         <td class="active"><label class="pull-right">电话:</label></td>
-		         <td><form:input path="phone" htmlEscape="false" maxlength="100" class="form-control" autocomplete="off"/></td>
+		         <td><form:input path="phone" htmlEscape="false" maxlength="100" class="form-control" /></td>
 		      </tr>
 		      
 		      <tr>
 		         <td class="active"><label class="pull-right">手机:</label></td>
-		         <td><form:input path="mobile" htmlEscape="false" maxlength="100" class="form-control" autocomplete="off"/></td>
-                  <td class="active"><label class="pull-right"><font color="red">*</font>角色:</label></td>
-                  <td>
-                      <select class="form-control required" name="role.id">
-                          <c:forEach items="${allRoles}" var="role" varStatus="status">
-                              <option value="${role.id}">${role.name}</option>
-                          </c:forEach>--%>
-                      </select>
+		         <td><form:input path="mobile" htmlEscape="false" maxlength="100" class="form-control"/></td>
+		         <td class="active"><label class="pull-right">是否允许登录:</label></td>
+		         <td><form:select path="loginFlag"  class="form-control">
+					<form:options items="${fns:getDictList('yes_no')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+				</form:select></td>
 		      </tr>
 		      
 		      <tr>
-                 <%-- <c:forEach items="${allRoles}" var="role" varStatus="status">
-                         <form:radio path="mobile" htmlEscape="false" maxlength="100" class="form-control"/>
-                     </c:forEach>--%>
-		         </td>
 		         <td class="active"><label class="pull-right">备注:</label></td>
-		         <td colspan="3"><form:textarea path="remarks" htmlEscape="false" rows="3" maxlength="200" class="form-control" autocomplete="off"/></td>
+		         <td colspan="3"><form:textarea path="remarks" htmlEscape="false" rows="3" maxlength="200" class="form-control"/></td>
 		      </tr>
-		      
 		      </tbody>
 		      </table>
 	</form:form>
