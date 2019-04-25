@@ -3,24 +3,20 @@
  */
 package com.jeeplus.modules.sys.entity;
 
-import java.util.Date;
-import java.util.List;
-
-import javax.validation.constraints.NotNull;
-
-import com.jeeplus.common.utils.SpringContextHolder;
-import com.jeeplus.common.utils.StringUtils;
-import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.Length;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.Lists;
 import com.jeeplus.common.config.Global;
 import com.jeeplus.common.utils.Collections3;
+import com.jeeplus.common.utils.SpringContextHolder;
 import com.jeeplus.common.utils.excel.annotation.ExcelField;
 import com.jeeplus.common.utils.excel.fieldtype.RoleListType;
 import com.jeeplus.core.persistence.DataEntity;
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.Length;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * 用户Entity
@@ -54,6 +50,9 @@ public class User extends DataEntity<User> {
 	private Role role;	// 根据角色查询用户条件
 	
 	private List<Role> roleList = Lists.newArrayList(); // 拥有角色列表
+
+    private Integer score ; // 分数情况
+    private String englishName ; // 分数情况
 
 	public User() {
 		super();
@@ -97,7 +96,6 @@ public class User extends DataEntity<User> {
 		return id;
 	}
 
-	@NotNull(message="归属公司不能为空")
 	@ExcelField(title="归属公司", align=2, sort=20)
 	public Office getCompany() {
 		return company;
@@ -106,8 +104,7 @@ public class User extends DataEntity<User> {
 	public void setCompany(Office company) {
 		this.company = company;
 	}
-	
-	@NotNull(message="归属部门不能为空")
+
 	@ExcelField(title="归属部门", align=2, sort=25)
 	public Office getOffice() {
 		return office;
@@ -333,4 +330,20 @@ public class User extends DataEntity<User> {
 	public String getSign() {
 		return sign;
 	}
+
+    public Integer getScore() {
+        return score;
+    }
+
+    public void setScore(Integer score) {
+        this.score = score;
+    }
+
+    public String getEnglishName() {
+        return englishName;
+    }
+
+    public void setEnglishName(String englishName) {
+        this.englishName = englishName;
+    }
 }

@@ -3,29 +3,6 @@
  */
 package com.jeeplus.modules.sys.web;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.ConstraintViolationException;
-
-import org.apache.shiro.authz.annotation.Logical;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.aspectj.weaver.loadtime.Aj;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.jeeplus.common.beanvalidator.BeanValidators;
@@ -43,10 +20,27 @@ import com.jeeplus.modules.sys.entity.Role;
 import com.jeeplus.modules.sys.entity.SystemConfig;
 import com.jeeplus.modules.sys.entity.User;
 import com.jeeplus.modules.sys.mapper.UserMapper;
+import com.jeeplus.modules.sys.service.OfficeService;
 import com.jeeplus.modules.sys.service.SystemConfigService;
 import com.jeeplus.modules.sys.service.SystemService;
 import com.jeeplus.modules.sys.utils.UserUtils;
 import com.jeeplus.modules.tools.utils.TwoDimensionCode;
+import org.apache.shiro.authz.annotation.Logical;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.ConstraintViolationException;
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 用户Controller
@@ -64,6 +58,8 @@ public class UserController extends BaseController {
 	private SystemService systemService;
 	@Autowired
 	private UserMapper userMapper;
+    @Autowired
+    private OfficeService officeService;
 	
 	@ModelAttribute
 	public User get(@RequestParam(required=false) String id) {
@@ -106,7 +102,7 @@ public class UserController extends BaseController {
 			user.setOffice(UserUtils.getUser().getOffice());
 		}
 		model.addAttribute("user", user);
-		model.addAttribute("allRoles", systemService.findRole(new Role()));
+        model.addAttribute("allRoles", systemService.findRole(new Role()));
 		return "modules/sys/user/userForm";
 	}
 
@@ -115,6 +111,11 @@ public class UserController extends BaseController {
 	@RequestMapping(value = "save")
 	public AjaxJson save(User user, HttpServletRequest request, Model model) {
 		AjaxJson j = new AjaxJson();
+        if("1".equals(user.getId())){
+            j.setSuccess(false);
+            j.setMsg("超级管理员不能修改!");
+            return j;
+        }
 		if(Global.isDemoMode()){
 			j.setSuccess(false);
 			j.setMsg("演示模式，不允许操作!");
@@ -143,12 +144,7 @@ public class UserController extends BaseController {
 		}
 		// 角色数据有效性验证，过滤不在授权内的角色
 		List<Role> roleList = Lists.newArrayList();
-		List<String> roleIdList = user.getRoleIdList();
-		for (Role r : systemService.findAllRole()){
-			if (roleIdList.contains(r.getId())){
-				roleList.add(r);
-			}
-		}
+        roleList.add(user.getRole());
 		user.setRoleList(roleList);
 		//生成用户二维码，使用登录名
 		String realPath = Global.getAttachmentDir()+ "qrcode/";
@@ -174,6 +170,11 @@ public class UserController extends BaseController {
 	@RequestMapping(value = "delete")
 	public AjaxJson delete(User user) {
 		AjaxJson j = new AjaxJson();
+        if("1".equals(user.getId())){
+            j.setSuccess(false);
+            j.setMsg("超级管理员不能修改!");
+            return j;
+        }
 		if(Global.isDemoMode()){
 			j.setSuccess(false);
 			j.setMsg("演示模式，不允许操作!");
@@ -211,6 +212,11 @@ public class UserController extends BaseController {
 		}
 		for(String id : idArray){
 			User user = systemService.getUser(id);
+            if("1".equals(user.getId())){
+                j.setSuccess(false);
+                j.setMsg("超级管理员不能修改!");
+                return j;
+            }
 			if (UserUtils.getUser().getId().equals(user.getId())){
 				j.setSuccess(false);
 				j.setMsg("删除失败，不允许删除当前用户!");
@@ -343,7 +349,6 @@ public class UserController extends BaseController {
 
 	/**
 	 * 用户信息显示
-	 * @param user
 	 * @param model
 	 * @return
 	 */
@@ -371,16 +376,21 @@ public class UserController extends BaseController {
 				model.addAttribute("message", "演示模式，不允许操作！");
 				return "modules/sys/user/userInfo";
 			}
-			if(user.getName() !=null )
-				currentUser.setName(user.getName());
-			if(user.getEmail() !=null )
-				currentUser.setEmail(user.getEmail());
-			if(user.getPhone() !=null )
-				currentUser.setPhone(user.getPhone());
-			if(user.getMobile() !=null )
-				currentUser.setMobile(user.getMobile());
-			if(user.getRemarks() !=null )
-				currentUser.setRemarks(user.getRemarks());
+			if(user.getName() !=null ){
+                currentUser.setName(user.getName());
+			}
+			if(user.getEmail() !=null ){
+                currentUser.setEmail(user.getEmail());
+            }
+			if(user.getPhone() !=null ){
+                currentUser.setPhone(user.getPhone());
+            }
+			if(user.getMobile() !=null ){
+                currentUser.setMobile(user.getMobile());
+            }
+			if(user.getRemarks() !=null ){
+                currentUser.setRemarks(user.getRemarks());
+            }
 //			if(user.getPhoto() !=null )
 //				currentUser.setPhoto(user.getPhoto());
 			systemService.updateUserInfo(currentUser);
@@ -434,8 +444,6 @@ public class UserController extends BaseController {
 	}
 	/**
 	 * 用户头像显示编辑保存
-	 * @param user
-	 * @param model
 	 * @return
 	 * @throws IOException 
 	 * @throws IllegalStateException 

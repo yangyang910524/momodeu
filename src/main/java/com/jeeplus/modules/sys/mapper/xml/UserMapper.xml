@@ -8,7 +8,9 @@
 		<result property="loginName" column="loginName" />
 		<result property="password" column="password" />
 		<result property="no" column="no" />
-		<result property="name" column="name" />
+        <result property="name" column="name" />
+        <result property="englishName" column="englishName" />
+        <result property="score" column="score" />
 		<result property="email" column="email" />
 		<result property="phone" column="phone" />
 		<result property="mobile" column="mobile" />
@@ -17,6 +19,11 @@
 		<result property="office.id" column="office.id" />
 		<result property="office.name" column="office.name" />
 		<result property="office.parentIds" column="office.parentIds" />
+        <result property="createBy.id" column="createBy.id" />
+        <result property="createDate" column="createDate" />
+        <result property="updateBy.id" column="updateBy.id" />
+        <result property="updateDate" column="updateDate" />
+        <result property="delFlag" column="delFlag" />
 		<collection property="roleList" ofType="Role">
 			<id property="id" column="role.id" />
 			<result property="name" column="role.name"/>
@@ -32,6 +39,8 @@
     	a.password,
     	a.no,
 		a.name,
+		a.english_name AS "englishName",
+		a.score,
 		a.email,
 		a.phone,
 		a.mobile,
@@ -43,10 +52,10 @@
 		a.qrcode,
 		a.sign,
 		a.create_by AS "createBy.id",
-		a.create_date,
+		a.create_date AS "createDate",
 		a.update_by AS "updateBy.id",
-		a.update_date,
-		a.del_flag,
+		a.update_date AS "updateDate",
+		a.del_flag AS "delFlag" ,
     	c.name AS "company.name",
     	c.parent_id AS "company.parent.id",
     	c.parent_ids AS "company.parentIds",
@@ -247,7 +256,9 @@
 			login_name, 
 			password, 
 			no, 
-			name, 
+			name,
+			english_name,
+			score,
 			email, 
 			phone, 
 			mobile, 
@@ -267,7 +278,9 @@
 			#{loginName}, 
 			#{password}, 
 			#{no}, 
-			#{name}, 
+			#{name},
+			#{englishName},
+			#{score},
 			#{email}, 
 			#{phone}, 
 			#{mobile}, 
@@ -291,7 +304,9 @@
 			login_name = #{loginName}, 
 			password = #{password}, 
 			no = #{no}, 
-			name = #{name}, 
+			name = #{name},
+			english_name = #{englishName},
+			score = #{score},
 			email = #{email}, 
 			phone = #{phone}, 
 			mobile = #{mobile}, 
@@ -321,6 +336,8 @@
 	<update id="updateUserInfo">
 		UPDATE sys_user SET 
 			name = #{name},
+			english_name = #{englishName},
+			score = #{score},
 			email = #{email}, 
 			phone = #{phone}, 
 			mobile = #{mobile}, 

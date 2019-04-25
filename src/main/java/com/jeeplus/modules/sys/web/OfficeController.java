@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 机构Controller
+ * 班级Controller
  * @author jeeplus
  * @version 2016-5-15
  */
@@ -94,8 +94,13 @@ public class OfficeController extends BaseController {
 	@RequiresPermissions(value={"sys:office:add","sys:office:edit"},logical=Logical.OR)
 	@RequestMapping(value = "save")
 	public AjaxJson save(Office office, Model model) {
+        AjaxJson j = new AjaxJson();
+	    if("0749d5b41e5847959cdc944da591efea".equals(office.getId())){
+            j.setSuccess(false);
+            j.setMsg("管理处不能修改！");
+            return j;
+        }
         office.setParent(new Office());
-		AjaxJson j = new AjaxJson();
 		if(Global.isDemoMode()){
 			j.setSuccess(false);
 			j.setMsg("演示模式，不允许操作！");
@@ -127,7 +132,7 @@ public class OfficeController extends BaseController {
 		}
 		
 		j.setSuccess(true);
-		j.setMsg("保存机构'" + office.getName() + "'成功");
+		j.setMsg("保存班级'" + office.getName() + "'成功");
 		j.put("office", office);
 		return j;
 	}
@@ -137,6 +142,11 @@ public class OfficeController extends BaseController {
 	@RequestMapping(value = "delete")
 	public AjaxJson delete(Office office) {
 		AjaxJson j = new AjaxJson();
+        if("0749d5b41e5847959cdc944da591efea".equals(office.getId())){
+            j.setSuccess(false);
+            j.setMsg("管理处不能删除！");
+            return j;
+        }
 		if(Global.isDemoMode()){
 			j.setSuccess(false);
 			j.setMsg("演示模式，不允许操作！");
@@ -160,7 +170,7 @@ public class OfficeController extends BaseController {
 	
 	
 	/**
-	 * 获取机构JSON数据。
+	 * 获取班级JSON数据。
 	 * @param extId 排除的ID
 	 * @param type	类型（1：公司；2：部门/小组/其它）
 	 * @param grade 显示级别

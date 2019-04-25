@@ -17,10 +17,7 @@
 	</div>
 	<div class="panel-body">
 	<div class="row">
-		<div class="col-sm-3 col-md-2" >
-			<div id="jstree"></div> 
-		</div>
-		<div  class="col-sm-9 col-md-10 animated fadeInRight">
+		<div  class="">
 			<!-- 搜索框-->
 			<div id="search-collapse" class="collapse">
 				<div class="accordion-inner">
@@ -52,10 +49,10 @@
 					</form>
 				</div>
 			</div><!-- 搜索框结束 -->
-		
+
 		<!-- 工具栏 -->
 	    <div id="toolbar">
-	    
+
 	    	<shiro:hasPermission name="sys:user:add">
 	    		<a id="add" class="btn btn-primary"  onclick="jp.openSaveDialog('新建用户', '${ctx}/sys/user/form','800px', '680px')"><i class="glyphicon glyphicon-plus"></i> 新建</a>
 			</shiro:hasPermission>
@@ -82,19 +79,19 @@
 				<a id="export" class="btn btn-warning" href="${ctx}/sys/user/export"><i class="fa fa-file-excel-o"></i> 导出</a>
 	       </shiro:hasPermission>
 	    </div><!-- 工具栏结束 -->
-	    
-	    
+
+
 	    <!-- 表格 -->
 	    <table id="table"
 	           data-toolbar="#toolbar">
 	    </table>
-	
+
 	    <!-- context menu -->
 	    <ul id="context-menu" class="dropdown-menu">
 	        <li data-item="edit"><a>编辑</a></li>
 	        <li data-item="delete"><a>删除</a></li>
 	        <li data-item="cancel"><a>取消</a></li>
-	    </ul> 
+	    </ul>
 	</div>
 	</div>
 	</div>
