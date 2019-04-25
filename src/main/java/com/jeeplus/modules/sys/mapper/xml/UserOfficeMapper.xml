@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.jeeplus.modules.useroffice.mapper.UserOfficeMapper">
-    
+<mapper namespace="com.jeeplus.modules.sys.mapper.UserOfficeMapper">
+
 	<sql id="userOfficeColumns">
 		a.officeid AS "officeid",
 		a.userid AS "userid",
@@ -10,28 +10,28 @@
 		su.name AS "userName",
 		a.id AS "id"
 	</sql>
-	
+
 	<sql id="userOfficeJoins">
 		left join sys_office so on a.officeid=so.id
 		left join sys_user su on a.user=su.id
 	</sql>
-	
-    
+
+
 	<select id="get" resultType="UserOffice" >
-		SELECT 
-			<include refid="userOfficeColumns"/>
+		SELECT
+		<include refid="userOfficeColumns"/>
 		FROM sys_user_office a
 		<include refid="userOfficeJoins"/>
 		WHERE a.id = #{id}
 	</select>
-	
+
 	<select id="findList" resultType="UserOffice" >
-		SELECT 
-			<include refid="userOfficeColumns"/>
+		SELECT
+		<include refid="userOfficeColumns"/>
 		FROM sys_user_office a
 		<include refid="userOfficeJoins"/>
 		<where>
-			
+
 			${dataScope}
 			<if test="officeid != null and officeid != ''">
 				AND a.officeid = #{officeid}
@@ -51,16 +51,16 @@
 			</otherwise>
 		</choose>
 	</select>
-	
+
 	<select id="findAllList" resultType="UserOffice" >
-		SELECT 
-			<include refid="userOfficeColumns"/>
+		SELECT
+		<include refid="userOfficeColumns"/>
 		FROM sys_user_office a
 		<include refid="userOfficeJoins"/>
 		<where>
-			
+
 			${dataScope}
-		</where>		
+		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
 				ORDER BY ${page.orderBy}
@@ -69,53 +69,71 @@
 			</otherwise>
 		</choose>
 	</select>
-	
+
 	<insert id="insert">
 		INSERT INTO sys_user_office(
-			officeid,
-			userid,
-			user_type,
-			id
+		officeid,
+		userid,
+		user_type,
+		id
 		) VALUES (
-			#{officeid},
-			#{userid},
-			#{userType},
-			#{id}
+		#{officeid},
+		#{userid},
+		#{userType},
+		#{id}
 		)
 	</insert>
-	
+
 	<update id="update">
-		UPDATE sys_user_office SET 	
-			userid = #{userid},
-			user_type = #{userType},
-			id = #{id}
+		UPDATE sys_user_office SET
+		userid = #{userid},
+		user_type = #{userType},
+		id = #{id}
 		WHERE id = #{id}
 	</update>
-	
-	
+
+
 	<!--物理删除-->
 	<update id="delete">
 		DELETE FROM sys_user_office
 		WHERE id = #{id}
 	</update>
-	
+
 	<!--逻辑删除-->
 	<update id="deleteByLogic">
-		UPDATE sys_user_office SET 
-			del_flag = #{DEL_FLAG_DELETE}
+		UPDATE sys_user_office SET
+		del_flag = #{DEL_FLAG_DELETE}
 		WHERE id = #{id}
 	</update>
-	
-	
+
+
 	<!-- 根据实体名称和字段名称和字段值获取唯一记录 -->
 	<select id="findUniqueByProperty" resultType="UserOffice" statementType="STATEMENT">
 		select * FROM sys_user_office  where ${propertyName} = '${value}'
 	</select>
 
 
-    <select id="findUser" resultType="User" >
-        SELECT
-        *
-        FROM sys_user
-    </select>
+	<select id="findUser" resultType="User" >
+		SELECT
+		su.id
+		,su.name
+		,su.user_type as userType
+		,su.photo as photo
+		,su.phone as phone
+		FROM sys_user su
+		<where>
+			<if test="userType =='1'.toString() or userType =='2'.toString()">
+				and not exists (
+				select 1 from sys_user_office suo where suo.userid=su.id and suo.officeid=#{officeid}
+				)
+				and user_type='2'
+			</if>
+			<if test="userType =='3'.toString()">
+				and not exists (
+				select 1 from sys_user_office suo where suo.userid=su.id
+				)
+				and user_type='3'
+			</if>
+		</where>
+	</select>
 </mapper>

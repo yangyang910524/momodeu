@@ -17,6 +17,5 @@ import java.util.List;
  */
 @MyBatisMapper
 public interface UserOfficeMapper extends BaseMapper<UserOffice> {
-
-    List<User> findUser(User user);
+    List<User> findUser(UserOffice userOffice);
 }

@@ -25,7 +25,7 @@ public class UserOfficeService extends CrudService<UserOfficeMapper, UserOffice>
 
     @Resource
     UserOfficeMapper userOfficeMapper;
-    public List<User> findUser(User user) {
-       return userOfficeMapper.findUser(user);
+    public List<User> findUser(UserOffice userOffice) {
+        return userOfficeMapper.findUser(userOffice);
     }
 }
