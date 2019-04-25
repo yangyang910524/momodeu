@@ -5,7 +5,10 @@ package com.jeeplus.modules.sys.mapper;
 
 import com.jeeplus.core.persistence.BaseMapper;
 import com.jeeplus.core.persistence.annotation.MyBatisMapper;
+import com.jeeplus.modules.sys.entity.User;
 import com.jeeplus.modules.sys.entity.UserOffice;
+
+import java.util.List;
 
 /**
  * 用户-班级关联MAPPER接口
@@ -14,5 +17,6 @@ import com.jeeplus.modules.sys.entity.UserOffice;
  */
 @MyBatisMapper
 public interface UserOfficeMapper extends BaseMapper<UserOffice> {
-	
+
+    List<User> findUser(User user);
 }

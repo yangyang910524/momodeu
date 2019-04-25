@@ -6,11 +6,14 @@
 		a.officeid AS "officeid",
 		a.userid AS "userid",
 		a.user_type AS "userType",
+		so.name AS "officeName",
+		su.name AS "userName",
 		a.id AS "id"
 	</sql>
 	
 	<sql id="userOfficeJoins">
-		
+		left join sys_office so on a.officeid=so.id
+		left join sys_user su on a.user=su.id
 	</sql>
 	
     
@@ -108,5 +111,11 @@
 	<select id="findUniqueByProperty" resultType="UserOffice" statementType="STATEMENT">
 		select * FROM sys_user_office  where ${propertyName} = '${value}'
 	</select>
-	
+
+
+    <select id="findUser" resultType="User" >
+        SELECT
+        *
+        FROM sys_user
+    </select>
 </mapper>

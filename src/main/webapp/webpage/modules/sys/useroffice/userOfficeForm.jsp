@@ -7,7 +7,7 @@
 	<script type="text/javascript">
 
 		$(document).ready(function() {
-
+            console.log(${"list"});
 		});
 		function save() {
             var isValidate = jp.validateForm('#inputForm');//校验表单

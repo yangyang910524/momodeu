@@ -237,8 +237,8 @@ $(document).ready(function() {
   	$('#userOfficeTable').bootstrapTable('refresh');
   }
   
-   function add(){
-	  jp.openSaveDialog('新增信息', "${ctx}/useroffice/userOffice/form",'800px', '500px');
+   function add(userType){
+	  jp.openSaveDialog('新增信息', "${ctx}/useroffice/userOffice/form?userType="+userType,'800px', '500px');
   }
 
 

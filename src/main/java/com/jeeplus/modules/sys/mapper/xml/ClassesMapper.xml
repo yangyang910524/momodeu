@@ -12,14 +12,15 @@
 		a.update_date AS "updateDate",
 		a.remarks AS "remarks",
 		a.del_flag AS "delFlag",
-		a.classroom_teacher AS "classroomTeacher.id",
+		suo.userid AS "classroomTeacher.id",
 		so.name AS "classroomTeacher.name",
-		(select count(*) from sys_user_office suo where and user_type='1' a.id=suo.officeid) AS "teacherTotal",
-		(select count(*) from sys_user_office suo where and user_type='2' a.id=suo.officeid) AS "studentTotal"
+		(select count(*) from sys_user_office suo where  user_type='1' and a.id=suo.officeid) AS "teacherTotal",
+		(select count(*) from sys_user_office suo where  user_type='2' and a.id=suo.officeid) AS "studentTotal"
 	</sql>
 	
 	<sql id="classesJoins">
-      left join sys_user so on a.classroom_teacher=so.id
+      left join (select officeid,userid from sys_user_office where user_type='1') suo on suo.officeid=a.id
+      left join sys_user so on suo.userid=so.id
 	</sql>
 	
     

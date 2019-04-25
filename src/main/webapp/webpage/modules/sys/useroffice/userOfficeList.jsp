@@ -49,29 +49,22 @@
 	<!-- 工具栏 -->
 	<div id="toolbar">
 			<shiro:hasPermission name="useroffice:userOffice:add">
-				<button id="add" class="btn btn-primary" onclick="add()">
-					<i class="glyphicon glyphicon-plus"></i> 新建
-				</button>
-			</shiro:hasPermission>
-			<shiro:hasPermission name="useroffice:userOffice:edit">
-			    <button id="edit" class="btn btn-success" disabled onclick="edit()">
-	            	<i class="glyphicon glyphicon-edit"></i> 修改
-	        	</button>
+                <button id="add" class="btn btn-primary" onclick="add('1')">
+                    <i class="glyphicon glyphicon-plus"></i>添加班主任
+                </button>
+                <button id="add" class="btn btn-primary" onclick="add('2')">
+                    <i class="glyphicon glyphicon-plus"></i>添加老师
+                </button>
+                <button id="add" class="btn btn-primary" onclick="add('3')">
+                    <i class="glyphicon glyphicon-plus"></i>添加学生
+                </button>
 			</shiro:hasPermission>
 			<shiro:hasPermission name="useroffice:userOffice:del">
 				<button id="remove" class="btn btn-danger" disabled onclick="deleteAll()">
 	            	<i class="glyphicon glyphicon-remove"></i> 删除
 	        	</button>
 			</shiro:hasPermission>
-			<shiro:hasPermission name="useroffice:userOffice:import">
-				<button id="btnImport" class="btn btn-info"><i class="fa fa-folder-open-o"></i> 导入</button>
-			</shiro:hasPermission>
-			<shiro:hasPermission name="useroffice:userOffice:export">
-	        		<button id="export" class="btn btn-warning">
-					<i class="fa fa-file-excel-o"></i> 导出
-				</button>
-			 </shiro:hasPermission>
-	                 <shiro:hasPermission name="useroffice:userOffice:view">
+	        <shiro:hasPermission name="useroffice:userOffice:view">
 				<button id="view" class="btn btn-default" disabled onclick="view()">
 					<i class="fa fa-search-plus"></i> 查看
 				</button>

@@ -84,48 +84,58 @@ $(document).ready(function() {
 		        checkbox: true
 		       
 		    }
-			,{
-		        field: 'name',
-		        title: '名称',
-		        sortable: true,
-		        sortName: 'name'
-		        ,formatter:function(value, row , index){
-		        	value = jp.unescapeHTML(value);
-				   <c:choose>
-					   <c:when test="${fns:hasPermission('sys:classes:classes:edit')}">
-					      return "<a href='javascript:edit(\""+row.id+"\")'>"+value+"</a>";
-				      </c:when>
-					  <c:when test="${fns:hasPermission('sys:classes:classes:view')}">
-					      return "<a href='javascript:view(\""+row.id+"\")'>"+value+"</a>";
-				      </c:when>
-					  <c:otherwise>
-					      return value;
-				      </c:otherwise>
-				   </c:choose>
-		         }
-		       
-		    }
-           ,{
-               field: '',
-               title: '操作',
-               sortable: true,
-               sortName: 'remarks',
-               formatter:function(value, row , index){
-                   value = jp.unescapeHTML(value);
-                   <c:choose>
-                   <c:when test="${fns:hasPermission('sys:classes:classes:edit')}">
-                   return "<a href='javascript:edit(\""+row.id+"\")'>"+value+"</a>";
-                   </c:when>
-                   <c:when test="${fns:hasPermission('sys:classes:classes:view')}">
-                   return "<a href='javascript:view(\""+row.id+"\")'>"+value+"</a>";
-                   </c:when>
-                   <c:otherwise>
-                   return value;
-                   </c:otherwise>
-                   </c:choose>
-               }
+                   ,{
+                       field: 'name',
+                       title: '名称',
+                       sortable: true,
+                       sortName: 'name'
+                       ,formatter:function(value, row , index){
+                           value = jp.unescapeHTML(value);
+                           <c:choose>
+                           <c:when test="${fns:hasPermission('sys:classes:classes:edit')}">
+                           return "<a href='javascript:edit(\""+row.id+"\")'>"+value+"</a>";
+                           </c:when>
+                           <c:when test="${fns:hasPermission('sys:classes:classes:view')}">
+                           return "<a href='javascript:view(\""+row.id+"\")'>"+value+"</a>";
+                           </c:when>
+                           <c:otherwise>
+                           return value;
+                           </c:otherwise>
+                           </c:choose>
+                       }
 
-           }
+                   }, {
+                       field: 'classroomTeacher',
+                       title: '班主任',
+                       sortable: false,
+                       formatter:function (value, row, index) {
+                          if(value){
+                                 return value.name;
+                          }else{
+                                var result="";
+                                return result
+                          }
+                       }
+                   }, {
+                       field: 'teacherTotal',
+                       title: '老师人数',
+                       sortable: false
+                   }, {
+                       field: 'studentTotal',
+                       title: '学生人数',
+                       sortable: false
+                   }, {
+                       field: 'id',
+                       title: '操作',
+                       sortable: false,
+                       formatter:function (value, row, index) {
+                           var result="";
+                           <shiro:hasPermission name="sys:classes:classes:user">
+                                result= "&nbsp;&nbsp;<a href='${ctx}/useroffice/userOffice?officeid="+value+"'>人员管理</a>&nbsp;&nbsp;";
+                           </shiro:hasPermission>
+                           return result;
+                       }
+                   }
 		     ]
 		
 		});
