@@ -14,8 +14,10 @@
 		a.del_flag AS "delFlag",
 		suo.userid AS "classroomTeacher.id",
 		so.name AS "classroomTeacher.name",
-		(select count(*) from sys_user_office suo where  user_type='2' and a.id=suo.officeid) AS "teacherTotal",
-		(select count(*) from sys_user_office suo where  user_type='3' and a.id=suo.officeid) AS "studentTotal"
+		(select count(*) from sys_user_office suo where  user_type in ('1','2') and a.id=suo.officeid) AS "teacherTotal",
+		(select count(*) from sys_user_office suo where  user_type='3' and a.id=suo.officeid) AS "studentTotal",
+		(select count(*) from sys_coures_office sco where a.id=sco.officeid) AS "courseTotal",
+		(select count(*) from sys_homework_office sho where a.id=sho.officeid) AS "homeworkTotal"
 	</sql>
 	
 	<sql id="classesJoins">

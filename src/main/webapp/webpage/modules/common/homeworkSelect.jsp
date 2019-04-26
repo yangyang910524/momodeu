@@ -2,7 +2,7 @@
 <%@ include file="/webpage/include/taglib.jsp"%>
 <html>
 <head>
-	<title>材料选择</title>
+	<title>作业选择</title>
 	<meta name="decorator" content="ani"/>
 	<%@ include file="/webpage/include/bootstraptable.jsp"%>
 	<%@include file="/webpage/include/treeview.jsp" %>
@@ -73,7 +73,7 @@
 	                //可供选择的每页的行数（*）    
 	                pageList: [5, 10,  'ALL'],
 	                //这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据  
-	                url: "${ctx}/material/material/data",
+	                url: "${ctx}/homework/homework/homeworkList?office.id=${officeid}",
 	                //默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
 	                //queryParamsType:'',   
 	                ////查询参数,每次调用是会带上这个参数，可自定义                         
@@ -97,7 +97,7 @@
 	                	</c:if>
 				    }, {
 				        field: 'name',
-				        title: '材料名称',
+				        title: '作业名称',
 				        sortable: true
 				       
 				    }]
@@ -166,7 +166,7 @@
 					<form id="searchForm" class="form form-horizontal well clearfix" >
 					    <input type="hidden" id="companyId" name="company.id"/>
 					    <div class="col-sm-4">
-					    	<label class="label-item single-overflow pull-left" title="材料名称：">材料名称：</label>
+					    	<label class="label-item single-overflow pull-left" title="材料名称：">作业名称：</label>
 					   		<input type="text" name="name" maxlength="100"  class=" form-control"/>
 					    </div>
 					    <div class="col-sm-4">

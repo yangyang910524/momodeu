@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jeeplus.modules.sys.mapper.HomeworkOfficeMapper">
+    
+	<sql id="homeworkOfficeColumns">
+		a.id AS "id",
+		a.officeid AS "officeid",
+		a.homeworkid AS "homeworkid",
+		h.name as "homeworkName",
+		so.name as "officeName"
+	</sql>
+	
+	<sql id="homeworkOfficeJoins">
+		left join homework h on h.id=a.homeworkid
+		left join sys_office so on so.id=a.officeid
+	</sql>
+	
+    
+	<select id="get" resultType="HomeworkOffice" >
+		SELECT 
+			<include refid="homeworkOfficeColumns"/>
+		FROM sys_homework_office a
+		<include refid="homeworkOfficeJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="HomeworkOffice" >
+		SELECT 
+			<include refid="homeworkOfficeColumns"/>
+		FROM sys_homework_office a
+		<include refid="homeworkOfficeJoins"/>
+		<where>
+			
+			${dataScope}
+			<if test="officeid != null and officeid != ''">
+				AND a.officeid = #{officeid}
+			</if>
+			<if test="homeworkid != null and homeworkid != ''">
+				AND a.homeworkid = #{homeworkid}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="HomeworkOffice" >
+		SELECT 
+			<include refid="homeworkOfficeColumns"/>
+		FROM sys_homework_office a
+		<include refid="homeworkOfficeJoins"/>
+		<where>
+			
+			${dataScope}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO sys_homework_office(
+			id,
+			officeid,
+			homeworkid
+		) VALUES (
+			#{id},
+			#{officeid},
+			#{homeworkid}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE sys_homework_office SET 	
+			officeid = #{officeid},
+			homeworkid = #{homeworkid}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!--物理删除-->
+	<update id="delete">
+		DELETE FROM sys_homework_office
+		WHERE id = #{id}
+	</update>
+	
+	<!--逻辑删除-->
+	<update id="deleteByLogic">
+		UPDATE sys_homework_office SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!-- 根据实体名称和字段名称和字段值获取唯一记录 -->
+	<select id="findUniqueByProperty" resultType="HomeworkOffice" statementType="STATEMENT">
+		select * FROM sys_homework_office  where ${propertyName} = '${value}'
+	</select>
+	
+</mapper>

@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <script>
 $(document).ready(function() {
-	$('#materialTable').bootstrapTable({
+	$('#homeworkOfficeTable').bootstrapTable({
 		 
 		  //请求方法
                method: 'post',
@@ -37,7 +37,7 @@ $(document).ready(function() {
                //可供选择的每页的行数（*）    
                pageList: [10, 25, 50, 100],
                //这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据  
-               url: "${ctx}/material/material/data",
+               url: "${ctx}/homeworkoffice/homeworkOffice/data?officeid=${homeworkOffice.officeid}",
                //默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
                //queryParamsType:'',   
                ////查询参数,每次调用是会带上这个参数，可自定义                         
@@ -59,11 +59,11 @@ $(document).ready(function() {
                    }else if($el.data("item") == "view"){
                        view(row.id);
                    } else if($el.data("item") == "delete"){
-                        jp.confirm('确认要删除该材料信息记录吗？', function(){
+                        jp.confirm('确认要删除该信息记录吗？', function(){
                        	jp.loading();
-                       	jp.get("${ctx}/material/material/delete?id="+row.id, function(data){
+                       	jp.get("${ctx}/homeworkoffice/homeworkOffice/delete?id="+row.id, function(data){
                    	  		if(data.success){
-                   	  			$('#materialTable').bootstrapTable('refresh');
+                   	  			$('#homeworkOfficeTable').bootstrapTable('refresh');
                    	  			jp.success(data.msg);
                    	  		}else{
                    	  			jp.error(data.msg);
@@ -84,94 +84,17 @@ $(document).ready(function() {
 		        checkbox: true
 		       
 		    }
-			,{
-		        field: 'remarks',
-		        title: '备注信息',
-		        sortable: true,
-		        sortName: 'remarks'
-		        ,formatter:function(value, row , index){
-		        	value = jp.unescapeHTML(value);
-				   <c:choose>
-					   <c:when test="${fns:hasPermission('material:material:edit')}">
-					      return "<a href='javascript:edit(\""+row.id+"\")'>"+value+"</a>";
-				      </c:when>
-					  <c:when test="${fns:hasPermission('material:material:view')}">
-					      return "<a href='javascript:view(\""+row.id+"\")'>"+value+"</a>";
-				      </c:when>
-					  <c:otherwise>
-					      return value;
-				      </c:otherwise>
-				   </c:choose>
-		         }
-		       
-		    }
-			,{
-		        field: 'name',
-		        title: '材料名称',
-		        sortable: true,
-		        sortName: 'name'
-		       
-		    }
-		    ,{
-		        field: 'data1',
-		        title: '材料1',
-		        sortable: true,
-		        sortName: 'data1',
-		        formatter:function(value, row , index){
-		        	var valueArray = value.split("|");
-		        	var labelArray = [];
-		        	for(var i =0 ; i<valueArray.length; i++){
-		        		if(!/\.(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(valueArray[i]))
-		        		{
-		        			labelArray[i] = "<a href=\""+valueArray[i]+"\" url=\""+valueArray[i]+"\" target=\"_blank\">"+decodeURIComponent(valueArray[i].substring(valueArray[i].lastIndexOf("/")+1))+"</a>"
-		        		}else{
-		        			labelArray[i] = '<img   onclick="jp.showPic(\''+valueArray[i]+'\')"'+' height="50px" src="'+valueArray[i]+'">';
-		        		}
-		        	}
-		        	return labelArray.join(" ");
-		        }
-		       
-		    }
-			,{
-		        field: 'state',
-		        title: '状态',
-		        sortable: true,
-		        sortName: 'state',
-		        formatter:function(value, row , index){
-		        	return jp.getDictLabel(${fns:toJson(fns:getDictList('bas_release_type'))}, value, "-");
-		        }
-		       
-		    }
-			,{
-		        field: 'type',
-		        title: '材料类型',
-		        sortable: true,
-		        sortName: 'type',
-		        formatter:function(value, row , index){
-		        	return jp.getDictLabel(${fns:toJson(fns:getDictList('bas_material_type'))}, value, "-");
-		        }
-		       
-		    }
-		    ,{
-		        field: 'data2',
-		        title: '材料2',
-		        sortable: true,
-		        sortName: 'data2',
-		        formatter:function(value, row , index){
-		        	var valueArray = value.split("|");
-		        	var labelArray = [];
-		        	for(var i =0 ; i<valueArray.length; i++){
-		        		if(!/\.(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(valueArray[i]))
-		        		{
-		        			labelArray[i] = "<a href=\""+valueArray[i]+"\" url=\""+valueArray[i]+"\" target=\"_blank\">"+decodeURIComponent(valueArray[i].substring(valueArray[i].lastIndexOf("/")+1))+"</a>"
-		        		}else{
-		        			labelArray[i] = '<img   onclick="jp.showPic(\''+valueArray[i]+'\')"'+' height="50px" src="'+valueArray[i]+'">';
-		        		}
-		        	}
-		        	return labelArray.join(" ");
-		        }
-		       
-		    }
+                   ,{
+                       field: 'officeName',
+                       title: '班级名称',
+                       sortable: false
+
+                   },{
+                       field: 'homeworkName',
+                       title: '作业名称',
+                       sortable: false
+
+                   }
 		     ]
 		
 		});
@@ -180,13 +103,13 @@ $(document).ready(function() {
 	  if(navigator.userAgent.match(/(iPhone|iPod|Android|ios)/i)){//如果是移动端
 
 		 
-		  $('#materialTable').bootstrapTable("toggleView");
+		  $('#homeworkOfficeTable').bootstrapTable("toggleView");
 		}
 	  
-	  $('#materialTable').on('check.bs.table uncheck.bs.table load-success.bs.table ' +
+	  $('#homeworkOfficeTable').on('check.bs.table uncheck.bs.table load-success.bs.table ' +
                 'check-all.bs.table uncheck-all.bs.table', function () {
-            $('#remove').prop('disabled', ! $('#materialTable').bootstrapTable('getSelections').length);
-            $('#view,#edit').prop('disabled', $('#materialTable').bootstrapTable('getSelections').length!=1);
+            $('#remove').prop('disabled', ! $('#homeworkOfficeTable').bootstrapTable('getSelections').length);
+            $('#view,#edit').prop('disabled', $('#homeworkOfficeTable').bootstrapTable('getSelections').length!=1);
         });
 		  
 		$("#btnImport").click(function(){
@@ -198,11 +121,11 @@ $(document).ready(function() {
 			    content: "${ctx}/tag/importExcel" ,
 			    btn: ['下载模板','确定', '关闭'],
 				    btn1: function(index, layero){
-					 jp.downloadFile('${ctx}/material/material/import/template');
+					 jp.downloadFile('${ctx}/homeworkoffice/homeworkOffice/import/template');
 				  },
 			    btn2: function(index, layero){
 				        var iframeWin = layero.find('iframe')[0]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
-						iframeWin.contentWindow.importExcel('${ctx}/material/material/import', function (data) {
+						iframeWin.contentWindow.importExcel('${ctx}/homeworkoffice/homeworkOffice/import', function (data) {
 							if(data.success){
 								jp.success(data.msg);
 								refresh();
@@ -225,8 +148,8 @@ $(document).ready(function() {
 	        var searchParam = $("#searchForm").serializeJSON();
 	        searchParam.pageNo = 1;
 	        searchParam.pageSize = -1;
-            var sortName = $('#materialTable').bootstrapTable("getOptions", "none").sortName;
-            var sortOrder = $('#materialTable').bootstrapTable("getOptions", "none").sortOrder;
+            var sortName = $('#homeworkOfficeTable').bootstrapTable("getOptions", "none").sortName;
+            var sortOrder = $('#homeworkOfficeTable').bootstrapTable("getOptions", "none").sortOrder;
             var values = "";
             for(var key in searchParam){
                 values = values + key + "=" + searchParam[key] + "&";
@@ -235,37 +158,37 @@ $(document).ready(function() {
                 values = values + "orderBy=" + sortName + " "+sortOrder;
             }
 
-			jp.downloadFile('${ctx}/material/material/export?'+values);
+			jp.downloadFile('${ctx}/homeworkoffice/homeworkOffice/export?'+values);
 	  })
 
 		    
 	  $("#search").click("click", function() {// 绑定查询按扭
-		  $('#materialTable').bootstrapTable('refresh');
+		  $('#homeworkOfficeTable').bootstrapTable('refresh');
 		});
 	 
 	 $("#reset").click("click", function() {// 绑定查询按扭
 		  $("#searchForm  input").val("");
 		  $("#searchForm  select").val("");
 		  $("#searchForm  .select-item").html("");
-		  $('#materialTable').bootstrapTable('refresh');
+		  $('#homeworkOfficeTable').bootstrapTable('refresh');
 		});
 		
 		
 	});
 		
   function getIdSelections() {
-        return $.map($("#materialTable").bootstrapTable('getSelections'), function (row) {
+        return $.map($("#homeworkOfficeTable").bootstrapTable('getSelections'), function (row) {
             return row.id
         });
     }
   
   function deleteAll(){
 
-		jp.confirm('确认要删除该材料信息记录吗？', function(){
+		jp.confirm('确认要删除该信息记录吗？', function(){
 			jp.loading();  	
-			jp.get("${ctx}/material/material/deleteAll?ids=" + getIdSelections(), function(data){
+			jp.get("${ctx}/homeworkoffice/homeworkOffice/deleteAll?ids=" + getIdSelections(), function(data){
          	  		if(data.success){
-         	  			$('#materialTable').bootstrapTable('refresh');
+         	  			$('#homeworkOfficeTable').bootstrapTable('refresh');
          	  			jp.success(data.msg);
          	  		}else{
          	  			jp.error(data.msg);
@@ -275,24 +198,33 @@ $(document).ready(function() {
 		})
   }
   function refresh(){
-  	$('#materialTable').bootstrapTable('refresh');
+  	$('#homeworkOfficeTable').bootstrapTable('refresh');
   }
   function add(){
-		jp.go("${ctx}/material/material/form/add");
+      jp.openHomeworkSelectDialog(true, function (ids, names) {
+          jp.get("${ctx}/homeworkoffice/homeworkOffice/addHomework?ids=" + ids+"&officeid=${homeworkOffice.officeid}", function(data){
+              if(data.success){
+                  $('#homeworkOfficeTable').bootstrapTable('refresh');
+                  jp.success(data.msg);
+              }else{
+                  jp.error(data.msg);
+              }
+          })
+      },'${homeworkOffice.officeid}');
 	}
 
   function edit(id){
 	  if(id == undefined){
 		  id = getIdSelections();
 	  }
-	  jp.go("${ctx}/material/material/form/edit?id=" + id);
+	  jp.go("${ctx}/homeworkoffice/homeworkOffice/form/edit?id=" + id);
   }
 
   function view(id) {
       if(id == undefined){
           id = getIdSelections();
       }
-      jp.go("${ctx}/material/material/form/view?id=" + id);
+      jp.go("${ctx}/homeworkoffice/homeworkOffice/form/view?id=" + id);
   }
   
 </script>

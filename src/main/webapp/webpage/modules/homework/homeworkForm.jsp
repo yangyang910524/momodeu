@@ -2,7 +2,7 @@
 <%@ include file="/webpage/include/taglib.jsp"%>
 <html>
 <head>
-	<title>材料信息管理</title>
+	<title>作业信息管理</title>
 	<meta name="decorator" content="ani"/>
 	<script type="text/javascript">
 
@@ -10,7 +10,7 @@
 			jp.ajaxForm("#inputForm",function(data){
 				if(data.success){
 				    jp.success(data.msg);
-					jp.go("${ctx}/material/material");
+					jp.go("${ctx}/homework/homework");
 				}else{
 				    jp.error(data.msg);
 				    $("#inputForm").find("button:submit").button("reset");
@@ -27,11 +27,11 @@
 	<div class="panel panel-primary">
 		<div class="panel-heading">
 			<h3 class="panel-title"> 
-				<a class="panelButton" href="${ctx}/material/material"><i class="ti-angle-left"></i> 返回</a>
+				<a class="panelButton" href="${ctx}/homework/homework"><i class="ti-angle-left"></i> 返回</a>
 			</h3>
 		</div>
 		<div class="panel-body">
-		<form:form id="inputForm" modelAttribute="material" action="${ctx}/material/material/save" method="post" class="form-horizontal">
+		<form:form id="inputForm" modelAttribute="homework" action="${ctx}/homework/homework/save" method="post" class="form-horizontal">
 		<form:hidden path="id"/>
 				<div class="form-group">
 					<label class="col-sm-2 control-label">备注信息：</label>
@@ -40,39 +40,36 @@
 					</div>
 				</div>
 				<div class="form-group">
-					<label class="col-sm-2 control-label"><font color="red">*</font>材料名称：</label>
+					<label class="col-sm-2 control-label">名称：</label>
 					<div class="col-sm-10">
-						<form:input path="name" htmlEscape="false"    class="form-control required"/>
+						<form:input path="name" htmlEscape="false"    class="form-control "/>
 					</div>
 				</div>
 				<div class="form-group">
-					<label class="col-sm-2 control-label"><font color="red">*</font>材料1：</label>
+					<label class="col-sm-2 control-label">类型：</label>
 					<div class="col-sm-10">
-						<sys:fileUpload path="data1"  value="${material.data1}" type="file" uploadPath="/material/material"/>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-sm-2 control-label"><font color="red">*</font>状态：</label>
-					<div class="col-sm-10">
-						<form:select path="state" class="form-control required">
+						<form:select path="type" class="form-control ">
 							<form:option value="" label=""/>
-							<form:options items="${fns:getDictList('bas_release_type')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+							<form:options items="${fns:getDictList('bae_homework_type')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
 						</form:select>
 					</div>
 				</div>
 				<div class="form-group">
-					<label class="col-sm-2 control-label"><font color="red">*</font>材料类型：</label>
+					<label class="col-sm-2 control-label">材料1：</label>
 					<div class="col-sm-10">
-						<form:select path="type" class="form-control required">
-							<form:option value="" label=""/>
-							<form:options items="${fns:getDictList('bas_material_type')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
-						</form:select>
+						<sys:fileUpload path="data1"  value="${homework.data1}" type="file" uploadPath="/homework/homework"/>
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-sm-2 control-label">材料2：</label>
 					<div class="col-sm-10">
-						<sys:fileUpload path="data2"  value="${material.data2}" type="file" uploadPath="/material/material"/>
+						<sys:fileUpload path="data2"  value="${homework.data2}" type="file" uploadPath="/homework/homework"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-2 control-label">封面：</label>
+					<div class="col-sm-10">
+						<sys:fileUpload path="cover"  value="${homework.cover}" type="file" uploadPath="/homework/homework"/>
 					</div>
 				</div>
 		<c:if test="${mode == 'add' || mode=='edit'}">

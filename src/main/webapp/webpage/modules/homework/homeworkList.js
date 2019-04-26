@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <script>
 $(document).ready(function() {
-	$('#classesTable').bootstrapTable({
+	$('#homeworkTable').bootstrapTable({
 		 
 		  //请求方法
                method: 'post',
@@ -37,7 +37,7 @@ $(document).ready(function() {
                //可供选择的每页的行数（*）    
                pageList: [10, 25, 50, 100],
                //这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据  
-               url: "${ctx}/sys/classes/classes/data",
+               url: "${ctx}/homework/homework/data",
                //默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
                //queryParamsType:'',   
                ////查询参数,每次调用是会带上这个参数，可自定义                         
@@ -59,11 +59,11 @@ $(document).ready(function() {
                    }else if($el.data("item") == "view"){
                        view(row.id);
                    } else if($el.data("item") == "delete"){
-                        jp.confirm('确认要删除该信息记录吗？', function(){
+                        jp.confirm('确认要删除该作业信息记录吗？', function(){
                        	jp.loading();
-                       	jp.get("${ctx}/sys/classes/classes/delete?id="+row.id, function(data){
+                       	jp.get("${ctx}/homework/homework/delete?id="+row.id, function(data){
                    	  		if(data.success){
-                   	  			$('#classesTable').bootstrapTable('refresh');
+                   	  			$('#homeworkTable').bootstrapTable('refresh');
                    	  			jp.success(data.msg);
                    	  		}else{
                    	  			jp.error(data.msg);
@@ -84,75 +84,104 @@ $(document).ready(function() {
 		        checkbox: true
 		       
 		    }
-                   ,{
-                       field: 'name',
-                       title: '名称',
-                       sortable: true,
-                       sortName: 'name'
-                       ,formatter:function(value, row , index){
-                           value = jp.unescapeHTML(value);
-                           <c:choose>
-                           <c:when test="${fns:hasPermission('sys:classes:classes:edit')}">
-                           return "<a href='javascript:edit(\""+row.id+"\")'>"+value+"</a>";
-                           </c:when>
-                           <c:when test="${fns:hasPermission('sys:classes:classes:view')}">
-                           return "<a href='javascript:view(\""+row.id+"\")'>"+value+"</a>";
-                           </c:when>
-                           <c:otherwise>
-                           return value;
-                           </c:otherwise>
-                           </c:choose>
-                       }
-
-                   }, {
-                       field: 'classroomTeacher',
-                       title: '班主任',
-                       sortable: false,
-                       formatter:function (value, row, index) {
-                          if(value){
-                                 return value.name;
-                          }else{
-                                var result="";
-                                return result
-                          }
-                       }
-                   }, {
-                       field: 'teacherTotal',
-                       title: '老师人数',
-                       sortable: false
-                   }, {
-                       field: 'studentTotal',
-                       title: '学生人数',
-                       sortable: false
-                   }, {
-                       field: 'courseTotal',
-                       title: '课程总数',
-                       sortable: false
-                   }, {
-                       field: 'homeworkTotal',
-                       title: '作业总数',
-                       sortable: false
-                   }, {
-                       field: 'id',
-                       title: '操作',
-                       sortable: false,
-                       formatter:function (value, row, index) {
-                           var result="";
-                           <shiro:hasPermission name="sys:classes:classes:user">
-                           result+= "&nbsp;&nbsp;<a href='${ctx}/useroffice/userOffice?officeid="+value+"'>人员管理</a>&nbsp;&nbsp;";
-                           </shiro:hasPermission>
-
-                           <shiro:hasPermission name="sys:classes:classes:course">
-                           result+= "&nbsp;&nbsp;<a href='${ctx}/sys/couresoffice/couresOffice?officeid="+value+"'>课程管理</a>&nbsp;&nbsp;";
-                           </shiro:hasPermission>
-
-                           <shiro:hasPermission name="sys:classes:classes:homework">
-                           result+= "&nbsp;&nbsp;<a href='${ctx}/homeworkoffice/homeworkOffice?officeid="+value+"'>作业管理</a>&nbsp;&nbsp;";
-                           </shiro:hasPermission>
-
-                           return result;
-                       }
-                   }
+			,{
+		        field: 'remarks',
+		        title: '备注信息',
+		        sortable: true,
+		        sortName: 'remarks'
+		        ,formatter:function(value, row , index){
+		        	value = jp.unescapeHTML(value);
+				   <c:choose>
+					   <c:when test="${fns:hasPermission('homework:homework:edit')}">
+					      return "<a href='javascript:edit(\""+row.id+"\")'>"+value+"</a>";
+				      </c:when>
+					  <c:when test="${fns:hasPermission('homework:homework:view')}">
+					      return "<a href='javascript:view(\""+row.id+"\")'>"+value+"</a>";
+				      </c:when>
+					  <c:otherwise>
+					      return value;
+				      </c:otherwise>
+				   </c:choose>
+		         }
+		       
+		    }
+			,{
+		        field: 'name',
+		        title: '名称',
+		        sortable: true,
+		        sortName: 'name'
+		       
+		    }
+			,{
+		        field: 'type',
+		        title: '类型',
+		        sortable: true,
+		        sortName: 'type',
+		        formatter:function(value, row , index){
+		        	return jp.getDictLabel(${fns:toJson(fns:getDictList('bae_homework_type'))}, value, "-");
+		        }
+		       
+		    }
+		    ,{
+		        field: 'data1',
+		        title: '材料1',
+		        sortable: true,
+		        sortName: 'data1',
+		        formatter:function(value, row , index){
+		        	var valueArray = value.split("|");
+		        	var labelArray = [];
+		        	for(var i =0 ; i<valueArray.length; i++){
+		        		if(!/\.(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(valueArray[i]))
+		        		{
+		        			labelArray[i] = "<a href=\""+valueArray[i]+"\" url=\""+valueArray[i]+"\" target=\"_blank\">"+decodeURIComponent(valueArray[i].substring(valueArray[i].lastIndexOf("/")+1))+"</a>"
+		        		}else{
+		        			labelArray[i] = '<img   onclick="jp.showPic(\''+valueArray[i]+'\')"'+' height="50px" src="'+valueArray[i]+'">';
+		        		}
+		        	}
+		        	return labelArray.join(" ");
+		        }
+		       
+		    }
+		    ,{
+		        field: 'data2',
+		        title: '材料2',
+		        sortable: true,
+		        sortName: 'data2',
+		        formatter:function(value, row , index){
+		        	var valueArray = value.split("|");
+		        	var labelArray = [];
+		        	for(var i =0 ; i<valueArray.length; i++){
+		        		if(!/\.(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(valueArray[i]))
+		        		{
+		        			labelArray[i] = "<a href=\""+valueArray[i]+"\" url=\""+valueArray[i]+"\" target=\"_blank\">"+decodeURIComponent(valueArray[i].substring(valueArray[i].lastIndexOf("/")+1))+"</a>"
+		        		}else{
+		        			labelArray[i] = '<img   onclick="jp.showPic(\''+valueArray[i]+'\')"'+' height="50px" src="'+valueArray[i]+'">';
+		        		}
+		        	}
+		        	return labelArray.join(" ");
+		        }
+		       
+		    }
+		    ,{
+		        field: 'cover',
+		        title: '封面',
+		        sortable: true,
+		        sortName: 'cover',
+		        formatter:function(value, row , index){
+		        	var valueArray = value.split("|");
+		        	var labelArray = [];
+		        	for(var i =0 ; i<valueArray.length; i++){
+		        		if(!/\.(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(valueArray[i]))
+		        		{
+		        			labelArray[i] = "<a href=\""+valueArray[i]+"\" url=\""+valueArray[i]+"\" target=\"_blank\">"+decodeURIComponent(valueArray[i].substring(valueArray[i].lastIndexOf("/")+1))+"</a>"
+		        		}else{
+		        			labelArray[i] = '<img   onclick="jp.showPic(\''+valueArray[i]+'\')"'+' height="50px" src="'+valueArray[i]+'">';
+		        		}
+		        	}
+		        	return labelArray.join(" ");
+		        }
+		       
+		    }
 		     ]
 		
 		});
@@ -161,13 +190,13 @@ $(document).ready(function() {
 	  if(navigator.userAgent.match(/(iPhone|iPod|Android|ios)/i)){//如果是移动端
 
 		 
-		  $('#classesTable').bootstrapTable("toggleView");
+		  $('#homeworkTable').bootstrapTable("toggleView");
 		}
 	  
-	  $('#classesTable').on('check.bs.table uncheck.bs.table load-success.bs.table ' +
+	  $('#homeworkTable').on('check.bs.table uncheck.bs.table load-success.bs.table ' +
                 'check-all.bs.table uncheck-all.bs.table', function () {
-            $('#remove').prop('disabled', ! $('#classesTable').bootstrapTable('getSelections').length);
-            $('#view,#edit').prop('disabled', $('#classesTable').bootstrapTable('getSelections').length!=1);
+            $('#remove').prop('disabled', ! $('#homeworkTable').bootstrapTable('getSelections').length);
+            $('#view,#edit').prop('disabled', $('#homeworkTable').bootstrapTable('getSelections').length!=1);
         });
 		  
 		$("#btnImport").click(function(){
@@ -179,18 +208,18 @@ $(document).ready(function() {
 			    content: "${ctx}/tag/importExcel" ,
 			    btn: ['下载模板','确定', '关闭'],
 				    btn1: function(index, layero){
-					  jp.downloadFile('${ctx}/sys/classes/classes/import/template');
+					 jp.downloadFile('${ctx}/homework/homework/import/template');
 				  },
 			    btn2: function(index, layero){
 				        var iframeWin = layero.find('iframe')[0]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
-						iframeWin.contentWindow.importExcel('${ctx}/sys/classes/classes/import', function (data) {
+						iframeWin.contentWindow.importExcel('${ctx}/homework/homework/import', function (data) {
 							if(data.success){
 								jp.success(data.msg);
 								refresh();
 							}else{
 								jp.error(data.msg);
 							}
-					   		jp.close(index);
+						   jp.close(index);
 						});//调用保存事件
 						return false;
 				  },
@@ -200,14 +229,14 @@ $(document).ready(function() {
 	    	       }
 			}); 
 		});
-		
+		    
 		
 	 $("#export").click(function(){//导出Excel文件
 	        var searchParam = $("#searchForm").serializeJSON();
 	        searchParam.pageNo = 1;
 	        searchParam.pageSize = -1;
-            var sortName = $('#classesTable').bootstrapTable("getOptions", "none").sortName;
-            var sortOrder = $('#classesTable').bootstrapTable("getOptions", "none").sortOrder;
+            var sortName = $('#homeworkTable').bootstrapTable("getOptions", "none").sortName;
+            var sortOrder = $('#homeworkTable').bootstrapTable("getOptions", "none").sortOrder;
             var values = "";
             for(var key in searchParam){
                 values = values + key + "=" + searchParam[key] + "&";
@@ -216,37 +245,37 @@ $(document).ready(function() {
                 values = values + "orderBy=" + sortName + " "+sortOrder;
             }
 
-			jp.downloadFile('${ctx}/sys/classes/classes/export?'+values);
+			jp.downloadFile('${ctx}/homework/homework/export?'+values);
 	  })
 
 		    
 	  $("#search").click("click", function() {// 绑定查询按扭
-		  $('#classesTable').bootstrapTable('refresh');
+		  $('#homeworkTable').bootstrapTable('refresh');
 		});
 	 
 	 $("#reset").click("click", function() {// 绑定查询按扭
 		  $("#searchForm  input").val("");
 		  $("#searchForm  select").val("");
 		  $("#searchForm  .select-item").html("");
-		  $('#classesTable').bootstrapTable('refresh');
+		  $('#homeworkTable').bootstrapTable('refresh');
 		});
 		
 		
 	});
 		
   function getIdSelections() {
-        return $.map($("#classesTable").bootstrapTable('getSelections'), function (row) {
+        return $.map($("#homeworkTable").bootstrapTable('getSelections'), function (row) {
             return row.id
         });
     }
   
   function deleteAll(){
 
-		jp.confirm('确认要删除该信息记录吗？', function(){
+		jp.confirm('确认要删除该作业信息记录吗？', function(){
 			jp.loading();  	
-			jp.get("${ctx}/sys/classes/classes/deleteAll?ids=" + getIdSelections(), function(data){
+			jp.get("${ctx}/homework/homework/deleteAll?ids=" + getIdSelections(), function(data){
          	  		if(data.success){
-         	  			$('#classesTable').bootstrapTable('refresh');
+         	  			$('#homeworkTable').bootstrapTable('refresh');
          	  			jp.success(data.msg);
          	  		}else{
          	  			jp.error(data.msg);
@@ -255,32 +284,25 @@ $(document).ready(function() {
           	   
 		})
   }
-
-    //刷新列表
   function refresh(){
-  	$('#classesTable').bootstrapTable('refresh');
+  	$('#homeworkTable').bootstrapTable('refresh');
   }
-  
-   function add(){
-	  jp.openSaveDialog('新增信息', "${ctx}/sys/classes/classes/form",'800px', '500px');
-  }
-
-
-  
-   function edit(id){//没有权限时，不显示确定按钮
-       if(id == undefined){
-	      id = getIdSelections();
+  function add(){
+		jp.go("${ctx}/homework/homework/form/add");
 	}
-	jp.openSaveDialog('编辑信息', "${ctx}/sys/classes/classes/form?id=" + id, '800px', '500px');
+
+  function edit(id){
+	  if(id == undefined){
+		  id = getIdSelections();
+	  }
+	  jp.go("${ctx}/homework/homework/form/edit?id=" + id);
+  }
+
+  function view(id) {
+      if(id == undefined){
+          id = getIdSelections();
+      }
+      jp.go("${ctx}/homework/homework/form/view?id=" + id);
   }
   
- function view(id){//没有权限时，不显示确定按钮
-      if(id == undefined){
-             id = getIdSelections();
-      }
-        jp.openViewDialog('查看信息', "${ctx}/sys/classes/classes/form?id=" + id, '800px', '500px');
- }
-
-
-
 </script>

@@ -287,15 +287,15 @@
             });
         },
 
-        /**材料选择框**/
-        openMaterialSelectDialog:function(isMultiSelect, yesFuc){
+        /**作业选择框**/
+        openHomeworkSelectDialog:function(isMultiSelect, yesFuc){
             top.layer.open({
                 type: 2,
                 area: ['900px', '560px'],
-                title:"选择材料",
+                title:"选择作业",
                 auto:true,
                 maxmin: true, //开启最大化最小化按钮
-                content: ctx+"/material/material/openMaterialSelectDialog?isMultiSelect="+isMultiSelect,
+                content: ctx+"/homework/homework/openHomeworkSelectDialog?isMultiSelect="+isMultiSelect,
                 btn: ['确定', '关闭'],
                 yes: function(index, layero){
                     var ids = layero.find("iframe")[0].contentWindow.getIdSelections();
