@@ -14,8 +14,8 @@
 		a.del_flag AS "delFlag",
 		suo.userid AS "classroomTeacher.id",
 		so.name AS "classroomTeacher.name",
-		(select count(*) from sys_user_office suo where  user_type='1' and a.id=suo.officeid) AS "teacherTotal",
-		(select count(*) from sys_user_office suo where  user_type='2' and a.id=suo.officeid) AS "studentTotal"
+		(select count(*) from sys_user_office suo where  user_type='2' and a.id=suo.officeid) AS "teacherTotal",
+		(select count(*) from sys_user_office suo where  user_type='3' and a.id=suo.officeid) AS "studentTotal"
 	</sql>
 	
 	<sql id="classesJoins">
