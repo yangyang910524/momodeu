@@ -262,7 +262,7 @@
             top.layer.open({
                 type: 2,
                 area: ['900px', '560px'],
-                title:"选择用户",
+                title:"选择课程",
                 auto:true,
                 maxmin: true, //开启最大化最小化按钮
                 content: ctx+"/course/courseInfo/?isMultiSelect="+isMultiSelect+"&officeid="+officeid,
@@ -292,7 +292,7 @@
             top.layer.open({
                 type: 2,
                 area: ['900px', '560px'],
-                title:"选择用户",
+                title:"选择材料",
                 auto:true,
                 maxmin: true, //开启最大化最小化按钮
                 content: ctx+"/material/material/openMaterialSelectDialog?isMultiSelect="+isMultiSelect,
