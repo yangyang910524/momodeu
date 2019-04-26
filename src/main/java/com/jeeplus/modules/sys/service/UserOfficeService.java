@@ -3,16 +3,11 @@
  */
 package com.jeeplus.modules.sys.service;
 
-import com.jeeplus.core.persistence.Page;
 import com.jeeplus.core.service.CrudService;
-import com.jeeplus.modules.sys.entity.User;
 import com.jeeplus.modules.sys.entity.UserOffice;
 import com.jeeplus.modules.sys.mapper.UserOfficeMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
-import java.util.List;
 
 /**
  * 用户-班级关联Service
@@ -23,9 +18,4 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class UserOfficeService extends CrudService<UserOfficeMapper, UserOffice> {
 
-    @Resource
-    UserOfficeMapper userOfficeMapper;
-    public List<User> findUser(UserOffice userOffice) {
-        return userOfficeMapper.findUser(userOffice);
-    }
 }

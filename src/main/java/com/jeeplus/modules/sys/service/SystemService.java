@@ -86,6 +86,15 @@ public class SystemService extends BaseService implements InitializingBean {
 		page.setList(userMapper.findList(user));
 		return page;
 	}
+
+    public Page<User> findUserByOffice(Page<User> page, User user) {
+        dataRuleFilter(user);
+        // 设置分页参数
+        user.setPage(page);
+        // 执行分页查询
+        page.setList(userMapper.findUserByOffice(user));
+        return page;
+    }
 	
 	/**
 	 * 无分页查询人员列表

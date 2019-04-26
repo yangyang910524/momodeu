@@ -4,7 +4,6 @@
 <head>
 	<title>用户管理</title>
 	<meta name="decorator" content="ani"/>
-    <link rel="stylesheet" href="//res.layui.com/layui/dist/css/layui.css"  media="all">
 	<script type="text/javascript">
 	function save() {
 		var isValidate = jp.validateForm('#inputForm');//校验表单
@@ -40,7 +39,13 @@
 		
 	});
 
-	
+	function changeRole(value) {
+        if(value=='f89f1a4157b249a2a621c37ab3941cdb'){
+            $("#score").removeAttr("disabled");
+        }else{
+            $("#score").attr("disabled","disabled");
+        }
+    }
 	</script>
 </head>
 <body class="bg-white">
@@ -56,14 +61,14 @@
                   <td class="active"><label class="pull-right"><font color="red">*</font><c:if test="${not empty user.id}">(不可修改)</c:if>角色:</label></td>
                   <td>
                       <c:if test="${not empty user.id}">
-                          <select class="form-control required" name="role.id" >
+                          <select class="form-control required" name="role.id" onchange="changeRole(this.value)">
                               <c:forEach items="${user.roleList}" var="role" varStatus="status">
                                   <option value="${role.id}">${role.name}</option>
                               </c:forEach>--%>
                           </select>
                       </c:if>
                       <c:if test="${empty user.id}">
-                          <select class="form-control required" name="role.id" >
+                          <select class="form-control required" name="role.id" onchange="changeRole(this.value)">
                               <c:forEach items="${allRoles}" var="role" varStatus="status">
                                   <option value="${role.id}">${role.name}</option>
                               </c:forEach>--%>
@@ -83,8 +88,8 @@
                   <td class="active"><label class="pull-right"><font color="red">*</font>登录名:</label></td>
                   <td><input id="oldLoginName" name="oldLoginName" type="hidden" value="${user.loginName}">
                       <form:input path="loginName" htmlEscape="false" maxlength="50" class="form-control required userName" autocomplete="off"/></td>
-                  <td class="active"><label class="pull-right"><font color="red">*</font>分数:</label></td>
-                  <td><form:input path="score" htmlEscape="false"  maxlength="50" class="form-control required digits" /></td>
+                  <td class="active"><label class="pull-right"><font color="red">*</font>(仅学生)分数:</label></td>
+                  <td><form:input path="score" htmlEscape="false"  maxlength="50" class="form-control required digits" autocomplete="off"/></td>
               </tr>
 		      
 		      <tr>
@@ -99,12 +104,12 @@
 		         <td class="active"><label class="pull-right">邮箱:</label></td>
 		         <td><form:input path="email" htmlEscape="false" maxlength="100" class="form-control email" autocomplete="off"/></td>
 		         <td class="active"><label class="pull-right">电话:</label></td>
-		         <td><form:input path="phone" htmlEscape="false" maxlength="100" class="form-control" /></td>
+		         <td><form:input path="phone" htmlEscape="false" maxlength="100" class="form-control" autocomplete="off"/></td>
 		      </tr>
 		      
 		      <tr>
 		         <td class="active"><label class="pull-right">手机:</label></td>
-		         <td><form:input path="mobile" htmlEscape="false" maxlength="100" class="form-control"/></td>
+		         <td><form:input path="mobile" htmlEscape="false" maxlength="100" class="form-control" autocomplete="off"/></td>
 		         <td class="active"><label class="pull-right">是否允许登录:</label></td>
 		         <td><form:select path="loginFlag"  class="form-control">
 					<form:options items="${fns:getDictList('yes_no')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
@@ -113,7 +118,7 @@
 		      
 		      <tr>
 		         <td class="active"><label class="pull-right">备注:</label></td>
-		         <td colspan="3"><form:textarea path="remarks" htmlEscape="false" rows="3" maxlength="200" class="form-control"/></td>
+		         <td colspan="3"><form:textarea path="remarks" htmlEscape="false" rows="3" maxlength="200" class="form-control" autocomplete="off"/></td>
 		      </tr>
 		      </tbody>
 		      </table>

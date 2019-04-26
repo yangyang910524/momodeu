@@ -11,7 +11,6 @@ import com.jeeplus.common.utils.excel.ExportExcel;
 import com.jeeplus.common.utils.excel.ImportExcel;
 import com.jeeplus.core.persistence.Page;
 import com.jeeplus.core.web.BaseController;
-import com.jeeplus.modules.sys.entity.User;
 import com.jeeplus.modules.sys.entity.UserOffice;
 import com.jeeplus.modules.sys.service.SystemService;
 import com.jeeplus.modules.sys.service.UserOfficeService;
@@ -85,14 +84,6 @@ public class UserOfficeController extends BaseController {
 	@RequiresPermissions(value={"useroffice:userOffice:view","useroffice:userOffice:add","useroffice:userOffice:edit"},logical=Logical.OR)
 	@RequestMapping(value = "form")
 	public String form(UserOffice userOffice, Model model) {
-            User user=new User();
-        if("1".equals(userOffice.getUserType())||"2".equals(userOffice.getUserType())){
-            user.setUserType("2");
-        }else{
-            user.setUserType("3");
-        }
-        List<User> list = userOfficeService.findUser(user);
-        model.addAttribute("list", list);
 		model.addAttribute("userOffice", userOffice);
 		return "modules/sys/useroffice/userOfficeForm";
 	}

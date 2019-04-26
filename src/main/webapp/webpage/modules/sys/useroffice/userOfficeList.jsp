@@ -49,13 +49,13 @@
 			<!-- 工具栏 -->
 			<div id="toolbar">
 				<shiro:hasPermission name="useroffice:userOffice:add">
-					<button id="add" class="btn btn-primary" onclick="add('1','添加班主任')">
+					<button id="add" class="btn btn-primary" onclick="add('1')">
 						<i class="glyphicon glyphicon-plus"></i>添加班主任
 					</button>
-					<button id="add" class="btn btn-primary" onclick="add('2','添加老师')">
+					<button id="add" class="btn btn-primary" onclick="add('2')">
 						<i class="glyphicon glyphicon-plus"></i>添加老师
 					</button>
-					<button id="add" class="btn btn-primary" onclick="add('3','添加学生')">
+					<button id="add" class="btn btn-primary" onclick="add('3')">
 						<i class="glyphicon glyphicon-plus"></i>添加学生
 					</button>
 				</shiro:hasPermission>

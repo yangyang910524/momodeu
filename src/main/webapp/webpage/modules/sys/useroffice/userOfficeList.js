@@ -237,10 +237,30 @@ function refresh(){
     $('#userOfficeTable').bootstrapTable('refresh');
 }
 
-function add(userType,title){
-    jp.openSaveDialog(title, "${ctx}/useroffice/userOffice/form?userType="+userType+"&officeid="+'${userOffice.officeid}','800px', '500px');
+function add(userType){
+    console.log(userType);
+    if(userType=='1'){
+        jp.openUserSelectDialogByOffice(false, function (ids, names) {
+            console.log("ids:"+ids);
+            console.log("names:"+names);
+        },'2','${userOffice.officeid}');
+    }else if(userType=='2'){
+        jp.openUserSelectDialogByOffice(true, function (ids, names) {
+            console.log("ids:"+ids);
+            console.log("names:"+names);
+        },'2','${userOffice.officeid}');
+    }else if(userType=='3'){
+        jp.openUserSelectDialogByOffice(true, function (ids, names) {
+            console.log("ids:"+ids);
+            console.log("names:"+names);
+        },'3','${userOffice.officeid}');
+    }
+
 }
 
+function getResult(data) {
+    console.log(data);
+}
 
 
 function edit(id){//没有权限时，不显示确定按钮

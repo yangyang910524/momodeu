@@ -227,6 +227,36 @@
             });
         },
 
+        /**用户选择框 通过用户类型、班级**/
+        openUserSelectDialogByOffice:function(isMultiSelect, yesFuc,userType,officeid){
+            top.layer.open({
+                type: 2,
+                area: ['900px', '560px'],
+                title:"选择用户",
+                auto:true,
+                maxmin: true, //开启最大化最小化按钮
+                content: ctx+"/sys/user/userSelectByOffice?isMultiSelect="+isMultiSelect+"&userType="+userType+"&officeid="+officeid,
+                btn: ['确定', '关闭'],
+                yes: function(index, layero){
+                    var ids = layero.find("iframe")[0].contentWindow.getIdSelections();
+                    var names = layero.find("iframe")[0].contentWindow.getNameSelections();
+                    var loginNames = layero.find("iframe")[0].contentWindow.getLoginNameSelections();
+                    if(ids.length ==0){
+                        jp.warning("请选择至少一个用户!");
+                        return;
+                    }
+                    // 执行保存
+                    yesFuc(ids.join(","), names.join(","), loginNames.join(","));
+
+                    top.layer.close(index);
+                },
+                cancel: function(index){
+                    //取消默认为空，如需要请自行扩展。
+                    top.layer.close(index);
+                }
+            });
+        },
+
         /**角色选择框**/
         openRoleSelectDialog:function(isMultiSelect, yesFuc){
             var url = ctx + "/sys/role/data";

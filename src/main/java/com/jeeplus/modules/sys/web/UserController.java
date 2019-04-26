@@ -83,6 +83,14 @@ public class UserController extends BaseController {
 		return "modules/common/userSelect";
 	}
 
+    @RequestMapping(value = "userSelectByOffice")
+    public String userSelectByOffice(boolean isMultiSelect, Model model,String userType,String officeid) {
+        model.addAttribute("isMultiSelect", isMultiSelect);
+        model.addAttribute("userType", userType);
+        model.addAttribute("officeid", officeid);
+        return "modules/common/userSelectByOffice";
+    }
+
 	@RequiresPermissions("sys:user:index")
 	@ResponseBody
 	@RequestMapping(value = {"list", ""})
@@ -91,6 +99,12 @@ public class UserController extends BaseController {
 		return getBootstrapData(page);
 	}
 
+    @ResponseBody
+    @RequestMapping(value = "userList")
+    public Map<String, Object> userList(User user, HttpServletRequest request, HttpServletResponse response, Model model) {
+        Page<User> page = systemService.findUserByOffice(new Page<User>(request, response), user);
+        return getBootstrapData(page);
+    }
 	
 	@RequiresPermissions(value={"sys:user:view","sys:user:add","sys:user:edit"},logical=Logical.OR)
 	@RequestMapping(value = "form")
@@ -110,42 +124,42 @@ public class UserController extends BaseController {
 	@ResponseBody
 	@RequestMapping(value = "save")
 	public AjaxJson save(User user, HttpServletRequest request, Model model) {
-		AjaxJson j = new AjaxJson();
+        AjaxJson j = new AjaxJson();
         if("1".equals(user.getId())){
             j.setSuccess(false);
             j.setMsg("超级管理员不能修改!");
             return j;
         }
-		if(Global.isDemoMode()){
-			j.setSuccess(false);
-			j.setMsg("演示模式，不允许操作!");
-			return j;
-		}
-		// 修正引用赋值问题，不知道为何，Company和Office引用的一个实例地址，修改了一个，另外一个跟着修改。
-		user.setCompany(new Office(request.getParameter("company.id")));
-		user.setOffice(new Office(request.getParameter("office.id")));
-		// 如果新密码为空，则不更换密码
-		if (StringUtils.isNotBlank(user.getNewPassword())) {
-			user.setPassword(SystemService.entryptPassword(user.getNewPassword()));
-		}
-		/**
-		 * 后台hibernate-validation插件校验
-		 */
-		String errMsg = beanValidator(user);
-		if (StringUtils.isNotBlank(errMsg)){
-			j.setSuccess(false);
-			j.setMsg(errMsg);
-			return j;
-		}
-		if (!"true".equals(checkLoginName(user.getOldLoginName(), user.getLoginName()))){
-			j.setSuccess(false);
-			j.setMsg("保存用户'" + user.getLoginName() + "'失败，登录名已存在!");
-			return j;
-		}
+        if(Global.isDemoMode()){
+            j.setSuccess(false);
+            j.setMsg("演示模式，不允许操作!");
+            return j;
+        }
+        // 修正引用赋值问题，不知道为何，Company和Office引用的一个实例地址，修改了一个，另外一个跟着修改。
+        user.setCompany(new Office(request.getParameter("company.id")));
+        user.setOffice(new Office(request.getParameter("office.id")));
+        // 如果新密码为空，则不更换密码
+        if (StringUtils.isNotBlank(user.getNewPassword())) {
+            user.setPassword(SystemService.entryptPassword(user.getNewPassword()));
+        }
+        /**
+         * 后台hibernate-validation插件校验
+         */
+        String errMsg = beanValidator(user);
+        if (StringUtils.isNotBlank(errMsg)){
+            j.setSuccess(false);
+            j.setMsg(errMsg);
+            return j;
+        }
+        if (!"true".equals(checkLoginName(user.getOldLoginName(), user.getLoginName()))){
+            j.setSuccess(false);
+            j.setMsg("保存用户'" + user.getLoginName() + "'失败，登录名已存在!");
+            return j;
+        }
 
-		// 角色数据有效性验证，过滤不在授权内的角色
-		List<Role> roleList = Lists.newArrayList();
-		switch (user.getRole().getId()){
+        // 角色数据有效性验证，过滤不在授权内的角色
+        List<Role> roleList = Lists.newArrayList();
+        switch (user.getRole().getId()){
             case "1c54e003c1fc4dcd9b087ef8d48abac3":
                 user.setUserType("1");
                 break;
@@ -157,23 +171,23 @@ public class UserController extends BaseController {
                 break;
         }
         roleList.add(user.getRole());
-		user.setRoleList(roleList);
-		//生成用户二维码，使用登录名
-		String realPath = Global.getAttachmentDir()+ "qrcode/";
-		FileUtils.createDirectory(realPath);
-		String name= user.getId()+".png"; //encoderImgId此处二维码的图片名
-		String filePath = realPath + name;  //存放路径
-		TwoDimensionCode.encoderQRCode(user.getLoginName(), filePath, "png");//执行生成二维码
-		user.setQrCode(Global.getAttachmentUrl()  + "qrcode/"+name);
-		// 保存用户信息
-		systemService.saveUser(user);
-		// 清除当前用户缓存
-		if (user.getLoginName().equals(UserUtils.getUser().getLoginName())){
-			UserUtils.clearCache();
-			//UserUtils.getCacheMap().clear();
-		}
-		j.setSuccess(true);
-		j.setMsg("保存用户'" + user.getLoginName() + "'成功!");
+        user.setRoleList(roleList);
+        //生成用户二维码，使用登录名
+        String realPath = Global.getAttachmentDir()+ "qrcode/";
+        FileUtils.createDirectory(realPath);
+        String name= user.getId()+".png"; //encoderImgId此处二维码的图片名
+        String filePath = realPath + name;  //存放路径
+        TwoDimensionCode.encoderQRCode(user.getLoginName(), filePath, "png");//执行生成二维码
+        user.setQrCode(Global.getAttachmentUrl()  + "qrcode/"+name);
+        // 保存用户信息
+        systemService.saveUser(user);
+        // 清除当前用户缓存
+        if (user.getLoginName().equals(UserUtils.getUser().getLoginName())){
+            UserUtils.clearCache();
+            //UserUtils.getCacheMap().clear();
+        }
+        j.setSuccess(true);
+        j.setMsg("保存用户'" + user.getLoginName() + "'成功!");
 		return j;
 	}
 	

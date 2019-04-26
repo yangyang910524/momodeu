@@ -113,27 +113,5 @@
 	</select>
 
 
-	<select id="findUser" resultType="User" >
-		SELECT
-		su.id
-		,su.name
-		,su.user_type as userType
-		,su.photo as photo
-		,su.phone as phone
-		FROM sys_user su
-		<where>
-			<if test="userType =='1'.toString() or userType =='2'.toString()">
-				and not exists (
-				select 1 from sys_user_office suo where suo.userid=su.id and suo.officeid=#{officeid}
-				)
-				and user_type='2'
-			</if>
-			<if test="userType =='3'.toString()">
-				and not exists (
-				select 1 from sys_user_office suo where suo.userid=su.id
-				)
-				and user_type='3'
-			</if>
-		</where>
-	</select>
+
 </mapper>

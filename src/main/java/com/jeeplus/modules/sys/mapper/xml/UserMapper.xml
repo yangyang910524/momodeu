@@ -436,5 +436,25 @@
 					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
 		</if>
 	</select>
-	
+    <select id="findUserByOffice" resultType="com.jeeplus.modules.sys.entity.User">
+        SELECT
+          <include refid="userColumns"/>
+        FROM sys_user a
+        <include refid="userJoins"/>
+        <where>
+            <if test="userType =='2'.toString()">
+                and not exists (
+                  select 1 from sys_user_office suo where suo.userid=a.id and suo.officeid=#{office.id}
+                )
+                and a.user_type='2'
+            </if>
+            <if test="userType =='3'.toString()">
+                and not exists (
+                  select 1 from sys_user_office suo where suo.userid=a.id
+                )
+                and a.user_type='3'
+            </if>
+        </where>
+    </select>
+
 </mapper>
