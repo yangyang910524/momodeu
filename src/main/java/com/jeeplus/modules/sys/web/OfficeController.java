@@ -95,11 +95,6 @@ public class OfficeController extends BaseController {
 	@RequestMapping(value = "save")
 	public AjaxJson save(Office office, Model model) {
         AjaxJson j = new AjaxJson();
-	    if("0749d5b41e5847959cdc944da591efea".equals(office.getId())){
-            j.setSuccess(false);
-            j.setMsg("管理处不能修改！");
-            return j;
-        }
         office.setParent(new Office());
 		if(Global.isDemoMode()){
 			j.setSuccess(false);
@@ -142,11 +137,6 @@ public class OfficeController extends BaseController {
 	@RequestMapping(value = "delete")
 	public AjaxJson delete(Office office) {
 		AjaxJson j = new AjaxJson();
-        if("0749d5b41e5847959cdc944da591efea".equals(office.getId())){
-            j.setSuccess(false);
-            j.setMsg("管理处不能删除！");
-            return j;
-        }
 		if(Global.isDemoMode()){
 			j.setSuccess(false);
 			j.setMsg("演示模式，不允许操作！");

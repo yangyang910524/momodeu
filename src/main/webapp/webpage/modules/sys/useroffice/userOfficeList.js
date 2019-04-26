@@ -37,7 +37,7 @@
             //可供选择的每页的行数（*）
             pageList: [10, 25, 50, 100],
             //这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据
-            url: "${ctx}/useroffice/userOffice/data",
+            url: "${ctx}/useroffice/userOffice/data?officeid=${userOffice.officeid}",
             //默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
             //queryParamsType:'',
             ////查询参数,每次调用是会带上这个参数，可自定义
@@ -85,48 +85,26 @@
 
             }
                 ,{
-                    field: 'officeid',
-                    title: '班级id',
+                    field: 'officeName',
+                    title: '班级名称',
                     sortable: true,
-                    sortName: 'officeid'
-                    ,formatter:function(value, row , index){
-                        value = jp.unescapeHTML(value);
-                        <c:choose>
-                        <c:when test="${fns:hasPermission('useroffice:userOffice:edit')}">
-                        return "<a href='javascript:edit(\""+row.id+"\")'>"+value+"</a>";
-                        </c:when>
-                        <c:when test="${fns:hasPermission('useroffice:userOffice:view')}">
-                        return "<a href='javascript:view(\""+row.id+"\")'>"+value+"</a>";
-                        </c:when>
-                        <c:otherwise>
-                        return value;
-                        </c:otherwise>
-                        </c:choose>
-                    }
+                    sortName: 'userid'
 
-                }
-                ,{
-                    field: 'userid',
-                    title: '用户id',
+                } ,{
+                    field: 'userName',
+                    title: '用户名称',
                     sortable: true,
                     sortName: 'userid'
 
                 }
                 ,{
                     field: 'userType',
-                    title: '用户类型详,见bas_user_type',
+                    title: '用户类型',
                     sortable: true,
                     sortName: 'userType',
                     formatter:function(value, row , index){
                         return jp.getDictLabel(${fns:toJson(fns:getDictList('bas_user_type'))}, value, "-");
                     }
-
-                }
-                ,{
-                    field: 'id',
-                    title: '主键',
-                    sortable: true,
-                    sortName: 'id'
 
                 }
             ]
@@ -238,21 +216,38 @@ function refresh(){
 }
 
 function add(userType){
-    console.log(userType);
     if(userType=='1'){
         jp.openUserSelectDialogByOffice(false, function (ids, names) {
-            console.log("ids:"+ids);
-            console.log("names:"+names);
+            jp.get("${ctx}/useroffice/userOffice/addUser?ids=" + ids+"&officeid=${userOffice.officeid}&userType="+userType, function(data){
+                if(data.success){
+                    $('#userOfficeTable').bootstrapTable('refresh');
+                    jp.success(data.msg);
+                }else{
+                    jp.error(data.msg);
+                }
+            })
         },'2','${userOffice.officeid}');
     }else if(userType=='2'){
         jp.openUserSelectDialogByOffice(true, function (ids, names) {
-            console.log("ids:"+ids);
-            console.log("names:"+names);
+            jp.get("${ctx}/useroffice/userOffice/addUser?ids=" + ids+"&officeid=${userOffice.officeid}&userType="+userType, function(data){
+                if(data.success){
+                    $('#userOfficeTable').bootstrapTable('refresh');
+                    jp.success(data.msg);
+                }else{
+                    jp.error(data.msg);
+                }
+            })
         },'2','${userOffice.officeid}');
     }else if(userType=='3'){
         jp.openUserSelectDialogByOffice(true, function (ids, names) {
-            console.log("ids:"+ids);
-            console.log("names:"+names);
+            jp.get("${ctx}/useroffice/userOffice/addUser?ids=" + ids+"&officeid=${userOffice.officeid}&userType="+userType, function(data){
+                if(data.success){
+                    $('#userOfficeTable').bootstrapTable('refresh');
+                    jp.success(data.msg);
+                }else{
+                    jp.error(data.msg);
+                }
+            })
         },'3','${userOffice.officeid}');
     }
 
