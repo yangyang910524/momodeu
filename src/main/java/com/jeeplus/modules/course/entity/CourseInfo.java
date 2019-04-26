@@ -9,6 +9,7 @@ import java.util.List;
 import com.google.common.collect.Lists;
 
 import com.jeeplus.core.persistence.TreeEntity;
+import com.jeeplus.modules.sys.entity.Office;
 
 /**
  * 课程管理Entity
@@ -20,6 +21,7 @@ public class CourseInfo extends TreeEntity<CourseInfo> {
 	private static final long serialVersionUID = 1L;
 	
 	private List<CourseData> courseDataList = Lists.newArrayList();		// 子表列表
+	private Office office;
 	
 	public CourseInfo() {
 		super();
@@ -32,7 +34,7 @@ public class CourseInfo extends TreeEntity<CourseInfo> {
 	public  CourseInfo getParent() {
 			return parent;
 	}
-	
+
 	@Override
 	public void setParent(CourseInfo parent) {
 		this.parent = parent;
@@ -48,5 +50,13 @@ public class CourseInfo extends TreeEntity<CourseInfo> {
 	}
 	public String getParentId() {
 		return parent != null && parent.getId() != null ? parent.getId() : "0";
+	}
+
+	public Office getOffice() {
+		return office;
+	}
+
+	public void setOffice(Office office) {
+		this.office = office;
 	}
 }

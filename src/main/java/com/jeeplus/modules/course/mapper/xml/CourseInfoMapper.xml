@@ -178,6 +178,10 @@
             a.del_flag = #{DEL_FLAG_NORMAL}
             ${dataScope}
             AND a.parent_id = '0'
+			AND not exists
+			(
+				select 1 from sys_coures_office sco where sco.couresid=a.id and sco.officeid=#{office.id}
+			)
             <if test="name != null and name != ''">
                 AND a.name LIKE
                 <if test="dbName == 'oracle'">'%'||#{name}||'%'</if>

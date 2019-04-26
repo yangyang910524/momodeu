@@ -265,7 +265,7 @@
                 title:"选择课程",
                 auto:true,
                 maxmin: true, //开启最大化最小化按钮
-                content: ctx+"/course/courseInfo/?isMultiSelect="+isMultiSelect+"&officeid="+officeid,
+                content: ctx+"/course/courseInfo/openCourseSelectDialog?isMultiSelect="+isMultiSelect+"&officeid="+officeid,
                 btn: ['确定', '关闭'],
                 yes: function(index, layero){
                     var ids = layero.find("iframe")[0].contentWindow.getIdSelections();

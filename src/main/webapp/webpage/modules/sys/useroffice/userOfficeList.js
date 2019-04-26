@@ -98,7 +98,7 @@
                 ,{
                     field: 'userType',
                     title: '用户类型',
-                    sortable: false
+                    sortable: false,
                     formatter:function(value, row , index){
                         return jp.getDictLabel(${fns:toJson(fns:getDictList('bas_user_type'))}, value, "-");
                     }

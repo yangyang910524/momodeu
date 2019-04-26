@@ -41,6 +41,11 @@
 					<i class="glyphicon glyphicon-plus"></i> 添加课程
 				</button>
 			</shiro:hasPermission>
+			<shiro:hasPermission name="sys:couresoffice:couresOffice:del">
+				<button id="remove" class="btn btn-danger" disabled onclick="deleteAll()">
+					<i class="glyphicon glyphicon-remove"></i> 删除
+				</button>
+			</shiro:hasPermission>
 		    </div>
 		
 	<!-- 表格 -->

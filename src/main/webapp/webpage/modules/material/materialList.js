@@ -152,11 +152,24 @@ $(document).ready(function() {
 		        }
 		       
 		    }
-			,{
+		    ,{
 		        field: 'data2',
 		        title: '材料2',
 		        sortable: true,
-		        sortName: 'data2'
+		        sortName: 'data2',
+		        formatter:function(value, row , index){
+		        	var valueArray = value.split("|");
+		        	var labelArray = [];
+		        	for(var i =0 ; i<valueArray.length; i++){
+		        		if(!/\.(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(valueArray[i]))
+		        		{
+		        			labelArray[i] = "<a href=\""+valueArray[i]+"\" url=\""+valueArray[i]+"\" target=\"_blank\">"+decodeURIComponent(valueArray[i].substring(valueArray[i].lastIndexOf("/")+1))+"</a>"
+		        		}else{
+		        			labelArray[i] = '<img   onclick="jp.showPic(\''+valueArray[i]+'\')"'+' height="50px" src="'+valueArray[i]+'">';
+		        		}
+		        	}
+		        	return labelArray.join(" ");
+		        }
 		       
 		    }
 		     ]

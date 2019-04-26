@@ -72,7 +72,7 @@
 				<div class="form-group">
 					<label class="col-sm-2 control-label">材料2：</label>
 					<div class="col-sm-10">
-						<form:input path="data2" htmlEscape="false"    class="form-control "/>
+						<sys:fileUpload path="data2"  value="${material.data2}" type="file" uploadPath="/material/material"/>
 					</div>
 				</div>
 		<c:if test="${mode == 'add' || mode=='edit'}">

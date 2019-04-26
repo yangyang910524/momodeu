@@ -7,8 +7,6 @@ import com.jeeplus.core.persistence.BaseMapper;
 import com.jeeplus.core.persistence.annotation.MyBatisMapper;
 import com.jeeplus.modules.material.entity.Material;
 
-import java.util.List;
-
 /**
  * 材料管理MAPPER接口
  * @author yangyang
@@ -16,4 +14,5 @@ import java.util.List;
  */
 @MyBatisMapper
 public interface MaterialMapper extends BaseMapper<Material> {
+	
 }
