@@ -420,15 +420,7 @@ public class SystemService extends BaseService implements InitializingBean {
 	/**
 	 * 获取产品信息
 	 */
-	public static boolean printKeyLoadMessage(){
-		StringBuilder sb = new StringBuilder();
-		sb.append("...．．∵ ∴★．∴∵∴ ╭ ╯╭ ╯╭ ╯╭ ╯∴∵∴∵∴ \r\n ");
-		sb.append("．☆．∵∴∵．∴∵∴▍▍ ▍▍ ▍▍ ▍▍☆ ★∵∴ \r\n ");
-		sb.append("▍．∴∵∴∵．∴▅███████████☆ ★∵ \r\n ");
-		sb.append("◥█▅▅▅▅███▅█▅█▅█▅█▅█▅███◤          欢迎使用 "+Global.getConfig("productName")+Global.getConfig("version")+"\r\n ");
-		sb.append("． ◥███████████████████◤                    http://www.jeeplus.org\r\n ");
-		sb.append(".．.．◥████████████████■◤\r\n ");
-		System.out.println(sb.toString());
+	public static boolean printKeyLoadMessage(){;
 		return true;
 	}
 	

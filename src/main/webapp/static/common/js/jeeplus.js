@@ -204,7 +204,7 @@
                 area: ['900px', '560px'],
                 title:"选择用户",
                 auto:true,
-                maxmin: true, //开启最大化最小化按钮
+                maxmin: true, //开启最大化最小化按钮userSelect
                 content: ctx+"/sys/user/userSelect?isMultiSelect="+isMultiSelect,
                 btn: ['确定', '关闭'],
                 yes: function(index, layero){

@@ -13,7 +13,7 @@
 
 	<sql id="userOfficeJoins">
 		left join sys_office so on a.officeid=so.id
-		left join sys_user su on a.user=su.id
+		left join sys_user su on a.userid=su.id
 	</sql>
 
 
@@ -33,9 +33,9 @@
 		<where>
 
 			${dataScope}
-			<if test="officeid != null and officeid != ''">
-				AND a.officeid = #{officeid}
-			</if>
+            <if test="officeid != null and officeid != ''">
+                AND a.officeid = #{officeid}
+            </if>
 			<if test="userid != null and userid != ''">
 				AND a.userid = #{userid}
 			</if>
@@ -48,6 +48,7 @@
 				ORDER BY ${page.orderBy}
 			</when>
 			<otherwise>
+                order by a.user_type,a.id
 			</otherwise>
 		</choose>
 	</select>

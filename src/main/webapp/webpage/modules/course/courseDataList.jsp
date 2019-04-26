@@ -2,28 +2,54 @@
 <%@ include file="/webpage/include/taglib.jsp"%>
 <html>
 <head>
-	<title>学生管理</title>
+	<title>课程内容管理</title>
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<meta name="decorator" content="ani"/>
 	<%@ include file="/webpage/include/bootstraptable.jsp"%>
 	<%@include file="/webpage/include/treeview.jsp" %>
-	<%@include file="studentList.js" %>
+	<%@include file="courseInfoTreeList.js" %>
+	<%@include file="courseDataList.js" %>
 </head>
 <body>
 	<div class="wrapper wrapper-content">
 	<div class="panel panel-primary">
 	<div class="panel-heading">
-		<h3 class="panel-title">学生列表</h3>
+		<h3 class="panel-title">课程内容列表</h3>
 	</div>
 	<div class="panel-body">
+		<div class="row">
+				<div class="col-sm-4 col-md-3" >
+					<div class="form-group">
+						<div class="row">
+							<div class="col-sm-10" >
+								<div class="input-search">
+									<button type="submit" class="input-search-btn">
+										<i class="fa fa-search" aria-hidden="true"></i></button>
+									<input   id="search_q" type="text" class="form-control input-sm" name="" placeholder="查找...">
+
+								</div>
+							</div>
+							<div class="col-sm-2" >
+								<button  class="btn btn-default btn-sm"  onclick="jp.openSaveDialog('新建课程', '${ctx}/course/courseInfo/form','800px', '500px')">
+									<i class="fa fa-plus"></i>
+								</button>
+							</div>
+						</div>
+					</div>
+					<div id="courseInfojsTree" style="overflow-x:auto; border:0px;"></div>
+				</div>
+				<div  class="col-sm-8 col-md-9 animated fadeInRight">
 	
 	<!-- 搜索 -->
 	<div id="search-collapse" class="collapse">
 		<div class="accordion-inner">
-			<form:form id="searchForm" modelAttribute="student" class="form form-horizontal well clearfix">
+			<form:form id="searchForm" modelAttribute="courseData" class="form form-horizontal well clearfix">
 			 <div class="col-xs-12 col-sm-6 col-md-4">
-				<label class="label-item single-overflow pull-left" title="姓名：">姓名：</label>
-				<form:input path="name" htmlEscape="false" maxlength="64"  class=" form-control"/>
+			</div>
+			 <div class="col-xs-12 col-sm-6 col-md-4">
+				<label class="label-item single-overflow pull-left" title="课程：">课程：</label>
+				<sys:treeselect id="courseInfo" name="courseInfo.id" value="${courseData.courseInfo.id}" labelName="courseInfo.name" labelValue="${courseData.courseInfo.name}"
+					title="课程" url="/course/courseInfo/treeData" extId="${courseData.id}" cssClass="form-control " allowClear="true"/>
 			</div>
 		 <div class="col-xs-12 col-sm-6 col-md-4">
 			<div style="margin-top:26px">
@@ -37,30 +63,30 @@
 	
 	<!-- 工具栏 -->
 	<div id="toolbar">
-			<shiro:hasPermission name="test:manytomany:student:add">
+			<shiro:hasPermission name="course:courseData:add">
 				<button id="add" class="btn btn-primary" onclick="add()">
 					<i class="glyphicon glyphicon-plus"></i> 新建
 				</button>
 			</shiro:hasPermission>
-			<shiro:hasPermission name="test:manytomany:student:edit">
+			<shiro:hasPermission name="course:courseData:edit">
 			    <button id="edit" class="btn btn-success" disabled onclick="edit()">
 	            	<i class="glyphicon glyphicon-edit"></i> 修改
 	        	</button>
 			</shiro:hasPermission>
-			<shiro:hasPermission name="test:manytomany:student:del">
+			<shiro:hasPermission name="course:courseData:del">
 				<button id="remove" class="btn btn-danger" disabled onclick="deleteAll()">
 	            	<i class="glyphicon glyphicon-remove"></i> 删除
 	        	</button>
 			</shiro:hasPermission>
-			<shiro:hasPermission name="test:manytomany:student:import">
+			<shiro:hasPermission name="course:courseData:import">
 				<button id="btnImport" class="btn btn-info"><i class="fa fa-folder-open-o"></i> 导入</button>
 			</shiro:hasPermission>
-			<shiro:hasPermission name="test:manytomany:student:export">
+			<shiro:hasPermission name="course:courseData:export">
 	        		<button id="export" class="btn btn-warning">
 					<i class="fa fa-file-excel-o"></i> 导出
 				</button>
 			 </shiro:hasPermission>
-	                 <shiro:hasPermission name="test:manytomany:student:view">
+	                 <shiro:hasPermission name="course:courseData:view">
 				<button id="view" class="btn btn-default" disabled onclick="view()">
 					<i class="fa fa-search-plus"></i> 查看
 				</button>
@@ -68,17 +94,17 @@
 		    </div>
 		
 	<!-- 表格 -->
-	<table id="studentTable"   data-toolbar="#toolbar"></table>
+	<table id="courseDataTable"   data-toolbar="#toolbar"></table>
 
     <!-- context menu -->
     <ul id="context-menu" class="dropdown-menu">
-    	<shiro:hasPermission name="test:manytomany:student:view">
+    	<shiro:hasPermission name="course:courseData:view">
         <li data-item="view"><a>查看</a></li>
         </shiro:hasPermission>
-    	<shiro:hasPermission name="test:manytomany:student:edit">
+    	<shiro:hasPermission name="course:courseData:edit">
         <li data-item="edit"><a>编辑</a></li>
         </shiro:hasPermission>
-        <shiro:hasPermission name="test:manytomany:student:del">
+        <shiro:hasPermission name="course:courseData:del">
         <li data-item="delete"><a>删除</a></li>
         </shiro:hasPermission>
         <li data-item="action1"><a>取消</a></li>
@@ -86,5 +112,7 @@
 	</div>
 	</div>
 	</div>
+	</div>
+</div>
 </body>
 </html>

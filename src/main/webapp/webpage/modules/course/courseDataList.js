@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <script>
 $(document).ready(function() {
-	$('#courseTable').bootstrapTable({
+	$('#courseDataTable').bootstrapTable({
 		 
 		  //请求方法
                method: 'post',
@@ -9,7 +9,7 @@ $(document).ready(function() {
                dataType: "json",
                contentType: "application/x-www-form-urlencoded",
                //显示检索按钮
-	           showSearch: true,
+	       showSearch: true,
                //显示刷新按钮
                showRefresh: true,
                //显示切换手机试图按钮
@@ -37,7 +37,7 @@ $(document).ready(function() {
                //可供选择的每页的行数（*）    
                pageList: [10, 25, 50, 100],
                //这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据  
-               url: "${ctx}/test/manytomany/course/data",
+               url: "${ctx}/course/courseData/data",
                //默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
                //queryParamsType:'',   
                ////查询参数,每次调用是会带上这个参数，可自定义                         
@@ -59,11 +59,11 @@ $(document).ready(function() {
                    }else if($el.data("item") == "view"){
                        view(row.id);
                    } else if($el.data("item") == "delete"){
-                        jp.confirm('确认要删除该课程记录吗？', function(){
+                        jp.confirm('确认要删除该课程内容记录吗？', function(){
                        	jp.loading();
-                       	jp.get("${ctx}/test/manytomany/course/delete?id="+row.id, function(data){
+                       	jp.get("${ctx}/course/courseData/delete?id="+row.id, function(data){
                    	  		if(data.success){
-                   	  			$('#courseTable').bootstrapTable('refresh');
+                   	  			$('#courseDataTable').bootstrapTable('refresh');
                    	  			jp.success(data.msg);
                    	  		}else{
                    	  			jp.error(data.msg);
@@ -85,17 +85,17 @@ $(document).ready(function() {
 		       
 		    }
 			,{
-		        field: 'name',
-		        title: '课程名',
+		        field: 'remarks',
+		        title: '备注信息',
 		        sortable: true,
-		        sortName: 'name'
+		        sortName: 'remarks'
 		        ,formatter:function(value, row , index){
 		        	value = jp.unescapeHTML(value);
 				   <c:choose>
-					   <c:when test="${fns:hasPermission('test:manytomany:course:edit')}">
+					   <c:when test="${fns:hasPermission('course:courseData:edit')}">
 					      return "<a href='javascript:edit(\""+row.id+"\")'>"+value+"</a>";
 				      </c:when>
-					  <c:when test="${fns:hasPermission('test:manytomany:course:view')}">
+					  <c:when test="${fns:hasPermission('course:courseData:view')}">
 					      return "<a href='javascript:view(\""+row.id+"\")'>"+value+"</a>";
 				      </c:when>
 					  <c:otherwise>
@@ -105,11 +105,31 @@ $(document).ready(function() {
 		         }
 		       
 		    }
-			,{
-		        field: 'remarks',
-		        title: '备注信息',
+		    ,{
+		        field: 'data',
+		        title: '资料',
 		        sortable: true,
-		        sortName: 'remarks'
+		        sortName: 'data',
+		        formatter:function(value, row , index){
+		        	var valueArray = value.split("|");
+		        	var labelArray = [];
+		        	for(var i =0 ; i<valueArray.length; i++){
+		        		if(!/\.(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(valueArray[i]))
+		        		{
+		        			labelArray[i] = "<a href=\""+valueArray[i]+"\" url=\""+valueArray[i]+"\" target=\"_blank\">"+decodeURIComponent(valueArray[i].substring(valueArray[i].lastIndexOf("/")+1))+"</a>"
+		        		}else{
+		        			labelArray[i] = '<img   onclick="jp.showPic(\''+valueArray[i]+'\')"'+' height="50px" src="'+valueArray[i]+'">';
+		        		}
+		        	}
+		        	return labelArray.join(" ");
+		        }
+		       
+		    }
+			,{
+		        field: 'courseInfo.name',
+		        title: '课程',
+		        sortable: true,
+		        sortName: 'courseInfo.name'
 		       
 		    }
 		     ]
@@ -120,13 +140,13 @@ $(document).ready(function() {
 	  if(navigator.userAgent.match(/(iPhone|iPod|Android|ios)/i)){//如果是移动端
 
 		 
-		  $('#courseTable').bootstrapTable("toggleView");
+		  $('#courseDataTable').bootstrapTable("toggleView");
 		}
 	  
-	  $('#courseTable').on('check.bs.table uncheck.bs.table load-success.bs.table ' +
+	  $('#courseDataTable').on('check.bs.table uncheck.bs.table load-success.bs.table ' +
                 'check-all.bs.table uncheck-all.bs.table', function () {
-            $('#remove').prop('disabled', ! $('#courseTable').bootstrapTable('getSelections').length);
-            $('#view,#edit').prop('disabled', $('#courseTable').bootstrapTable('getSelections').length!=1);
+            $('#remove').prop('disabled', ! $('#courseDataTable').bootstrapTable('getSelections').length);
+            $('#view,#edit').prop('disabled', $('#courseDataTable').bootstrapTable('getSelections').length!=1);
         });
 		  
 		$("#btnImport").click(function(){
@@ -138,20 +158,20 @@ $(document).ready(function() {
 			    content: "${ctx}/tag/importExcel" ,
 			    btn: ['下载模板','确定', '关闭'],
 				    btn1: function(index, layero){
-					 jp.downloadFile('${ctx}/test/manytomany/course/import/template');
+					  jp.downloadFile('${ctx}/course/courseData/import/template');
 				  },
 			    btn2: function(index, layero){
 				        var iframeWin = layero.find('iframe')[0]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
-						iframeWin.contentWindow.importExcel('${ctx}/test/manytomany/course/import', function (data) {
+						iframeWin.contentWindow.importExcel('${ctx}/course/courseData/import', function (data) {
 							if(data.success){
 								jp.success(data.msg);
 								refresh();
 							}else{
 								jp.error(data.msg);
 							}
-                            jp.close(index);
-                        });//调用保存事件
-                    	return false;
+						   jp.close(index);
+						});//调用保存事件
+						return false;
 				  },
 				 
 				  btn3: function(index){ 
@@ -162,37 +182,50 @@ $(document).ready(function() {
 		    
 		
 	  $("#export").click(function(){//导出Excel文件
-			jp.downloadFile('${ctx}/test/manytomany/course/export');
-	  });
+	        var searchParam = $("#searchForm").serializeJSON();
+	        searchParam.pageNo = 1;
+	        searchParam.pageSize = -1;
+            var sortName = $('#courseDataTable').bootstrapTable("getOptions", "none").sortName;
+            var sortOrder = $('#courseDataTable').bootstrapTable("getOptions", "none").sortOrder;
+            var values = "";
+            for(var key in searchParam){
+                values = values + key + "=" + searchParam[key] + "&";
+            }
+            if(sortName != undefined && sortOrder != undefined){
+                values = values + "orderBy=" + sortName + " "+sortOrder;
+            }
+
+			jp.downloadFile('${ctx}/course/courseData/export?'+values);
+	  })
 
 		    
 	  $("#search").click("click", function() {// 绑定查询按扭
-		  $('#courseTable').bootstrapTable('refresh');
+		  $('#courseDataTable').bootstrapTable('refresh');
 		});
 	 
 	 $("#reset").click("click", function() {// 绑定查询按扭
 		  $("#searchForm  input").val("");
 		  $("#searchForm  select").val("");
 		  $("#searchForm  .select-item").html("");
-		  $('#courseTable').bootstrapTable('refresh');
+		  $('#courseDataTable').bootstrapTable('refresh');
 		});
 		
 		
 	});
 		
   function getIdSelections() {
-        return $.map($("#courseTable").bootstrapTable('getSelections'), function (row) {
+        return $.map($("#courseDataTable").bootstrapTable('getSelections'), function (row) {
             return row.id
         });
     }
   
   function deleteAll(){
 
-		jp.confirm('确认要删除该课程记录吗？', function(){
+		jp.confirm('确认要删除该课程内容记录吗？', function(){
 			jp.loading();  	
-			jp.get("${ctx}/test/manytomany/course/deleteAll?ids=" + getIdSelections(), function(data){
+			jp.get("${ctx}/course/courseData/deleteAll?ids=" + getIdSelections(), function(data){
          	  		if(data.success){
-         	  			$('#courseTable').bootstrapTable('refresh');
+         	  			$('#courseDataTable').bootstrapTable('refresh');
          	  			jp.success(data.msg);
          	  		}else{
          	  			jp.error(data.msg);
@@ -202,24 +235,24 @@ $(document).ready(function() {
 		})
   }
   function refresh(){
-  	$('#courseTable').bootstrapTable('refresh');
+  	$('#courseDataTable').bootstrapTable('refresh');
   }
   function add(){
-		jp.go("${ctx}/test/manytomany/course/form/add");
+		jp.go("${ctx}/course/courseData/form/add");
 	}
 
   function edit(id){
 	  if(id == undefined){
 		  id = getIdSelections();
 	  }
-	  jp.go("${ctx}/test/manytomany/course/form/edit?id=" + id);
+	  jp.go("${ctx}/course/courseData/form/edit?id=" + id);
   }
 
   function view(id) {
       if(id == undefined){
           id = getIdSelections();
       }
-      jp.go("${ctx}/test/manytomany/course/form/view?id=" + id);
+      jp.go("${ctx}/course/courseData/form/view?id=" + id);
   }
   
 </script>

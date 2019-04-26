@@ -17,5 +17,4 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(readOnly = true)
 public class UserOfficeService extends CrudService<UserOfficeMapper, UserOffice> {
-
 }

@@ -22,15 +22,7 @@
 				<div class="accordion-inner">
 					<form:form id="searchForm" modelAttribute="userOffice" class="form form-horizontal well clearfix">
 						<div class="col-xs-12 col-sm-6 col-md-4">
-							<label class="label-item single-overflow pull-left" title="班级id：">班级id：</label>
-							<form:input path="officeid" htmlEscape="false" maxlength="64"  class=" form-control"/>
-						</div>
-						<div class="col-xs-12 col-sm-6 col-md-4">
-							<label class="label-item single-overflow pull-left" title="用户id：">用户id：</label>
-							<form:input path="userid" htmlEscape="false" maxlength="64"  class=" form-control"/>
-						</div>
-						<div class="col-xs-12 col-sm-6 col-md-4">
-							<label class="label-item single-overflow pull-left" title="用户类型详,见bas_user_type：">用户类型详,见bas_user_type：</label>
+							<label class="label-item single-overflow pull-left" title="用户类型">用户类型：</label>
 							<form:select path="userType"  class="form-control m-b">
 								<form:option value="" label=""/>
 								<form:options items="${fns:getDictList('bas_user_type')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
@@ -49,8 +41,11 @@
 			<!-- 工具栏 -->
 			<div id="toolbar">
 				<shiro:hasPermission name="useroffice:userOffice:add">
+                    <a href="${ctx}/sys/classes/classes" class="btn btn-primary">
+                        返回
+                    </a>
 					<button id="add" class="btn btn-primary" onclick="add('1')">
-						<i class="glyphicon glyphicon-plus"></i>添加班主任
+						<i class="glyphicon glyphicon-plus"></i>添加/变更班主任
 					</button>
 					<button id="add" class="btn btn-primary" onclick="add('2')">
 						<i class="glyphicon glyphicon-plus"></i>添加老师

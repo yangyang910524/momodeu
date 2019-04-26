@@ -74,7 +74,7 @@ public class UserOfficeController extends BaseController {
 	@RequiresPermissions("useroffice:userOffice:list")
 	@RequestMapping(value = "data")
 	public Map<String, Object> data(UserOffice userOffice, HttpServletRequest request, HttpServletResponse response, Model model) {
-		Page<UserOffice> page = userOfficeService.findPage(new Page<UserOffice>(request, response), userOffice); 
+		Page<UserOffice> page = userOfficeService.findPage(new Page<UserOffice>(request, response), userOffice);
 		return getBootstrapData(page);
 	}
 
@@ -140,6 +140,47 @@ public class UserOfficeController extends BaseController {
 		j.setMsg("删除信息成功");
 		return j;
 	}
+
+    /**
+     * 班主任、老师、学生绑定班级
+     */
+    @ResponseBody
+    @RequiresPermissions("useroffice:userOffice:addUser")
+    @RequestMapping(value = "addUser")
+    public AjaxJson addUser(String ids,String officeid,String userType) {
+        AjaxJson j = new AjaxJson();
+        UserOffice userOffice=new UserOffice();
+        userOffice.setOfficeid(officeid);
+        List<UserOffice> list=null;
+        if("1".equals(userType)){
+            //先删除原班主任
+            userOffice.setUserType("1");
+            list=userOfficeService.findList(userOffice);
+            for(UserOffice temp: list){
+                userOfficeService.delete(temp);
+            }
+
+            //添加新班主任
+            userOffice.setUserid(ids);
+            userOffice.setUserType("1");
+            userOfficeService.save(userOffice);
+        }else{
+            //判断下原先有没，有的话不做修改
+            String idArray[] =ids.split(",");
+            for(String id : idArray){
+                userOffice.setId(null);
+                userOffice.setUserid(id);
+                list=userOfficeService.findList(userOffice);
+                if(list.size()>0){
+                    continue;
+                }
+                userOffice.setUserType(userType);
+                userOfficeService.save(userOffice);
+            }
+        }
+        j.setMsg("绑定成功");
+        return j;
+    }
 	
 	/**
 	 * 导出excel文件
