@@ -7,6 +7,8 @@ import com.jeeplus.core.persistence.TreeMapper;
 import com.jeeplus.core.persistence.annotation.MyBatisMapper;
 import com.jeeplus.modules.course.entity.CourseInfo;
 
+import java.util.List;
+
 /**
  * 课程管理MAPPER接口
  * @author yangyang
@@ -14,5 +16,6 @@ import com.jeeplus.modules.course.entity.CourseInfo;
  */
 @MyBatisMapper
 public interface CourseInfoMapper extends TreeMapper<CourseInfo> {
-	
+
+    List<CourseInfo> findCourseList(CourseInfo courseInfo);
 }

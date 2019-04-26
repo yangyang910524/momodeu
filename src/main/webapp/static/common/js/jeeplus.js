@@ -257,6 +257,66 @@
             });
         },
 
+        /**课程选择框**/
+        openCourseSelectDialog:function(isMultiSelect, yesFuc,officeid){
+            top.layer.open({
+                type: 2,
+                area: ['900px', '560px'],
+                title:"选择用户",
+                auto:true,
+                maxmin: true, //开启最大化最小化按钮
+                content: ctx+"/course/courseInfo/?isMultiSelect="+isMultiSelect+"&officeid="+officeid,
+                btn: ['确定', '关闭'],
+                yes: function(index, layero){
+                    var ids = layero.find("iframe")[0].contentWindow.getIdSelections();
+                    var names = layero.find("iframe")[0].contentWindow.getNameSelections();
+                    var loginNames = layero.find("iframe")[0].contentWindow.getLoginNameSelections();
+                    if(ids.length ==0){
+                        jp.warning("请选择至少一个课程!");
+                        return;
+                    }
+                    // 执行保存
+                    yesFuc(ids.join(","), names.join(","), loginNames.join(","));
+
+                    top.layer.close(index);
+                },
+                cancel: function(index){
+                    //取消默认为空，如需要请自行扩展。
+                    top.layer.close(index);
+                }
+            });
+        },
+
+        /**材料选择框**/
+        openMaterialSelectDialog:function(isMultiSelect, yesFuc){
+            top.layer.open({
+                type: 2,
+                area: ['900px', '560px'],
+                title:"选择用户",
+                auto:true,
+                maxmin: true, //开启最大化最小化按钮
+                content: ctx+"/material/material/openMaterialSelectDialog?isMultiSelect="+isMultiSelect,
+                btn: ['确定', '关闭'],
+                yes: function(index, layero){
+                    var ids = layero.find("iframe")[0].contentWindow.getIdSelections();
+                    var names = layero.find("iframe")[0].contentWindow.getNameSelections();
+                    var loginNames = layero.find("iframe")[0].contentWindow.getLoginNameSelections();
+                    if(ids.length ==0){
+                        jp.warning("请选择至少一个材料!");
+                        return;
+                    }
+                    // 执行保存
+                    yesFuc(ids.join(","), names.join(","), loginNames.join(","));
+
+                    top.layer.close(index);
+                },
+                cancel: function(index){
+                    //取消默认为空，如需要请自行扩展。
+                    top.layer.close(index);
+                }
+            });
+        },
+
         /**角色选择框**/
         openRoleSelectDialog:function(isMultiSelect, yesFuc){
             var url = ctx + "/sys/role/data";

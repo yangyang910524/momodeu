@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <script>
 $(document).ready(function() {
-	$('#classesTable').bootstrapTable({
+	$('#couresOfficeTable').bootstrapTable({
 		 
 		  //请求方法
                method: 'post',
@@ -37,7 +37,7 @@ $(document).ready(function() {
                //可供选择的每页的行数（*）    
                pageList: [10, 25, 50, 100],
                //这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据  
-               url: "${ctx}/sys/classes/classes/data",
+               url: "${ctx}/sys/couresoffice/couresOffice/data?officeid=${couresOffice.officeid}",
                //默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
                //queryParamsType:'',   
                ////查询参数,每次调用是会带上这个参数，可自定义                         
@@ -61,9 +61,9 @@ $(document).ready(function() {
                    } else if($el.data("item") == "delete"){
                         jp.confirm('确认要删除该信息记录吗？', function(){
                        	jp.loading();
-                       	jp.get("${ctx}/sys/classes/classes/delete?id="+row.id, function(data){
+                       	jp.get("${ctx}/sys/couresoffice/couresOffice/delete?id="+row.id, function(data){
                    	  		if(data.success){
-                   	  			$('#classesTable').bootstrapTable('refresh');
+                   	  			$('#couresOfficeTable').bootstrapTable('refresh');
                    	  			jp.success(data.msg);
                    	  		}else{
                    	  			jp.error(data.msg);
@@ -84,62 +84,17 @@ $(document).ready(function() {
 		        checkbox: true
 		       
 		    }
-                   ,{
-                       field: 'name',
-                       title: '名称',
-                       sortable: true,
-                       sortName: 'name'
-                       ,formatter:function(value, row , index){
-                           value = jp.unescapeHTML(value);
-                           <c:choose>
-                           <c:when test="${fns:hasPermission('sys:classes:classes:edit')}">
-                           return "<a href='javascript:edit(\""+row.id+"\")'>"+value+"</a>";
-                           </c:when>
-                           <c:when test="${fns:hasPermission('sys:classes:classes:view')}">
-                           return "<a href='javascript:view(\""+row.id+"\")'>"+value+"</a>";
-                           </c:when>
-                           <c:otherwise>
-                           return value;
-                           </c:otherwise>
-                           </c:choose>
-                       }
+           ,{
+               field: 'officeName',
+               title: '班级名称',
+               sortable: false
 
-                   }, {
-                       field: 'classroomTeacher',
-                       title: '班主任',
-                       sortable: false,
-                       formatter:function (value, row, index) {
-                          if(value){
-                                 return value.name;
-                          }else{
-                                var result="";
-                                return result
-                          }
-                       }
-                   }, {
-                       field: 'teacherTotal',
-                       title: '老师人数',
-                       sortable: false
-                   }, {
-                       field: 'studentTotal',
-                       title: '学生人数',
-                       sortable: false
-                   }, {
-                       field: 'id',
-                       title: '操作',
-                       sortable: false,
-                       formatter:function (value, row, index) {
-                           var result="";
-                           <shiro:hasPermission name="sys:classes:classes:user">
-                           result+= "&nbsp;&nbsp;<a href='${ctx}/useroffice/userOffice?officeid="+value+"'>人员管理</a>&nbsp;&nbsp;";
-                           </shiro:hasPermission>
+           } ,{
+               field: 'couresName',
+               title: '课程名称',
+               sortable: false
 
-                           <shiro:hasPermission name="sys:classes:classes:course">
-                           result+= "&nbsp;&nbsp;<a href='${ctx}/sys/couresoffice/couresOffice?officeid="+value+"'>课程管理</a>&nbsp;&nbsp;";
-                           </shiro:hasPermission>
-                           return result;
-                       }
-                   }
+           }
 		     ]
 		
 		});
@@ -148,13 +103,13 @@ $(document).ready(function() {
 	  if(navigator.userAgent.match(/(iPhone|iPod|Android|ios)/i)){//如果是移动端
 
 		 
-		  $('#classesTable').bootstrapTable("toggleView");
+		  $('#couresOfficeTable').bootstrapTable("toggleView");
 		}
 	  
-	  $('#classesTable').on('check.bs.table uncheck.bs.table load-success.bs.table ' +
+	  $('#couresOfficeTable').on('check.bs.table uncheck.bs.table load-success.bs.table ' +
                 'check-all.bs.table uncheck-all.bs.table', function () {
-            $('#remove').prop('disabled', ! $('#classesTable').bootstrapTable('getSelections').length);
-            $('#view,#edit').prop('disabled', $('#classesTable').bootstrapTable('getSelections').length!=1);
+            $('#remove').prop('disabled', ! $('#couresOfficeTable').bootstrapTable('getSelections').length);
+            $('#view,#edit').prop('disabled', $('#couresOfficeTable').bootstrapTable('getSelections').length!=1);
         });
 		  
 		$("#btnImport").click(function(){
@@ -166,11 +121,11 @@ $(document).ready(function() {
 			    content: "${ctx}/tag/importExcel" ,
 			    btn: ['下载模板','确定', '关闭'],
 				    btn1: function(index, layero){
-					  jp.downloadFile('${ctx}/sys/classes/classes/import/template');
+					  jp.downloadFile('${ctx}/sys/couresoffice/couresOffice/import/template');
 				  },
 			    btn2: function(index, layero){
 				        var iframeWin = layero.find('iframe')[0]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
-						iframeWin.contentWindow.importExcel('${ctx}/sys/classes/classes/import', function (data) {
+						iframeWin.contentWindow.importExcel('${ctx}/sys/couresoffice/couresOffice/import', function (data) {
 							if(data.success){
 								jp.success(data.msg);
 								refresh();
@@ -193,8 +148,8 @@ $(document).ready(function() {
 	        var searchParam = $("#searchForm").serializeJSON();
 	        searchParam.pageNo = 1;
 	        searchParam.pageSize = -1;
-            var sortName = $('#classesTable').bootstrapTable("getOptions", "none").sortName;
-            var sortOrder = $('#classesTable').bootstrapTable("getOptions", "none").sortOrder;
+            var sortName = $('#couresOfficeTable').bootstrapTable("getOptions", "none").sortName;
+            var sortOrder = $('#couresOfficeTable').bootstrapTable("getOptions", "none").sortOrder;
             var values = "";
             for(var key in searchParam){
                 values = values + key + "=" + searchParam[key] + "&";
@@ -203,26 +158,26 @@ $(document).ready(function() {
                 values = values + "orderBy=" + sortName + " "+sortOrder;
             }
 
-			jp.downloadFile('${ctx}/sys/classes/classes/export?'+values);
+			jp.downloadFile('${ctx}/sys/couresoffice/couresOffice/export?'+values);
 	  })
 
 		    
 	  $("#search").click("click", function() {// 绑定查询按扭
-		  $('#classesTable').bootstrapTable('refresh');
+		  $('#couresOfficeTable').bootstrapTable('refresh');
 		});
 	 
 	 $("#reset").click("click", function() {// 绑定查询按扭
 		  $("#searchForm  input").val("");
 		  $("#searchForm  select").val("");
 		  $("#searchForm  .select-item").html("");
-		  $('#classesTable').bootstrapTable('refresh');
+		  $('#couresOfficeTable').bootstrapTable('refresh');
 		});
 		
 		
 	});
 		
   function getIdSelections() {
-        return $.map($("#classesTable").bootstrapTable('getSelections'), function (row) {
+        return $.map($("#couresOfficeTable").bootstrapTable('getSelections'), function (row) {
             return row.id
         });
     }
@@ -231,9 +186,9 @@ $(document).ready(function() {
 
 		jp.confirm('确认要删除该信息记录吗？', function(){
 			jp.loading();  	
-			jp.get("${ctx}/sys/classes/classes/deleteAll?ids=" + getIdSelections(), function(data){
+			jp.get("${ctx}/sys/couresoffice/couresOffice/deleteAll?ids=" + getIdSelections(), function(data){
          	  		if(data.success){
-         	  			$('#classesTable').bootstrapTable('refresh');
+         	  			$('#couresOfficeTable').bootstrapTable('refresh');
          	  			jp.success(data.msg);
          	  		}else{
          	  			jp.error(data.msg);
@@ -245,11 +200,20 @@ $(document).ready(function() {
 
     //刷新列表
   function refresh(){
-  	$('#classesTable').bootstrapTable('refresh');
+  	$('#couresOfficeTable').bootstrapTable('refresh');
   }
   
    function add(){
-	  jp.openSaveDialog('新增信息', "${ctx}/sys/classes/classes/form",'800px', '500px');
+       jp.openCourseSelectDialog(true, function (ids, names) {
+           jp.get("${ctx}/sys/couresoffice/couresOffice/addCoures?ids=" + ids+"&officeid=${couresOffice.officeid}", function(data){
+               if(data.success){
+                   $('#couresOfficeTable').bootstrapTable('refresh');
+                   jp.success(data.msg);
+               }else{
+                   jp.error(data.msg);
+               }
+           })
+       },'${couresOffice.officeid}');
   }
 
 
@@ -258,14 +222,14 @@ $(document).ready(function() {
        if(id == undefined){
 	      id = getIdSelections();
 	}
-	jp.openSaveDialog('编辑信息', "${ctx}/sys/classes/classes/form?id=" + id, '800px', '500px');
+	jp.openSaveDialog('编辑信息', "${ctx}/sys/couresoffice/couresOffice/form?id=" + id, '800px', '500px');
   }
   
  function view(id){//没有权限时，不显示确定按钮
       if(id == undefined){
              id = getIdSelections();
       }
-        jp.openViewDialog('查看信息', "${ctx}/sys/classes/classes/form?id=" + id, '800px', '500px');
+        jp.openViewDialog('查看信息', "${ctx}/sys/couresoffice/couresOffice/form?id=" + id, '800px', '500px');
  }
 
 

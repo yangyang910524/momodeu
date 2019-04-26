@@ -40,10 +40,10 @@
 
 			<!-- 工具栏 -->
 			<div id="toolbar">
+                <a href="${ctx}/sys/classes/classes" class="btn btn-primary">
+                    返回
+                </a>
 				<shiro:hasPermission name="useroffice:userOffice:add">
-                    <a href="${ctx}/sys/classes/classes" class="btn btn-primary">
-                        返回
-                    </a>
 					<button id="add" class="btn btn-primary" onclick="add('1')">
 						<i class="glyphicon glyphicon-plus"></i>添加/变更班主任
 					</button>

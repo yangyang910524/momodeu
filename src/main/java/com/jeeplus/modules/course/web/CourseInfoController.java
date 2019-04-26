@@ -3,13 +3,14 @@
  */
 package com.jeeplus.modules.course.web;
 
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.shiro.authz.annotation.Logical;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.jeeplus.common.json.AjaxJson;
+import com.jeeplus.common.utils.StringUtils;
+import com.jeeplus.core.persistence.Page;
+import com.jeeplus.core.web.BaseController;
+import com.jeeplus.modules.course.entity.CourseInfo;
+import com.jeeplus.modules.course.service.CourseInfoService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,14 +20,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.jeeplus.common.json.AjaxJson;
-import com.jeeplus.common.config.Global;
-import com.jeeplus.core.web.BaseController;
-import com.jeeplus.common.utils.StringUtils;
-import com.jeeplus.modules.course.entity.CourseInfo;
-import com.jeeplus.modules.course.service.CourseInfoService;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 课程管理Controller
@@ -160,5 +157,21 @@ public class CourseInfoController extends BaseController {
 		}
 		return mapList;
 	}
-	
+
+    /**
+     * 课程内容列表页面
+     */
+    @RequestMapping(value = "openCourseSelectDialog")
+    public String openCourseSelectDialog(boolean isMultiSelect, Model model,String officeid) {
+        model.addAttribute("isMultiSelect", isMultiSelect);
+        model.addAttribute("officeid", officeid);
+        return "modules/common/courseSelect";
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "courseList")
+    public Map<String, Object> courseList(CourseInfo courseInfo, HttpServletRequest request, HttpServletResponse response, Model model) {
+        Page<CourseInfo> page = courseInfoService.findCourseList(new Page<CourseInfo>(request, response), courseInfo);
+        return getBootstrapData(page);
+    }
 }

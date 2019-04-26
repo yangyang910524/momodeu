@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jeeplus.modules.sys.mapper.CouresOfficeMapper">
+    
+	<sql id="couresOfficeColumns">
+		a.id AS "id",
+		a.officeid AS "officeid",
+		a.couresid AS "couresid",
+        so.name AS "officeName",
+        ci.name AS "couresName"
+	</sql>
+	
+	<sql id="couresOfficeJoins">
+		left join sys_office so on so.id=a.officeid
+		left join course_info ci on ci.id=a.couresid
+	</sql>
+	
+    
+	<select id="get" resultType="CouresOffice" >
+		SELECT 
+			<include refid="couresOfficeColumns"/>
+		FROM sys_coures_office a
+		<include refid="couresOfficeJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CouresOffice" >
+		SELECT 
+			<include refid="couresOfficeColumns"/>
+		FROM sys_coures_office a
+		<include refid="couresOfficeJoins"/>
+		<where>
+			${dataScope}
+            <if test="officeid != null and officeid != ''">
+                AND a.officeid = #{officeid}
+            </if>
+            <if test="couresid != null and couresid != ''">
+                AND a.couresid = #{couresid}
+            </if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CouresOffice" >
+		SELECT 
+			<include refid="couresOfficeColumns"/>
+		FROM sys_coures_office a
+		<include refid="couresOfficeJoins"/>
+		<where>
+			
+			${dataScope}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO sys_coures_office(
+			id,
+			officeid,
+			couresid
+		) VALUES (
+			#{id},
+			#{officeid},
+			#{couresid}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE sys_coures_office SET 	
+			officeid = #{officeid},
+			couresid = #{couresid}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!--物理删除-->
+	<update id="delete">
+		DELETE FROM sys_coures_office
+		WHERE id = #{id}
+	</update>
+	
+	<!--逻辑删除-->
+	<update id="deleteByLogic">
+		UPDATE sys_coures_office SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!-- 根据实体名称和字段名称和字段值获取唯一记录 -->
+	<select id="findUniqueByProperty" resultType="CouresOffice" statementType="STATEMENT">
+		select * FROM sys_coures_office  where ${propertyName} = '${value}'
+	</select>
+	
+</mapper>

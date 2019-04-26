@@ -87,21 +87,18 @@
                 ,{
                     field: 'officeName',
                     title: '班级名称',
-                    sortable: true,
-                    sortName: 'userid'
+                    sortable: false
 
                 } ,{
                     field: 'userName',
                     title: '用户名称',
-                    sortable: true,
-                    sortName: 'userid'
+                    sortable: false
 
                 }
                 ,{
                     field: 'userType',
                     title: '用户类型',
-                    sortable: true,
-                    sortName: 'userType',
+                    sortable: false
                     formatter:function(value, row , index){
                         return jp.getDictLabel(${fns:toJson(fns:getDictList('bas_user_type'))}, value, "-");
                     }

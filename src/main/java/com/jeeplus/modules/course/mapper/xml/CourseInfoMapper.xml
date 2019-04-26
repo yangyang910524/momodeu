@@ -167,5 +167,25 @@
 		<if test="dbName == 'mssql'">'%,'+#{id}+',%'</if>
         <if test="dbName == 'mysql'">CONCAT('%,', #{id}, ',%')</if>
 	</update>
-	
+
+
+    <select id="findCourseList" resultType="CourseInfo">
+        SELECT
+        <include refid="courseInfoColumns"/>
+        FROM course_info a
+        <include refid="courseInfoJoins"/>
+        <where>
+            a.del_flag = #{DEL_FLAG_NORMAL}
+            ${dataScope}
+            AND a.parent_id = '0'
+            <if test="name != null and name != ''">
+                AND a.name LIKE
+                <if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+                <if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+                <if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+            </if>
+        </where>
+        ORDER BY a.sort ASC
+    </select>
+
 </mapper>
