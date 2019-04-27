@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jeeplus.modules.advertisement.mapper.AdvertisementMapper">
+    
+	<sql id="advertisementColumns">
+		a.id AS "id",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.picture AS "picture",
+		a.state AS "state",
+		a.issue_time AS "issueTime"
+	</sql>
+	
+	<sql id="advertisementJoins">
+		
+	</sql>
+	
+    
+	<select id="get" resultType="Advertisement" >
+		SELECT 
+			<include refid="advertisementColumns"/>
+		FROM advertisement a
+		<include refid="advertisementJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="Advertisement" >
+		SELECT 
+			<include refid="advertisementColumns"/>
+		FROM advertisement a
+		<include refid="advertisementJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			${dataScope}
+			<if test="state != null and state != ''">
+				AND a.state = #{state}
+			</if>
+			<if test="beginIssueTime != null and endIssueTime != null ">
+				AND a.issue_time BETWEEN #{beginIssueTime} AND #{endIssueTime}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="Advertisement" >
+		SELECT 
+			<include refid="advertisementColumns"/>
+		FROM advertisement a
+		<include refid="advertisementJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			${dataScope}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO advertisement(
+			id,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,
+			picture,
+			state,
+			issue_time
+		) VALUES (
+			#{id},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag},
+			#{picture},
+			#{state},
+			#{issueTime}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE advertisement SET 	
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			picture = #{picture},
+			state = #{state},
+			issue_time = #{issueTime}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!--物理删除-->
+	<update id="delete">
+		DELETE FROM advertisement
+		WHERE id = #{id}
+	</update>
+	
+	<!--逻辑删除-->
+	<update id="deleteByLogic">
+		UPDATE advertisement SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!-- 根据实体名称和字段名称和字段值获取唯一记录 -->
+	<select id="findUniqueByProperty" resultType="Advertisement" statementType="STATEMENT">
+		select * FROM advertisement  where ${propertyName} = '${value}'
+	</select>
+	
+</mapper>

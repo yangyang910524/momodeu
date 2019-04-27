@@ -102,11 +102,11 @@ public class RoleController extends BaseController {
 	@RequestMapping(value = "save")
 	public AjaxJson save(Role role, Model model) {
 		AjaxJson j = new AjaxJson();
-		if("1c54e003c1fc4dcd9b087ef8d48abac3".equals(role.getId())||"system".equals(role.getEnname())){
-            j.setSuccess(false);
-            j.setMsg("超级管理员无法修改！");
-            return j;
-        }
+//		if("1c54e003c1fc4dcd9b087ef8d48abac3".equals(role.getId())||"system".equals(role.getEnname())){
+//            j.setSuccess(false);
+//            j.setMsg("超级管理员无法修改！");
+//            return j;
+//        }
 		if(!UserUtils.getUser().isAdmin()&&role.getSysData().equals(Global.YES)){
 			j.setSuccess(false);
 			j.setMsg("越权操作，只有超级管理员才能修改此数据！");
