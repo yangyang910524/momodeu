@@ -45,15 +45,24 @@
 						<form:input path="name" htmlEscape="false"    class="form-control "/>
 					</div>
 				</div>
-				<div class="form-group">
-					<label class="col-sm-2 control-label">类型：</label>
-					<div class="col-sm-10">
-						<form:select path="type" class="form-control ">
-							<form:option value="" label=""/>
-							<form:options items="${fns:getDictList('bae_homework_type')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
-						</form:select>
-					</div>
-				</div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">课程级别：</label>
+                    <div class="col-sm-10">
+                        <form:select path="courseLevel" class="form-control ">
+                            <form:option value="" label=""/>
+                            <form:options items="${fns:getDictList('bae_course_level')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+                        </form:select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">作业类型：</label>
+                    <div class="col-sm-10">
+                        <form:select path="type" class="form-control ">
+                            <form:option value="" label=""/>
+                            <form:options items="${fns:getDictList('bas_material_type')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+                        </form:select>
+                    </div>
+                </div>
 				<div class="form-group">
 					<label class="col-sm-2 control-label">材料1：</label>
 					<div class="col-sm-10">

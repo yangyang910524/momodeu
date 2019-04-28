@@ -7,7 +7,9 @@
 		a.officeid AS "officeid",
 		a.homeworkid AS "homeworkid",
 		h.name as "homeworkName",
-		so.name as "officeName"
+		so.name as "officeName",
+		a.statue AS "statue",
+		a.issue_date AS "issueDate"
 	</sql>
 	
 	<sql id="homeworkOfficeJoins">
@@ -38,6 +40,12 @@
 			<if test="homeworkid != null and homeworkid != ''">
 				AND a.homeworkid = #{homeworkid}
 			</if>
+            <if test="statue != null and statue != ''">
+                AND a.statue = #{statue}
+            </if>
+            <if test="beginIssueDate != null and endIssueDate != null ">
+                AND a.issue_date BETWEEN #{beginIssueDate} AND #{endIssueDate}
+            </if>
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
@@ -70,18 +78,24 @@
 		INSERT INTO sys_homework_office(
 			id,
 			officeid,
-			homeworkid
+			homeworkid,
+			statue,
+			issue_date
 		) VALUES (
 			#{id},
 			#{officeid},
-			#{homeworkid}
+			#{homeworkid},
+			#{statue},
+			#{issueDate}
 		)
 	</insert>
 	
 	<update id="update">
 		UPDATE sys_homework_office SET 	
 			officeid = #{officeid},
-			homeworkid = #{homeworkid}
+			homeworkid = #{homeworkid},
+			statue = #{statue},
+			issue_date = #{issueDate}
 		WHERE id = #{id}
 	</update>
 	

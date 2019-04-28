@@ -56,6 +56,35 @@
 						<form:input path="sort" htmlEscape="false"    class="form-control required"/>
 					</td>
 				</tr>
+                <tr>
+                    <td class="width-15 active"><label class="pull-right">封面：</label></td>
+                    <td class="width-35">
+                        <sys:fileUpload path="cover"  value="${courseInfo.cover}" type="file" uploadPath="/course/courseInfo"/>
+                    </td>
+                    <td class="width-15 active"><label class="pull-right">标题类型：</label></td>
+                    <td class="width-35">
+                        <form:select path="titleType" class="form-control ">
+                            <form:option value="" label=""/>
+                            <form:options items="${fns:getDictList('bas_course_title_type')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+                        </form:select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="width-15 active"><label class="pull-right">课程级别：</label></td>
+                    <td class="width-35">
+                        <form:select path="level" class="form-control ">
+                            <form:option value="" label=""/>
+                            <form:options items="${fns:getDictList('bae_course_level')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+                        </form:select>
+                    </td>
+                    <td class="width-15 active"><label class="pull-right">状态：</label></td>
+                    <td class="width-35">
+                        <form:select path="state" class="form-control ">
+                            <form:option value="" label=""/>
+                            <form:options items="${fns:getDictList('bas_release_type')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+                        </form:select>
+                    </td>
+                </tr>
 		 	</tbody>
 		</table>
 		</form:form>

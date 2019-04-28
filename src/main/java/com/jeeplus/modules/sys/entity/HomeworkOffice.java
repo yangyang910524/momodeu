@@ -19,6 +19,10 @@ public class HomeworkOffice extends DataEntity<HomeworkOffice> {
 	private String homeworkid;		// 作业id
 	private String officeName;  //班级名称
 	private String homeworkName;  //作业名称
+    private String statue;		// 状态
+    private String issueDate;		// 发布时间
+    private String beginIssueDate;		// 开始 发布时间
+    private String endIssueDate;		// 结束 发布时间
 	
 	public HomeworkOffice() {
 		super();
@@ -61,4 +65,36 @@ public class HomeworkOffice extends DataEntity<HomeworkOffice> {
 	public void setHomeworkName(String homeworkName) {
 		this.homeworkName = homeworkName;
 	}
+
+    public String getStatue() {
+        return statue;
+    }
+
+    public void setStatue(String statue) {
+        this.statue = statue;
+    }
+
+    public String getIssueDate() {
+        return issueDate;
+    }
+
+    public void setIssueDate(String issueDate) {
+        this.issueDate = issueDate;
+    }
+
+    public String getBeginIssueDate() {
+        return beginIssueDate;
+    }
+
+    public void setBeginIssueDate(String beginIssueDate) {
+        this.beginIssueDate = beginIssueDate;
+    }
+
+    public String getEndIssueDate() {
+        return endIssueDate;
+    }
+
+    public void setEndIssueDate(String endIssueDate) {
+        this.endIssueDate = endIssueDate;
+    }
 }

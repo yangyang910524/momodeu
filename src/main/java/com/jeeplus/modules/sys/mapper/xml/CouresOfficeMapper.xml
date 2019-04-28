@@ -7,7 +7,8 @@
 		a.officeid AS "officeid",
 		a.couresid AS "couresid",
         so.name AS "officeName",
-        ci.name AS "couresName"
+        ci.name AS "couresName",
+        a.state AS "state"
 	</sql>
 	
 	<sql id="couresOfficeJoins">
@@ -69,18 +70,21 @@
 		INSERT INTO sys_coures_office(
 			id,
 			officeid,
-			couresid
+			couresid,
+			state
 		) VALUES (
 			#{id},
 			#{officeid},
-			#{couresid}
+			#{couresid},
+			#{state}
 		)
 	</insert>
 	
 	<update id="update">
 		UPDATE sys_coures_office SET 	
 			officeid = #{officeid},
-			couresid = #{couresid}
+			couresid = #{couresid},
+			state = #{state}
 		WHERE id = #{id}
 	</update>
 	

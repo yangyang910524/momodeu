@@ -17,11 +17,12 @@ public class Homework extends DataEntity<Homework> {
 	
 	private static final long serialVersionUID = 1L;
 	private String name;		// 名称
-	private String type;		// 类型
 	private String data1;		// 材料1
 	private String data2;		// 材料2
 	private String cover;		// 封面
 	private Office office;//班级
+    private String courseLevel;		// 课程级别
+    private String type;		// 作业类型
 	
 	public Homework() {
 		super();
@@ -83,4 +84,12 @@ public class Homework extends DataEntity<Homework> {
 	public void setOffice(Office office) {
 		this.office = office;
 	}
+
+    public String getCourseLevel() {
+        return courseLevel;
+    }
+
+    public void setCourseLevel(String courseLevel) {
+        this.courseLevel = courseLevel;
+    }
 }

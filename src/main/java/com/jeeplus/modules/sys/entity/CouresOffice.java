@@ -18,6 +18,7 @@ public class CouresOffice extends DataEntity<CouresOffice> {
 	private String couresid;		// 课程主键
     private String officeName;  //班级名称
     private String couresName;  //课程名称
+    private String statue;		// 学习状态
 
     public String getOfficeid() {
         return officeid;
@@ -49,5 +50,13 @@ public class CouresOffice extends DataEntity<CouresOffice> {
 
     public void setCouresName(String couresName) {
         this.couresName = couresName;
+    }
+
+    public String getStatue() {
+        return statue;
+    }
+
+    public void setStatue(String statue) {
+        this.statue = statue;
     }
 }

@@ -21,17 +21,24 @@
 	<div id="search-collapse" class="collapse">
 		<div class="accordion-inner">
 			<form:form id="searchForm" modelAttribute="homework" class="form form-horizontal well clearfix">
-			 <div class="col-xs-12 col-sm-6 col-md-4">
-				<label class="label-item single-overflow pull-left" title="名称：">名称：</label>
-				<form:input path="name" htmlEscape="false" maxlength="64"  class=" form-control"/>
-			</div>
-			 <div class="col-xs-12 col-sm-6 col-md-4">
-				<label class="label-item single-overflow pull-left" title="类型：">类型：</label>
-				<form:select path="type"  class="form-control m-b">
-					<form:option value="" label=""/>
-					<form:options items="${fns:getDictList('bae_homework_type')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
-				</form:select>
-			</div>
+                <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label class="label-item single-overflow pull-left" title="名称：">名称：</label>
+                    <form:input path="name" htmlEscape="false" maxlength="64"  class=" form-control"/>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label class="label-item single-overflow pull-left" title="课程级别：">课程级别：</label>
+                    <form:select path="courseLevel"  class="form-control m-b">
+                        <form:option value="" label=""/>
+                        <form:options items="${fns:getDictList('bae_course_level')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+                    </form:select>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label class="label-item single-overflow pull-left" title="作业类型：">作业类型：</label>
+                    <form:select path="type"  class="form-control m-b">
+                        <form:option value="" label=""/>
+                        <form:options items="${fns:getDictList('bas_material_type')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+                    </form:select>
+                </div>
 		 <div class="col-xs-12 col-sm-6 col-md-4">
 			<div style="margin-top:26px">
 			  <a  id="search" class="btn btn-primary btn-rounded  btn-bordered btn-sm"><i class="fa fa-search"></i> 查询</a>

@@ -14,7 +14,8 @@
 		a.type AS "type",
 		a.data1 AS "data1",
 		a.data2 AS "data2",
-		a.cover AS "cover"
+		a.cover AS "cover",
+		a.course_level AS "courseLevel"
 	</sql>
 	
 	<sql id="homeworkJoins">
@@ -47,6 +48,9 @@
 			<if test="type != null and type != ''">
 				AND a.type = #{type}
 			</if>
+            <if test="courseLevel != null and courseLevel != ''">
+                AND a.course_level = #{courseLevel}
+            </if>
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
@@ -90,7 +94,8 @@
 			type,
 			data1,
 			data2,
-			cover
+			cover,
+			course_level
 		) VALUES (
 			#{id},
 			#{createBy.id},
@@ -103,7 +108,8 @@
 			#{type},
 			#{data1},
 			#{data2},
-			#{cover}
+			#{cover},
+			#{courseLevel}
 		)
 	</insert>
 	
@@ -116,7 +122,8 @@
 			type = #{type},
 			data1 = #{data1},
 			data2 = #{data2},
-			cover = #{cover}
+			cover = #{cover},
+			course_level = #{courseLevel}
 		WHERE id = #{id}
 	</update>
 	
@@ -161,6 +168,9 @@
 			<if test="type != null and type != ''">
 				AND a.type = #{type}
 			</if>
+            <if test="courseLevel != null and courseLevel != ''">
+                AND a.course_level = #{courseLevel}
+            </if>
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">

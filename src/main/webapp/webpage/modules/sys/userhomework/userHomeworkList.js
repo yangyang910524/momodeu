@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <script>
 $(document).ready(function() {
-	$('#homeworkTable').bootstrapTable({
+	$('#userHomeworkTable').bootstrapTable({
 		 
 		  //请求方法
                method: 'post',
@@ -37,7 +37,7 @@ $(document).ready(function() {
                //可供选择的每页的行数（*）    
                pageList: [10, 25, 50, 100],
                //这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据  
-               url: "${ctx}/homework/homework/data",
+               url: "${ctx}/userhomework/userHomework/data",
                //默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
                //queryParamsType:'',   
                ////查询参数,每次调用是会带上这个参数，可自定义                         
@@ -59,11 +59,11 @@ $(document).ready(function() {
                    }else if($el.data("item") == "view"){
                        view(row.id);
                    } else if($el.data("item") == "delete"){
-                        jp.confirm('确认要删除该作业信息记录吗？', function(){
+                        jp.confirm('确认要删除该信息记录吗？', function(){
                        	jp.loading();
-                       	jp.get("${ctx}/homework/homework/delete?id="+row.id, function(data){
+                       	jp.get("${ctx}/userhomework/userHomework/delete?id="+row.id, function(data){
                    	  		if(data.success){
-                   	  			$('#homeworkTable').bootstrapTable('refresh');
+                   	  			$('#userHomeworkTable').bootstrapTable('refresh');
                    	  			jp.success(data.msg);
                    	  		}else{
                    	  			jp.error(data.msg);
@@ -92,10 +92,10 @@ $(document).ready(function() {
 		        ,formatter:function(value, row , index){
 		        	value = jp.unescapeHTML(value);
 				   <c:choose>
-					   <c:when test="${fns:hasPermission('homework:homework:edit')}">
+					   <c:when test="${fns:hasPermission('userhomework:userHomework:edit')}">
 					      return "<a href='javascript:edit(\""+row.id+"\")'>"+value+"</a>";
 				      </c:when>
-					  <c:when test="${fns:hasPermission('homework:homework:view')}">
+					  <c:when test="${fns:hasPermission('userhomework:userHomework:view')}">
 					      return "<a href='javascript:view(\""+row.id+"\")'>"+value+"</a>";
 				      </c:when>
 					  <c:otherwise>
@@ -106,27 +106,27 @@ $(document).ready(function() {
 		       
 		    }
 			,{
-		        field: 'name',
-		        title: '名称',
+		        field: 'state',
+		        title: '状态',
 		        sortable: true,
-		        sortName: 'name'
+		        sortName: 'state',
+		        formatter:function(value, row , index){
+		        	return jp.getDictLabel(${fns:toJson(fns:getDictList(''))}, value, "-");
+		        }
 		       
 		    }
-                   ,{
-                       field: 'courseLevel',
-                       title: '课程级别',
-                       sortable: true,
-                       sortName: 'courseLevel',
-                       formatter:function(value, row , index){
-                           return jp.getDictLabel(${fns:toJson(fns:getDictList('bae_course_level'))}, value, "-");
-                       }
-
-                   }
-		    ,{
-		        field: 'data1',
-		        title: '材料1',
+			,{
+		        field: 'finishDate',
+		        title: '完成时间',
 		        sortable: true,
-		        sortName: 'data1',
+		        sortName: 'finishDate'
+		       
+		    }
+		    ,{
+		        field: 'file',
+		        title: '文件',
+		        sortable: true,
+		        sortName: 'file',
 		        formatter:function(value, row , index){
 		        	var valueArray = value.split("|");
 		        	var labelArray = [];
@@ -142,55 +142,20 @@ $(document).ready(function() {
 		        }
 		       
 		    }
-		    ,{
-		        field: 'data2',
-		        title: '材料2',
+			,{
+		        field: 'score',
+		        title: '老师打分',
 		        sortable: true,
-		        sortName: 'data2',
-		        formatter:function(value, row , index){
-		        	var valueArray = value.split("|");
-		        	var labelArray = [];
-		        	for(var i =0 ; i<valueArray.length; i++){
-		        		if(!/\.(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(valueArray[i]))
-		        		{
-		        			labelArray[i] = "<a href=\""+valueArray[i]+"\" url=\""+valueArray[i]+"\" target=\"_blank\">"+decodeURIComponent(valueArray[i].substring(valueArray[i].lastIndexOf("/")+1))+"</a>"
-		        		}else{
-		        			labelArray[i] = '<img   onclick="jp.showPic(\''+valueArray[i]+'\')"'+' height="50px" src="'+valueArray[i]+'">';
-		        		}
-		        	}
-		        	return labelArray.join(" ");
-		        }
+		        sortName: 'score'
 		       
 		    }
-		    ,{
-		        field: 'cover',
-		        title: '封面',
+			,{
+		        field: 'comment',
+		        title: '老师评语',
 		        sortable: true,
-		        sortName: 'cover',
-		        formatter:function(value, row , index){
-		        	var valueArray = value.split("|");
-		        	var labelArray = [];
-		        	for(var i =0 ; i<valueArray.length; i++){
-		        		if(!/\.(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(valueArray[i]))
-		        		{
-		        			labelArray[i] = "<a href=\""+valueArray[i]+"\" url=\""+valueArray[i]+"\" target=\"_blank\">"+decodeURIComponent(valueArray[i].substring(valueArray[i].lastIndexOf("/")+1))+"</a>"
-		        		}else{
-		        			labelArray[i] = '<img   onclick="jp.showPic(\''+valueArray[i]+'\')"'+' height="50px" src="'+valueArray[i]+'">';
-		        		}
-		        	}
-		        	return labelArray.join(" ");
-		        }
+		        sortName: 'comment'
 		       
-		    },{
-                       field: 'type',
-                       title: '作业类型',
-                       sortable: true,
-                       sortName: 'type',
-                       formatter:function(value, row , index){
-                           return jp.getDictLabel(${fns:toJson(fns:getDictList('bas_material_type'))}, value, "-");
-                       }
-
-                   }
+		    }
 		     ]
 		
 		});
@@ -199,13 +164,13 @@ $(document).ready(function() {
 	  if(navigator.userAgent.match(/(iPhone|iPod|Android|ios)/i)){//如果是移动端
 
 		 
-		  $('#homeworkTable').bootstrapTable("toggleView");
+		  $('#userHomeworkTable').bootstrapTable("toggleView");
 		}
 	  
-	  $('#homeworkTable').on('check.bs.table uncheck.bs.table load-success.bs.table ' +
+	  $('#userHomeworkTable').on('check.bs.table uncheck.bs.table load-success.bs.table ' +
                 'check-all.bs.table uncheck-all.bs.table', function () {
-            $('#remove').prop('disabled', ! $('#homeworkTable').bootstrapTable('getSelections').length);
-            $('#view,#edit').prop('disabled', $('#homeworkTable').bootstrapTable('getSelections').length!=1);
+            $('#remove').prop('disabled', ! $('#userHomeworkTable').bootstrapTable('getSelections').length);
+            $('#view,#edit').prop('disabled', $('#userHomeworkTable').bootstrapTable('getSelections').length!=1);
         });
 		  
 		$("#btnImport").click(function(){
@@ -217,11 +182,11 @@ $(document).ready(function() {
 			    content: "${ctx}/tag/importExcel" ,
 			    btn: ['下载模板','确定', '关闭'],
 				    btn1: function(index, layero){
-					 jp.downloadFile('${ctx}/homework/homework/import/template');
+					 jp.downloadFile('${ctx}/userhomework/userHomework/import/template');
 				  },
 			    btn2: function(index, layero){
 				        var iframeWin = layero.find('iframe')[0]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
-						iframeWin.contentWindow.importExcel('${ctx}/homework/homework/import', function (data) {
+						iframeWin.contentWindow.importExcel('${ctx}/userhomework/userHomework/import', function (data) {
 							if(data.success){
 								jp.success(data.msg);
 								refresh();
@@ -244,8 +209,8 @@ $(document).ready(function() {
 	        var searchParam = $("#searchForm").serializeJSON();
 	        searchParam.pageNo = 1;
 	        searchParam.pageSize = -1;
-            var sortName = $('#homeworkTable').bootstrapTable("getOptions", "none").sortName;
-            var sortOrder = $('#homeworkTable').bootstrapTable("getOptions", "none").sortOrder;
+            var sortName = $('#userHomeworkTable').bootstrapTable("getOptions", "none").sortName;
+            var sortOrder = $('#userHomeworkTable').bootstrapTable("getOptions", "none").sortOrder;
             var values = "";
             for(var key in searchParam){
                 values = values + key + "=" + searchParam[key] + "&";
@@ -254,37 +219,43 @@ $(document).ready(function() {
                 values = values + "orderBy=" + sortName + " "+sortOrder;
             }
 
-			jp.downloadFile('${ctx}/homework/homework/export?'+values);
+			jp.downloadFile('${ctx}/userhomework/userHomework/export?'+values);
 	  })
 
 		    
 	  $("#search").click("click", function() {// 绑定查询按扭
-		  $('#homeworkTable').bootstrapTable('refresh');
+		  $('#userHomeworkTable').bootstrapTable('refresh');
 		});
 	 
 	 $("#reset").click("click", function() {// 绑定查询按扭
 		  $("#searchForm  input").val("");
 		  $("#searchForm  select").val("");
 		  $("#searchForm  .select-item").html("");
-		  $('#homeworkTable').bootstrapTable('refresh');
+		  $('#userHomeworkTable').bootstrapTable('refresh');
 		});
 		
+		$('#beginFinishDate').datetimepicker({
+			 format: "YYYY-MM-DD HH:mm:ss"
+		});
+		$('#endFinishDate').datetimepicker({
+			 format: "YYYY-MM-DD HH:mm:ss"
+		});
 		
 	});
 		
   function getIdSelections() {
-        return $.map($("#homeworkTable").bootstrapTable('getSelections'), function (row) {
+        return $.map($("#userHomeworkTable").bootstrapTable('getSelections'), function (row) {
             return row.id
         });
     }
   
   function deleteAll(){
 
-		jp.confirm('确认要删除该作业信息记录吗？', function(){
+		jp.confirm('确认要删除该信息记录吗？', function(){
 			jp.loading();  	
-			jp.get("${ctx}/homework/homework/deleteAll?ids=" + getIdSelections(), function(data){
+			jp.get("${ctx}/userhomework/userHomework/deleteAll?ids=" + getIdSelections(), function(data){
          	  		if(data.success){
-         	  			$('#homeworkTable').bootstrapTable('refresh');
+         	  			$('#userHomeworkTable').bootstrapTable('refresh');
          	  			jp.success(data.msg);
          	  		}else{
          	  			jp.error(data.msg);
@@ -294,24 +265,24 @@ $(document).ready(function() {
 		})
   }
   function refresh(){
-  	$('#homeworkTable').bootstrapTable('refresh');
+  	$('#userHomeworkTable').bootstrapTable('refresh');
   }
   function add(){
-		jp.go("${ctx}/homework/homework/form/add");
+		jp.go("${ctx}/userhomework/userHomework/form/add");
 	}
 
   function edit(id){
 	  if(id == undefined){
 		  id = getIdSelections();
 	  }
-	  jp.go("${ctx}/homework/homework/form/edit?id=" + id);
+	  jp.go("${ctx}/userhomework/userHomework/form/edit?id=" + id);
   }
 
   function view(id) {
       if(id == undefined){
           id = getIdSelections();
       }
-      jp.go("${ctx}/homework/homework/form/view?id=" + id);
+      jp.go("${ctx}/userhomework/userHomework/form/view?id=" + id);
   }
   
 </script>

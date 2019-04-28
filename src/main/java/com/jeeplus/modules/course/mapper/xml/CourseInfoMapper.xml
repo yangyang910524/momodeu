@@ -21,7 +21,11 @@
 		a.parent_id AS "parent.id",
 		a.parent_ids AS "parentIds",
 		a.name AS "name",
-		a.sort AS "sort"
+		a.sort AS "sort",
+		a.cover AS "cover",
+		a.title_type AS "titleType",
+		a.level AS "level",
+		a.state AS "state"
 	</sql>
 	
 
@@ -114,7 +118,11 @@
 			parent_id,
 			parent_ids,
 			name,
-			sort
+			sort,
+			cover,
+			title_type,
+			level,
+			state
 		) VALUES (
 			#{id},
 			#{createBy.id},
@@ -126,7 +134,11 @@
 			#{parent.id},
 			#{parentIds},
 			#{name},
-			#{sort}
+			#{sort},
+			#{cover},
+			#{titleType},
+			#{level},
+			#{state}
 		)
 	</insert>
 	
@@ -138,7 +150,11 @@
 			parent_id = #{parent.id},
 			parent_ids = #{parentIds},
 			name = #{name},
-			sort = #{sort}
+			sort = #{sort},
+			cover = #{cover},
+			title_type = #{titleType},
+			level = #{level},
+			state = #{state}
 		WHERE id = #{id}
 	</update>
 	

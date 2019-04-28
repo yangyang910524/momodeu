@@ -3,13 +3,11 @@
  */
 package com.jeeplus.modules.course.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import javax.validation.constraints.NotNull;
-import java.util.List;
 import com.google.common.collect.Lists;
-
 import com.jeeplus.core.persistence.TreeEntity;
 import com.jeeplus.modules.sys.entity.Office;
+
+import java.util.List;
 
 /**
  * 课程管理Entity
@@ -21,7 +19,11 @@ public class CourseInfo extends TreeEntity<CourseInfo> {
 	private static final long serialVersionUID = 1L;
 	
 	private List<CourseData> courseDataList = Lists.newArrayList();		// 子表列表
-	private Office office;
+    private Office office;
+    private String cover;
+    private String titleType;
+    private String level;
+    private String state;
 	
 	public CourseInfo() {
 		super();
@@ -31,7 +33,8 @@ public class CourseInfo extends TreeEntity<CourseInfo> {
 		super(id);
 	}
 
-	public  CourseInfo getParent() {
+	@Override
+    public  CourseInfo getParent() {
 			return parent;
 	}
 
@@ -48,7 +51,8 @@ public class CourseInfo extends TreeEntity<CourseInfo> {
 	public void setCourseDataList(List<CourseData> courseDataList) {
 		this.courseDataList = courseDataList;
 	}
-	public String getParentId() {
+	@Override
+    public String getParentId() {
 		return parent != null && parent.getId() != null ? parent.getId() : "0";
 	}
 
@@ -59,4 +63,35 @@ public class CourseInfo extends TreeEntity<CourseInfo> {
 	public void setOffice(Office office) {
 		this.office = office;
 	}
+
+    public String getCover() {
+        return cover;
+    }
+
+    public void setCover(String cover) {
+        this.cover = cover;
+    }
+
+    public String getTitleType() {
+        return titleType;
+    }
+
+    public void setTitleType(String titleType) {
+        this.titleType = titleType;
+    }
+    public String getLevel() {
+        return level;
+    }
+
+    public void setLevel(String level) {
+        this.level = level;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
 }
