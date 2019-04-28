@@ -35,6 +35,11 @@
 				/act/rest/service/model/** = perms[act:model:edit]
 				/act/rest/service/** = user
 				/ReportServer/** = user
+                /momo/login = anon
+                /momo/logout = anon
+                /momo/upload = anon
+                /momo/scoreExchange = anon
+
 			</value>
 		</constructor-arg>
 	</bean>
