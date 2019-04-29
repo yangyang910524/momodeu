@@ -22,6 +22,9 @@ public class UserHomework extends DataEntity<UserHomework> {
 	private String comment;		// 老师评语
 	private String beginFinishDate;		// 开始 完成时间
 	private String endFinishDate;		// 结束 完成时间
+	private String userid;
+	private String homeworkid;
+	private String officeid;
 	
 	public UserHomework() {
 		super();
@@ -91,5 +94,28 @@ public class UserHomework extends DataEntity<UserHomework> {
 	public void setEndFinishDate(String endFinishDate) {
 		this.endFinishDate = endFinishDate;
 	}
-		
+
+	public String getUserid() {
+		return userid;
+	}
+
+	public void setUserid(String userid) {
+		this.userid = userid;
+	}
+
+	public String getHomeworkid() {
+		return homeworkid;
+	}
+
+	public void setHomeworkid(String homeworkid) {
+		this.homeworkid = homeworkid;
+	}
+
+	public String getOfficeid() {
+		return officeid;
+	}
+
+	public void setOfficeid(String officeid) {
+		this.officeid = officeid;
+	}
 }
