@@ -5,7 +5,6 @@ package com.jeeplus.modules.statistics.entity;
 
 
 import com.jeeplus.core.persistence.DataEntity;
-import com.jeeplus.common.utils.excel.annotation.ExcelField;
 import com.jeeplus.modules.homework.entity.Homework;
 import com.jeeplus.modules.sys.entity.Office;
 import com.jeeplus.modules.sys.entity.User;
@@ -22,8 +21,12 @@ public class Statistics extends DataEntity<Statistics> {
 	private User user;	// 学生信息
 	private Homework homework;// 分数
 	private User teacher;//老师
+    private String beginTime;
+    private String endTime;
+    private String homeworkFinishToal;
+    private String homeworkNotFinishToal;
 
-	public Office getOffice() {
+    public Office getOffice() {
 		return office;
 	}
 
@@ -54,4 +57,36 @@ public class Statistics extends DataEntity<Statistics> {
 	public void setTeacher(User teacher) {
 		this.teacher = teacher;
 	}
+
+    public String getBeginTime() {
+        return beginTime;
+    }
+
+    public void setBeginTime(String beginTime) {
+        this.beginTime = beginTime;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
+    }
+
+    public String getHomeworkFinishToal() {
+        return homeworkFinishToal;
+    }
+
+    public void setHomeworkFinishToal(String homeworkFinishToal) {
+        this.homeworkFinishToal = homeworkFinishToal;
+    }
+
+    public String getHomeworkNotFinishToal() {
+        return homeworkNotFinishToal;
+    }
+
+    public void setHomeworkNotFinishToal(String homeworkNotFinishToal) {
+        this.homeworkNotFinishToal = homeworkNotFinishToal;
+    }
 }

@@ -37,10 +37,10 @@
 				/ReportServer/** = user
                 /momo/login = anon
                 /momo/logout = anon
-                /momo/upload = anon
-                /momo/scoreExchange = anon
+                /momo/** = authc
 
-			</value>
+
+            </value>
 		</constructor-arg>
 	</bean>
 	

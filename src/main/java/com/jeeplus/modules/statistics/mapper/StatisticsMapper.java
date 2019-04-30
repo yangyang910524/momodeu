@@ -18,4 +18,6 @@ import java.util.List;
 public interface StatisticsMapper extends BaseMapper<Statistics> {
 
     List<Statistics> scoreRankingByUser(Statistics entity);
+
+    List<Statistics> homeworkStatistics(Statistics entity);
 }

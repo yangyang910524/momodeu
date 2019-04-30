@@ -34,8 +34,6 @@
 
 	<sql id="userColumns">
     	a.id,
-    	a.company_id AS "company.id",
-    	a.office_id AS "office.id",
     	a.login_name AS "loginName",
     	a.password,
     	a.no,
@@ -57,10 +55,20 @@
 		a.create_date AS "createDate",
 		a.update_by AS "updateBy.id",
 		a.update_date AS "updateDate",
-		a.del_flag AS "delFlag"
+		a.del_flag AS "delFlag",
+		xsso.id AS "office.id",
+		xsso.name AS "office.name"
     </sql>
     
     <sql id="userJoins">
+        left join (
+          select
+          userid,
+          officeid
+          from sys_user_office
+          where user_type='3'
+        ) xssuo on xssuo.userid=a.id
+        left join sys_office xsso on xsso.id=xssuo.officeid
     </sql>
 
 
@@ -419,4 +427,44 @@
         </where>
     </select>
 
+    <select id="findTeacherListByOffice" resultMap="userResult">
+        SELECT
+            su.id as id,
+            su.login_name AS "loginName",
+            su.name,
+            su.english_name AS "englishName",
+            su.user_type as "userType",
+            su.email,
+            su.phone,
+            su.mobile,
+            su.remarks,
+            su.photo
+        FROM
+        sys_user_office suo
+        left join sys_user su on suo.userid=su.id
+        where suo.user_type in ('1','2')
+        and officeid=#{officeid}
+        order by case when suo.user_type='2' then 1 else 1 end
+    </select>
+
+    <select id="findStudentListByOffice" resultType="com.jeeplus.modules.sys.entity.User">
+        SELECT
+        su.id as id,
+        su.login_name AS "loginName",
+        su.name,
+        su.english_name AS "englishName",
+        su.score,
+        su.user_type as "userType",
+        su.email,
+        su.phone,
+        su.mobile,
+        su.remarks,
+        su.photo
+        FROM
+        sys_user_office suo
+        left join sys_user su on suo.userid=su.id
+        where suo.user_type ='3'
+        and suo.userid &lt;>#{userid}
+        and officeid=#{officeid}
+    </select>
 </mapper>

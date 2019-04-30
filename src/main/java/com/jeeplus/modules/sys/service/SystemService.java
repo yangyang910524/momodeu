@@ -555,7 +555,16 @@ public class SystemService extends BaseService implements InitializingBean {
 			identityService.deleteUser(userId);
 		}
 	}
-	
-	///////////////// Synchronized to the Activiti end //////////////////
+
+	//获取某班级老师列表
+    public List<User> findTeacherListByOffice(String officeid) {
+        return userMapper.findTeacherListByOffice(officeid);
+    }
+
+    public List<User>  findStudentListByOffice(String officeid,String userid) {
+        return userMapper.findStudentListByOffice(officeid,userid);
+    }
+
+    ///////////////// Synchronized to the Activiti end //////////////////
 	
 }

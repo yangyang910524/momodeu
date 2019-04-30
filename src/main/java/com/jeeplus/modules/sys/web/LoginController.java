@@ -3,14 +3,22 @@
  */
 package com.jeeplus.modules.sys.web;
 
-import java.io.IOException;
-import java.util.Map;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.google.common.collect.Maps;
+import com.jeeplus.common.config.Global;
+import com.jeeplus.common.json.AjaxJson;
 import com.jeeplus.common.utils.*;
+import com.jeeplus.core.persistence.Page;
+import com.jeeplus.core.security.shiro.session.SessionDAO;
+import com.jeeplus.core.servlet.ValidateCodeServlet;
+import com.jeeplus.core.web.BaseController;
+import com.jeeplus.modules.iim.entity.MailBox;
+import com.jeeplus.modules.iim.entity.MailPage;
+import com.jeeplus.modules.iim.service.MailBoxService;
+import com.jeeplus.modules.oa.entity.OaNotify;
+import com.jeeplus.modules.oa.service.OaNotifyService;
+import com.jeeplus.modules.sys.security.FormAuthenticationFilter;
+import com.jeeplus.modules.sys.security.SystemAuthorizingRealm.Principal;
+import com.jeeplus.modules.sys.utils.UserUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -25,23 +33,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import com.google.common.collect.Maps;
-import com.jeeplus.common.config.Global;
-import com.jeeplus.common.json.AjaxJson;
-import com.jeeplus.core.persistence.Page;
-import com.jeeplus.core.security.shiro.session.SessionDAO;
-import com.jeeplus.core.servlet.ValidateCodeServlet;
-import com.jeeplus.core.web.BaseController;
-import com.jeeplus.modules.iim.entity.MailBox;
-import com.jeeplus.modules.iim.entity.MailPage;
-import com.jeeplus.modules.iim.service.MailBoxService;
-import com.jeeplus.modules.oa.entity.OaNotify;
-import com.jeeplus.modules.oa.service.OaNotifyService;
-import com.jeeplus.modules.sys.security.FormAuthenticationFilter;
-import com.jeeplus.modules.sys.security.SystemAuthorizingRealm.Principal;
-import com.jeeplus.modules.sys.utils.UserUtils;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Map;
 
 /**
  * 登录Controller
@@ -72,8 +70,8 @@ public class LoginController extends BaseController{
 			@ApiImplicitParam(name="mobileLogin",value = "接口标志",required = true, paramType = "query",dataType = "string")})
 	@RequestMapping(value = "${adminPath}/login")
 	public String login(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		Principal principal = UserUtils.getPrincipal();
 
+		Principal principal = UserUtils.getPrincipal();
 		if (logger.isDebugEnabled()){
 			logger.debug("login, active session size: {}", sessionDAO.getActiveSessions(false).size());
 		}
@@ -98,6 +96,7 @@ public class LoginController extends BaseController{
 				j.setSuccess(false);
 				j.setErrorCode("0");
 				j.setMsg("没有登录!");
+                j.put("session",UserUtils.getSession().getId());
 				return renderString(response, j);
 			}
 		 }

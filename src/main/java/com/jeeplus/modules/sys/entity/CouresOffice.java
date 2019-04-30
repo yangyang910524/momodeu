@@ -5,6 +5,7 @@ package com.jeeplus.modules.sys.entity;
 
 
 import com.jeeplus.core.persistence.DataEntity;
+import com.jeeplus.modules.course.entity.CourseInfo;
 
 /**
  * 课程-班级关联Entity
@@ -14,49 +15,31 @@ import com.jeeplus.core.persistence.DataEntity;
 public class CouresOffice extends DataEntity<CouresOffice> {
 	
 	private static final long serialVersionUID = 1L;
-	private String officeid;		// 班级主键
-	private String couresid;		// 课程主键
-    private String officeName;  //班级名称
-    private String couresName;  //课程名称
-    private String statue;		// 学习状态
+    private String state;		// 学习状态
+    private Office office;//班级信息
+    private CourseInfo courseInfo;//课程信息
 
-    public String getOfficeid() {
-        return officeid;
+    public String getState() {
+        return state;
     }
 
-    public void setOfficeid(String officeid) {
-        this.officeid = officeid;
+    public void setState(String state) {
+        this.state = state;
     }
 
-    public String getCouresid() {
-        return couresid;
+    public Office getOffice() {
+        return office;
     }
 
-    public void setCouresid(String couresid) {
-        this.couresid = couresid;
+    public void setOffice(Office office) {
+        this.office = office;
     }
 
-    public String getOfficeName() {
-        return officeName;
+    public CourseInfo getCourseInfo() {
+        return courseInfo;
     }
 
-    public void setOfficeName(String officeName) {
-        this.officeName = officeName;
-    }
-
-    public String getCouresName() {
-        return couresName;
-    }
-
-    public void setCouresName(String couresName) {
-        this.couresName = couresName;
-    }
-
-    public String getStatue() {
-        return statue;
-    }
-
-    public void setStatue(String statue) {
-        this.statue = statue;
+    public void setCourseInfo(CourseInfo courseInfo) {
+        this.courseInfo = courseInfo;
     }
 }

@@ -53,6 +53,17 @@
 					<if test="dbName == 'mssql'">'%'+#{comment}+'%'</if>
 					<if test="dbName == 'mysql'">concat('%',#{comment},'%')</if>
 			</if>
+            <if test="userid != null and userid != ''">
+                AND a.userid = #{userid}
+            </if>
+            <choose>
+                <when test="timeType=='today'">
+
+                </when>
+                <when test="timeType=='History'">
+
+                </when>
+            </choose>
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">

@@ -110,4 +110,8 @@ public interface UserMapper extends BaseMapper<User> {
 
 
     List<User> findUserByOffice(User user);
+
+    List<User> findTeacherListByOffice(String officeid);
+
+    List<User> findStudentListByOffice(@Param("officeid")String officeid,@Param("userid")String userid);
 }

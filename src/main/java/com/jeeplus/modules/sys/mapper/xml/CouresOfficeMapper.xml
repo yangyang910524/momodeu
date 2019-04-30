@@ -4,11 +4,14 @@
     
 	<sql id="couresOfficeColumns">
 		a.id AS "id",
-		a.officeid AS "officeid",
-		a.couresid AS "couresid",
-        so.name AS "officeName",
-        ci.name AS "couresName",
-        a.state AS "state"
+		a.officeid AS "office.id",
+		so.name AS "office.name",
+		a.couresid AS "courseInfo.id",
+        ci.name AS "courseInfo.name",
+		ci.cover AS "courseInfo.cover",
+		ci.title_type AS "courseInfo.titleType",
+		ci.level AS "courseInfo.level",
+		ci.state AS "courseInfo.state"
 	</sql>
 	
 	<sql id="couresOfficeJoins">
@@ -32,12 +35,19 @@
 		<include refid="couresOfficeJoins"/>
 		<where>
 			${dataScope}
-            <if test="officeid != null and officeid != ''">
-                AND a.officeid = #{officeid}
+            <if test="office != null and office.id != null and office.id != ''">
+                AND a.officeid = #{office.id}
             </if>
-            <if test="couresid != null and couresid != ''">
-                AND a.couresid = #{couresid}
+            <if test="courseInfo!=null and courseInfo.id != null and courseInfo.id != ''">
+                AND a.couresid = #{courseInfo.id}
             </if>
+            <if test="courseInfo!=null and courseInfo.state != null and courseInfo.state != ''">
+                AND ci.state = #{courseInfo.state}
+            </if>
+            <if test="courseInfo!=null and courseInfo.titleType != null and courseInfo.titleType != ''">
+                AND ci.title_type = #{courseInfo.titleType}
+            </if>
+
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">

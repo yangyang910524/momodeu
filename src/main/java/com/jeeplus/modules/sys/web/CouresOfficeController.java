@@ -11,7 +11,9 @@ import com.jeeplus.common.utils.excel.ExportExcel;
 import com.jeeplus.common.utils.excel.ImportExcel;
 import com.jeeplus.core.persistence.Page;
 import com.jeeplus.core.web.BaseController;
+import com.jeeplus.modules.course.entity.CourseInfo;
 import com.jeeplus.modules.sys.entity.CouresOffice;
+import com.jeeplus.modules.sys.entity.Office;
 import com.jeeplus.modules.sys.service.CouresOfficeService;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -145,12 +147,16 @@ public class CouresOfficeController extends BaseController {
     public AjaxJson addCoures(String ids,String officeid) {
         AjaxJson j = new AjaxJson();
         CouresOffice couresOffice=new CouresOffice();
-        couresOffice.setOfficeid(officeid);
+        Office o=new Office();
+        o.setId(officeid);
+        couresOffice.setOffice(o);
+        CourseInfo c=new CourseInfo();
         String idArray[] =ids.split(",");
         List<CouresOffice> list=null;
         for(String id : idArray){
             couresOffice.setId(null);
-            couresOffice.setCouresid(id);
+            c.setId(id);
+            couresOffice.setCourseInfo(c);
             list=couresOfficeService.findList(couresOffice);
             if(list.size()>0){
                 continue;

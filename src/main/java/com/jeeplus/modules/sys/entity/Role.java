@@ -83,7 +83,6 @@ public class Role extends DataEntity<Role> {
 		this.name = name;
 	}
 
-	@Length(min=1, max=100)
 	public String getEnname() {
 		return enname;
 	}
@@ -92,7 +91,6 @@ public class Role extends DataEntity<Role> {
 		this.enname = enname;
 	}
 	
-	@Length(min=1, max=100)
 	public String getRoleType() {
 		return roleType;
 	}
