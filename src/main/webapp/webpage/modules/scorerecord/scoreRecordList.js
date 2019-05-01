@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <script>
 $(document).ready(function() {
-	$('#couresOfficeTable').bootstrapTable({
+	$('#scoreRecordTable').bootstrapTable({
 		 
 		  //请求方法
                method: 'post',
@@ -37,7 +37,7 @@ $(document).ready(function() {
                //可供选择的每页的行数（*）    
                pageList: [10, 25, 50, 100],
                //这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据  
-               url: "${ctx}/sys/couresoffice/couresOffice/data?office.id=${couresOffice.office.id}",
+               url: "${ctx}/scorerecord/scoreRecord/data",
                //默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
                //queryParamsType:'',   
                ////查询参数,每次调用是会带上这个参数，可自定义                         
@@ -59,11 +59,11 @@ $(document).ready(function() {
                    }else if($el.data("item") == "view"){
                        view(row.id);
                    } else if($el.data("item") == "delete"){
-                        jp.confirm('确认要删除该信息记录吗？', function(){
+                        jp.confirm('确认要删除该积分调整记录记录吗？', function(){
                        	jp.loading();
-                       	jp.get("${ctx}/sys/couresoffice/couresOffice/delete?id="+row.id, function(data){
+                       	jp.get("${ctx}/scorerecord/scoreRecord/delete?id="+row.id, function(data){
                    	  		if(data.success){
-                   	  			$('#couresOfficeTable').bootstrapTable('refresh');
+                   	  			$('#scoreRecordTable').bootstrapTable('refresh');
                    	  			jp.success(data.msg);
                    	  		}else{
                    	  			jp.error(data.msg);
@@ -84,17 +84,48 @@ $(document).ready(function() {
 		        checkbox: true
 		       
 		    }
-           ,{
-               field: 'officeName',
-               title: '班级名称',
-               sortable: false
-
-           } ,{
-               field: 'couresName',
-               title: '课程名称',
-               sortable: false
-
-           }
+			,{
+		        field: 'remarks',
+		        title: '备注信息',
+		        sortable: true,
+		        sortName: 'remarks'
+		        ,formatter:function(value, row , index){
+		        	value = jp.unescapeHTML(value);
+				   <c:choose>
+					   <c:when test="${fns:hasPermission('scorerecord:scoreRecord:edit')}">
+					      return "<a href='javascript:edit(\""+row.id+"\")'>"+value+"</a>";
+				      </c:when>
+					  <c:when test="${fns:hasPermission('scorerecord:scoreRecord:view')}">
+					      return "<a href='javascript:view(\""+row.id+"\")'>"+value+"</a>";
+				      </c:when>
+					  <c:otherwise>
+					      return value;
+				      </c:otherwise>
+				   </c:choose>
+		         }
+		       
+		    }
+			,{
+		        field: 'user.id',
+		        title: '学生',
+		        sortable: true,
+		        sortName: 'user.id'
+		       
+		    }
+			,{
+		        field: 'oldScore',
+		        title: '原始积分',
+		        sortable: true,
+		        sortName: 'oldScore'
+		       
+		    }
+			,{
+		        field: 'newScore',
+		        title: '调整后积分',
+		        sortable: true,
+		        sortName: 'newScore'
+		       
+		    }
 		     ]
 		
 		});
@@ -103,13 +134,13 @@ $(document).ready(function() {
 	  if(navigator.userAgent.match(/(iPhone|iPod|Android|ios)/i)){//如果是移动端
 
 		 
-		  $('#couresOfficeTable').bootstrapTable("toggleView");
+		  $('#scoreRecordTable').bootstrapTable("toggleView");
 		}
 	  
-	  $('#couresOfficeTable').on('check.bs.table uncheck.bs.table load-success.bs.table ' +
+	  $('#scoreRecordTable').on('check.bs.table uncheck.bs.table load-success.bs.table ' +
                 'check-all.bs.table uncheck-all.bs.table', function () {
-            $('#remove').prop('disabled', ! $('#couresOfficeTable').bootstrapTable('getSelections').length);
-            $('#view,#edit').prop('disabled', $('#couresOfficeTable').bootstrapTable('getSelections').length!=1);
+            $('#remove').prop('disabled', ! $('#scoreRecordTable').bootstrapTable('getSelections').length);
+            $('#view,#edit').prop('disabled', $('#scoreRecordTable').bootstrapTable('getSelections').length!=1);
         });
 		  
 		$("#btnImport").click(function(){
@@ -121,18 +152,18 @@ $(document).ready(function() {
 			    content: "${ctx}/tag/importExcel" ,
 			    btn: ['下载模板','确定', '关闭'],
 				    btn1: function(index, layero){
-					  jp.downloadFile('${ctx}/sys/couresoffice/couresOffice/import/template');
+					 jp.downloadFile('${ctx}/scorerecord/scoreRecord/import/template');
 				  },
 			    btn2: function(index, layero){
 				        var iframeWin = layero.find('iframe')[0]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
-						iframeWin.contentWindow.importExcel('${ctx}/sys/couresoffice/couresOffice/import', function (data) {
+						iframeWin.contentWindow.importExcel('${ctx}/scorerecord/scoreRecord/import', function (data) {
 							if(data.success){
 								jp.success(data.msg);
 								refresh();
 							}else{
 								jp.error(data.msg);
 							}
-					   		jp.close(index);
+						   jp.close(index);
 						});//调用保存事件
 						return false;
 				  },
@@ -142,14 +173,14 @@ $(document).ready(function() {
 	    	       }
 			}); 
 		});
-		
+		    
 		
 	 $("#export").click(function(){//导出Excel文件
 	        var searchParam = $("#searchForm").serializeJSON();
 	        searchParam.pageNo = 1;
 	        searchParam.pageSize = -1;
-            var sortName = $('#couresOfficeTable').bootstrapTable("getOptions", "none").sortName;
-            var sortOrder = $('#couresOfficeTable').bootstrapTable("getOptions", "none").sortOrder;
+            var sortName = $('#scoreRecordTable').bootstrapTable("getOptions", "none").sortName;
+            var sortOrder = $('#scoreRecordTable').bootstrapTable("getOptions", "none").sortOrder;
             var values = "";
             for(var key in searchParam){
                 values = values + key + "=" + searchParam[key] + "&";
@@ -158,37 +189,37 @@ $(document).ready(function() {
                 values = values + "orderBy=" + sortName + " "+sortOrder;
             }
 
-			jp.downloadFile('${ctx}/sys/couresoffice/couresOffice/export?'+values);
+			jp.downloadFile('${ctx}/scorerecord/scoreRecord/export?'+values);
 	  })
 
 		    
 	  $("#search").click("click", function() {// 绑定查询按扭
-		  $('#couresOfficeTable').bootstrapTable('refresh');
+		  $('#scoreRecordTable').bootstrapTable('refresh');
 		});
 	 
 	 $("#reset").click("click", function() {// 绑定查询按扭
 		  $("#searchForm  input").val("");
 		  $("#searchForm  select").val("");
 		  $("#searchForm  .select-item").html("");
-		  $('#couresOfficeTable').bootstrapTable('refresh');
+		  $('#scoreRecordTable').bootstrapTable('refresh');
 		});
 		
 		
 	});
 		
   function getIdSelections() {
-        return $.map($("#couresOfficeTable").bootstrapTable('getSelections'), function (row) {
+        return $.map($("#scoreRecordTable").bootstrapTable('getSelections'), function (row) {
             return row.id
         });
     }
   
   function deleteAll(){
 
-		jp.confirm('确认要删除该信息记录吗？', function(){
+		jp.confirm('确认要删除该积分调整记录记录吗？', function(){
 			jp.loading();  	
-			jp.get("${ctx}/sys/couresoffice/couresOffice/deleteAll?ids=" + getIdSelections(), function(data){
+			jp.get("${ctx}/scorerecord/scoreRecord/deleteAll?ids=" + getIdSelections(), function(data){
          	  		if(data.success){
-         	  			$('#couresOfficeTable').bootstrapTable('refresh');
+         	  			$('#scoreRecordTable').bootstrapTable('refresh');
          	  			jp.success(data.msg);
          	  		}else{
          	  			jp.error(data.msg);
@@ -197,41 +228,25 @@ $(document).ready(function() {
           	   
 		})
   }
-
-    //刷新列表
   function refresh(){
-  	$('#couresOfficeTable').bootstrapTable('refresh');
+  	$('#scoreRecordTable').bootstrapTable('refresh');
   }
-  
-   function add(){
-       jp.openCourseSelectDialog(true, function (ids, names) {
-           jp.get("${ctx}/sys/couresoffice/couresOffice/addCoures?ids=" + ids+"&officeid=${couresOffice.office.id}", function(data){
-               if(data.success){
-                   $('#couresOfficeTable').bootstrapTable('refresh');
-                   jp.success(data.msg);
-               }else{
-                   jp.error(data.msg);
-               }
-           })
-       },'${couresOffice.office.id}');
-  }
-
-
-  
-   function edit(id){//没有权限时，不显示确定按钮
-       if(id == undefined){
-	      id = getIdSelections();
+  function add(){
+		jp.go("${ctx}/scorerecord/scoreRecord/form/add");
 	}
-	jp.openSaveDialog('编辑信息', "${ctx}/sys/couresoffice/couresOffice/form?id=" + id, '800px', '500px');
+
+  function edit(id){
+	  if(id == undefined){
+		  id = getIdSelections();
+	  }
+	  jp.go("${ctx}/scorerecord/scoreRecord/form/edit?id=" + id);
+  }
+
+  function view(id) {
+      if(id == undefined){
+          id = getIdSelections();
+      }
+      jp.go("${ctx}/scorerecord/scoreRecord/form/view?id=" + id);
   }
   
- function view(id){//没有权限时，不显示确定按钮
-      if(id == undefined){
-             id = getIdSelections();
-      }
-        jp.openViewDialog('查看信息', "${ctx}/sys/couresoffice/couresOffice/form?id=" + id, '800px', '500px');
- }
-
-
-
 </script>

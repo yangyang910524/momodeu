@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jeeplus.modules.scorerecord.mapper.ScoreRecordMapper">
+    
+	<sql id="scoreRecordColumns">
+		a.id AS "id",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.user AS "user.id",
+		a.old_score AS "oldScore",
+		a.new_score AS "newScore"
+	</sql>
+	
+	<sql id="scoreRecordJoins">
+		
+	</sql>
+	
+    
+	<select id="get" resultType="ScoreRecord" >
+		SELECT 
+			<include refid="scoreRecordColumns"/>
+		FROM score_record a
+		<include refid="scoreRecordJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="ScoreRecord" >
+		SELECT 
+			<include refid="scoreRecordColumns"/>
+		FROM score_record a
+		<include refid="scoreRecordJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			${dataScope}
+			<if test="user != null and user.id != null and user.id != ''">
+				AND a.user LIKE 
+					<if test="dbName == 'oracle'">'%'||#{user.id}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{user.id}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{user.id},'%')</if>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="ScoreRecord" >
+		SELECT 
+			<include refid="scoreRecordColumns"/>
+		FROM score_record a
+		<include refid="scoreRecordJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			${dataScope}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO score_record(
+			id,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,
+			user,
+			old_score,
+			new_score
+		) VALUES (
+			#{id},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag},
+			#{user.id},
+			#{oldScore},
+			#{newScore}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE score_record SET 	
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			user = #{user.id},
+			old_score = #{oldScore},
+			new_score = #{newScore}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!--物理删除-->
+	<update id="delete">
+		DELETE FROM score_record
+		WHERE id = #{id}
+	</update>
+	
+	<!--逻辑删除-->
+	<update id="deleteByLogic">
+		UPDATE score_record SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!-- 根据实体名称和字段名称和字段值获取唯一记录 -->
+	<select id="findUniqueByProperty" resultType="ScoreRecord" statementType="STATEMENT">
+		select * FROM score_record  where ${propertyName} = '${value}'
+	</select>
+	
+</mapper>
