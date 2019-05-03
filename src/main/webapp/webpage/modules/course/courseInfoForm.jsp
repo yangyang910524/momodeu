@@ -10,6 +10,13 @@
 		});
 
 		function save() {
+		    	var titleType=$("#titleType").val();
+		    	if(titleType==1){
+		    	    if($("#cover").val()==""){
+		    	        layer.msg("请添加课程封面");
+                        return false;
+					}
+				}
 	            var isValidate = jp.validateForm('#inputForm');//校验表单
 	            if(!isValidate){
 	                return false;
@@ -34,57 +41,93 @@
 <body class="bg-white">
 		<form:form id="inputForm" modelAttribute="courseInfo" method="post" class="form-horizontal">
 		<form:hidden path="id"/>
+		<input type="hidden" value="${courseInfo.parent.id}" name="parent.id"/>
+		<c:if test="${empty courseInfo.parent.id}">
+			<input id="titleType" type="hidden" value="1" name="titleType"/>
+		</c:if>
+		<c:if test="${not empty courseInfo.parent.id}">
+			<input id="titleType" type="hidden" value="2" name="titleType"/>
+		</c:if>
 		<table class="table table-bordered">
 		   <tbody>
-				<tr>
-					<td class="width-15 active"><label class="pull-right">备注信息：</label></td>
+				<c:if test="${not empty courseInfo.parent.id}">
+					<tr>
+						<td class="width-15 active"><label class="pull-right">课程名称：</label></td>
+						<td class="width-35" colspan="3">
+							 ${courseInfo.parent.name}
+						</td>
+					</tr>
+				</c:if>
+                <tr>
+					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>课程级别：</label></td>
 					<td class="width-35">
-						<form:textarea path="remarks" htmlEscape="false" rows="4"    class="form-control "/>
+						<c:if test="${empty courseInfo.parent.id}">
+							<form:select path="level" class="form-control required">
+								<form:options items="${fns:getDictList('bae_course_level')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+							</form:select>
+						</c:if>
+						<c:if test="${not empty courseInfo.parent.id}">
+							${ fns:getDictLabel (courseInfo.parent.level, 'bae_course_level', '')}
+						</c:if>
 					</td>
-					<td class="width-15 active"><label class="pull-right">父级编号：</label></td>
-					<td class="width-35">
-						<sys:treeselect id="parent" name="parent.id" value="${courseInfo.parent.id}" labelName="parent.name" labelValue="${courseInfo.parent.name}"
-						title="父级编号" url="/course/courseInfo/treeData" extId="${courseInfo.id}" cssClass="form-control " allowClear="true"/>
+					<td class="width-15 active">
+						<label class="pull-right">
+							<font color="red">*</font>
+
+							<c:if test="${empty courseInfo.parent.id}">
+								课程名称：
+							</c:if>
+							<c:if test="${not empty courseInfo.parent.id}">
+								章节名称：
+							</c:if>
+						</label>
 					</td>
-				<tr>
-					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>名称：</label></td>
 					<td class="width-35">
 						<form:input path="name" htmlEscape="false"    class="form-control required"/>
 					</td>
+                </tr>
+				<c:if test="${empty courseInfo.parent.id}">
+					<tr>
+						<td class="width-15 active"><label class="pull-right"><font color="red">*</font>课程封面：</label></td>
+						<td class="width-35" colspan="3">
+							<sys:fileUpload path="cover"  value="${courseInfo.cover}" type="file" uploadPath="/course/courseInfo"/>
+						</td>
+					</tr>
+				</c:if>
+                <tr>
+                    <td class="width-15 active"><label class="pull-right"><font color="red">*</font>状态：</label></td>
+                    <td class="width-35">
+						<c:if test="${empty courseInfo.parent.id and empty courseInfo.id}">
+							草稿
+							<input type="hidden" value="0" name="state"/>
+						</c:if>
+						<c:if test="${empty courseInfo.parent.id and not empty courseInfo.id and courseInfo.state eq '0'} ">
+							<select path="state" class="form-control ">
+								<form:option value="" label=""/>
+								<form:options items="${fns:getDictList('bas_release_type')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+							</select>
+						</c:if>
+						<c:if test="${empty courseInfo.parent.id and not empty courseInfo.id and courseInfo.state eq '0'} ">
+							<form:select path="state" class="form-control ">
+								<form:option value="" label=""/>
+								<form:options items="${fns:getDictList('bas_release_type')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+							</form:select>
+						</c:if>
+						<c:if test="${not empty courseInfo.parent.id}">
+							${ fns:getDictLabel (courseInfo.parent.state, 'bas_release_type', '')}
+						</c:if>
+                    </td>
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>排序：</label></td>
 					<td class="width-35">
-						<form:input path="sort" htmlEscape="false"    class="form-control required"/>
+						<form:input path="sort" htmlEscape="false"    class="form-control required digits"/>
+					</td>
+                </tr>
+				<tr>
+					<td class="width-15 active"><label class="pull-right">简述说明：</label></td>
+					<td class="width-35" colspan="3">
+						<form:textarea path="remarks" htmlEscape="false" rows="4"    class="form-control "/>
 					</td>
 				</tr>
-                <tr>
-                    <td class="width-15 active"><label class="pull-right">封面：</label></td>
-                    <td class="width-35">
-                        <sys:fileUpload path="cover"  value="${courseInfo.cover}" type="file" uploadPath="/course/courseInfo"/>
-                    </td>
-                    <td class="width-15 active"><label class="pull-right">标题类型：</label></td>
-                    <td class="width-35">
-                        <form:select path="titleType" class="form-control ">
-                            <form:option value="" label=""/>
-                            <form:options items="${fns:getDictList('bas_course_title_type')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
-                        </form:select>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="width-15 active"><label class="pull-right">课程级别：</label></td>
-                    <td class="width-35">
-                        <form:select path="level" class="form-control ">
-                            <form:option value="" label=""/>
-                            <form:options items="${fns:getDictList('bae_course_level')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
-                        </form:select>
-                    </td>
-                    <td class="width-15 active"><label class="pull-right">状态：</label></td>
-                    <td class="width-35">
-                        <form:select path="state" class="form-control ">
-                            <form:option value="" label=""/>
-                            <form:options items="${fns:getDictList('bas_release_type')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
-                        </form:select>
-                    </td>
-                </tr>
 		 	</tbody>
 		</table>
 		</form:form>
