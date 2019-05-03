@@ -132,10 +132,34 @@
                         title: '英文名',
                         sortable: true
                     }, {
-				        field: 'mobile',
-				        title: '手机',
-				        sortable: true
-				    }]
+                        field: 'mobile',
+                        title: '手机',
+                        sortable: true
+                    }, {
+                        field: 'score',
+                        title: '当前积分',
+                        sortable: true
+						,formatter:function(value, row , index){
+                        	if(row.userType=='3'){
+                        		return value;
+							}else{
+                        		return '-';
+							}
+						}
+                    }, {
+                        field: '',
+                        title: '操作',
+                        sortable: false,
+                        formatter:function(value, row , index){
+							var result="";
+                            <shiro:hasPermission name="sys:user:updateScore">
+								if(row.userType=='3'){
+                                    result+= "&nbsp;&nbsp;<a onclick='updateScore(\""+row.id+"\")'>积分调整</a>";
+								}
+                            </shiro:hasPermission>
+							return result;
+						}
+                    }]
 
 				});
 
@@ -232,5 +256,9 @@
 		  }
 		  function refresh() {
               $('#table').bootstrapTable('refresh');
+          }
+
+          function updateScore(id) {
+              jp.openSaveDialog('编辑用户', "${ctx}/sys/user/updateScoreForm?id=" + id,'800px', '680px');
           }
 	</script>

@@ -482,4 +482,10 @@
         and suo.userid &lt;>#{userid}
         and officeid=#{officeid}
     </select>
+
+	<update id="updateScore">
+		UPDATE sys_user SET
+			score = #{score}
+		WHERE id = #{id}
+	</update>
 </mapper>

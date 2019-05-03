@@ -565,6 +565,11 @@ public class SystemService extends BaseService implements InitializingBean {
         return userMapper.findStudentListByOffice(officeid,userid);
     }
 
+	@Transactional(readOnly = false)
+    public void updateScore(User user) {
+		userMapper.updateScore(user);
+    }
+
     ///////////////// Synchronized to the Activiti end //////////////////
 	
 }

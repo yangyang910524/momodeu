@@ -15,6 +15,10 @@ import com.jeeplus.common.utils.excel.ExportExcel;
 import com.jeeplus.common.utils.excel.ImportExcel;
 import com.jeeplus.core.persistence.Page;
 import com.jeeplus.core.web.BaseController;
+import com.jeeplus.modules.scoreexchange.entity.ScoreExchange;
+import com.jeeplus.modules.scoreexchange.service.ScoreExchangeService;
+import com.jeeplus.modules.scorerecord.entity.ScoreRecord;
+import com.jeeplus.modules.scorerecord.service.ScoreRecordService;
 import com.jeeplus.modules.sys.entity.Office;
 import com.jeeplus.modules.sys.entity.Role;
 import com.jeeplus.modules.sys.entity.SystemConfig;
@@ -58,8 +62,10 @@ public class UserController extends BaseController {
 	private SystemService systemService;
 	@Autowired
 	private UserMapper userMapper;
-    @Autowired
-    private OfficeService officeService;
+	@Autowired
+	private OfficeService officeService;
+	@Autowired
+	private ScoreRecordService ccoreRecordService;
 	
 	@ModelAttribute
 	public User get(@RequestParam(required=false) String id) {
@@ -660,5 +666,32 @@ public class UserController extends BaseController {
 		}
 		return j;
 	}
-	
+
+	@RequestMapping(value = "updateScoreForm")
+	public String updateScoreForm(User user, Model model) {
+		model.addAttribute("user", userMapper.get(user.getId()));
+		return "modules/sys/user/updateScore";
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "updateScore")
+	public AjaxJson updateScore(User user, HttpServletRequest request, Model model) {
+		AjaxJson j = new AjaxJson();
+		User student=userMapper.get(user.getId());
+		if(student.getScore()==user.getScore()){
+			j.setSuccess(false);
+			j.setMsg("积分未调整!");
+			return j;
+		}
+		systemService.updateScore(user);
+		ScoreRecord scoreRecord=new ScoreRecord();
+		scoreRecord.setOldScore(student.getScore().toString());
+		scoreRecord.setNewScore(user.getScore().toString());
+		scoreRecord.setUser(student);
+		scoreRecord.setRemarks(user.getRemarks());
+		ccoreRecordService.save(scoreRecord);
+		j.setSuccess(true);
+		j.setMsg("积分调整成功!");
+		return j;
+	}
 }
