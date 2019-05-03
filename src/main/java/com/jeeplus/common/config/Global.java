@@ -109,7 +109,7 @@ public class Global {
 	 */
 	public static String getAttachmentDir(){
 		SystemAuthorizingRealm.Principal principal = (SystemAuthorizingRealm.Principal) UserUtils.getPrincipal();
-		String dir = Global.getUserfilesBaseDir() + Global.USERFILES_BASE_URL + principal + "/程序附件/";
+		String dir = Global.getUserfilesBaseDir() + Global.USERFILES_BASE_URL;
 		FileUtils.createDirectory(dir);
 		return dir;
 	}
@@ -121,7 +121,7 @@ public class Global {
 	public static String getAttachmentUrl(){
 
 		SystemAuthorizingRealm.Principal principal = (SystemAuthorizingRealm.Principal) UserUtils.getPrincipal();
-		return  Servlets.getRequest().getContextPath() + Global.USERFILES_BASE_URL + principal + "/程序附件/";
+		return  Servlets.getRequest().getContextPath() + Global.USERFILES_BASE_URL;
 	}
 
 	/**

@@ -86,7 +86,8 @@ public class momo {
                 return j;
             }
             String sessionid= (String) UserUtils.getSession().getId();
-            String url="http://localhost:8081/jeeplus/a/login;JSESSIONID="+sessionid+"?__ajax=true";
+//            String url="http://localhost:8081/jeeplus/a/login;JSESSIONID="+sessionid+"?__ajax=true";
+            String url="http://localhost:8080/jeeplus/a/login;JSESSIONID="+sessionid+"?__ajax=true";
             params.put("mobileLogin","true");
             HttpPostTest test = new HttpPostTest(url,params);
             String result=  test.post();
@@ -133,7 +134,8 @@ public class momo {
                 j.setMsg("JSESSIONID不能为空!");
                 return j;
             }
-            URL url=new URL("http://localhost:8081/jeeplus/a/logout;JSESSIONID="+params.get("JSESSIONID").toString()+"?__ajax=true");
+//            URL url=new URL("http://localhost:8081/jeeplus/a/logout;JSESSIONID="+params.get("JSESSIONID").toString()+"?__ajax=true");
+            URL url=new URL("http://localhost:8080/jeeplus/a/logout;JSESSIONID="+params.get("JSESSIONID").toString()+"?__ajax=true");
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream(),"UTF-8"));

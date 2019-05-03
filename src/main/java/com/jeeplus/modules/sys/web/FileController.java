@@ -310,11 +310,9 @@ public class FileController extends BaseController {
 	    User currentUser = UserUtils.getUser();
 		String uploadPath = request.getParameter("uploadPath");
         Calendar cal = Calendar.getInstance();
-        int year = cal.get(Calendar.YEAR);
-        int month = cal.get(Calendar.MONTH )+1;
 		SystemAuthorizingRealm.Principal principal = (SystemAuthorizingRealm.Principal) UserUtils.getPrincipal();
-		String fileUrl = Global.getAttachmentUrl()+uploadPath+"/"+year+"/"+month+"/";
-		String fileDir = Global.getAttachmentDir()+uploadPath+"/"+year+"/"+month+"/";
+		String fileUrl = Global.getAttachmentUrl()+uploadPath+"/"+UserUtils.getUser().getId()+"/";
+		String fileDir = Global.getAttachmentUrl()+uploadPath+"/"+UserUtils.getUser().getId()+"/";
 		// 判断文件是否为空
 		if (!file.isEmpty()) {
 			// 文件保存路径

@@ -132,10 +132,25 @@
 					<if test="dbName == 'mssql'">'%'+#{loginName}+'%'</if>
 		</if>
 		<if test="name != null and name != ''">
-			AND a.name like 
-					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
-					<if test="dbName == 'mysql'">CONCAT('%', #{name}, '%')</if>
-					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+			AND a.name like
+			<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+			<if test="dbName == 'mysql'">CONCAT('%', #{name}, '%')</if>
+			<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+		</if>
+		<if test="mobile != null and mobile != ''">
+			AND a.mobile like
+			<if test="dbName == 'oracle'">'%'||#{mobile}||'%'</if>
+			<if test="dbName == 'mysql'">CONCAT('%', #{mobile}, '%')</if>
+			<if test="dbName == 'mssql'">'%'+#{mobile}+'%'</if>
+		</if>
+		<if test="englishName != null and englishName != ''">
+			AND a.english_name like
+			<if test="dbName == 'oracle'">'%'||#{englishName}||'%'</if>
+			<if test="dbName == 'mysql'">CONCAT('%', #{englishName}, '%')</if>
+			<if test="dbName == 'mssql'">'%'+#{englishName}+'%'</if>
+		</if>
+		<if test="userType != null and userType != ''">
+			AND a.user_type =#{userType}
 		</if>
 		<!-- 数据范围过滤 -->
 		${dataScope}

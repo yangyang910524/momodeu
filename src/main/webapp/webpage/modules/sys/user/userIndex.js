@@ -104,11 +104,26 @@
 				        }
 
 				    }, {
-				        field: 'loginName',
-				        title: '登录名',
-				        sortable: true
+                        field: 'userType',
+                        title: '用户类型',
+                        sortable: true,
+                        formatter:function(value, row , index){
+                        	if(value=='1'){
+                                return "管理员";
+							}else if(value=='2'){
+                                return "老师";
+							}else if(value=='3'){
+                                return "学生";
+							}else{
+								return "";
+							}
+						}
+                    }, {
+                        field: 'loginName',
+                        title: '登录名',
+                        sortable: true
 
-				    }, {
+                    }, {
                         field: 'name',
                         title: '姓名',
                         sortable: true
@@ -117,14 +132,6 @@
                         title: '英文名',
                         sortable: true
                     }, {
-                        field: 'score',
-                        title: '分数',
-                        sortable: true
-                    }, {
-				        field: 'phone',
-				        title: '电话',
-				        sortable: true
-				    }, {
 				        field: 'mobile',
 				        title: '手机',
 				        sortable: true
