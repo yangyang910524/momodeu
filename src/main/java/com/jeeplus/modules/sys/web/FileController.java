@@ -3,23 +3,34 @@
  */
 package com.jeeplus.modules.sys.web;
 
+import com.aliyun.oss.OSSClient;
 import com.google.common.collect.Lists;
 import com.jeeplus.common.config.Global;
 import com.jeeplus.common.json.AjaxJson;
+import com.jeeplus.common.utils.DateUtils;
 import com.jeeplus.common.utils.FileUtils;
 import com.jeeplus.common.utils.StringUtils;
+import com.jeeplus.common.utils.time.DateUtil;
 import com.jeeplus.core.web.BaseController;
 import com.jeeplus.modules.sys.entity.FileData;
 import com.jeeplus.modules.sys.entity.User;
 import com.jeeplus.modules.sys.security.SystemAuthorizingRealm;
 import com.jeeplus.modules.sys.utils.UserUtils;
+import org.apache.commons.fileupload.disk.DiskFileItem;
+import org.apache.fop.util.DataURLUtil;
 import org.apache.ibatis.annotations.Param;
+import org.apache.poi.util.IOUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.h2.mvstore.DataUtils;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -345,7 +356,49 @@ public class FileController extends BaseController {
 
 		return j;
 	}
-	
 
+	/**
+	 * 上传文件
+	 * @return
+	 * @throws IOException
+	 * @throws IllegalStateException
+	 */
+	@ResponseBody
+	@RequestMapping(value = "fileUpload" , method = RequestMethod.POST)
+	public AjaxJson fileUpload(HttpServletRequest request, HttpServletResponse response, @RequestParam(value="file") MultipartFile file, @RequestParam(value="filePath") String filePath) throws IllegalStateException, IOException {
+		AjaxJson j = new AjaxJson();
+		CommonsMultipartFile cFile = (CommonsMultipartFile) file;
+		DiskFileItem fileItem = (DiskFileItem) cFile.getFileItem();
+		InputStream inputStream = fileItem.getInputStream();
+		String fileName=file.getOriginalFilename();
+		String suffix="";
+		int dot = fileName.lastIndexOf('.');
+		if ((dot >-1) && (dot < (fileName.length() - 1))) {
+			suffix= fileName.substring(dot).toLowerCase();
+		}
+		// Endpoint以杭州为例，其它Region请按实际情况填写。
+		String endpoint = "oss-cn-beijing.aliyuncs.com";
+		// 阿里云主账号AccessKey拥有所有API的访问权限，风险很高。强烈建议您创建并使用RAM账号进行API访问或日常运维，请登录 https://ram.console.aliyun.com 创建RAM账号。
+		String accessKeyId = "LTAIy1DroxAA5lYY";
+		String accessKeySecret = "KAB9PK1jk9s4NxJ3Q5bkhemy6DHSvf";
+		String bucketName = "webmomofile";
+		String newFileName=DateUtils.getDate("yyyyMMddHHmmssSSS")+suffix;
+		String objectName = filePath+"/"+UserUtils.getUser().getId()+"/"+ newFileName;
+
+		// 创建OSSClient实例。
+		OSSClient ossClient = new OSSClient(endpoint, accessKeyId, accessKeySecret);
+
+		// 上传内容到指定的存储空间（bucketName）并保存为指定的文件名称（objectName）。
+		ossClient.putObject(bucketName, objectName, inputStream);
+
+		// 关闭OSSClient。
+		ossClient.shutdown();
+
+		j.setSuccess(true);
+		j.put("fileName", fileName);
+		j.put("newFileName", newFileName);
+		j.put("url", Global.getFilePath()+"/"+objectName);
+		return j;
+	}
 
 }

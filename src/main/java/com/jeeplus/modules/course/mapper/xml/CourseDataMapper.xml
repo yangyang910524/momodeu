@@ -12,11 +12,18 @@
 		a.del_flag AS "delFlag",
 		a.data AS "data",
 		a.courseid AS "courseInfo.id",
-		b.name AS "courseInfo.name"
+		concat(p.name,' : ',b.name) AS "courseInfo.name",
+
+		p.state AS "courseInfo.state",
+		p.level AS "courseInfo.level",
+
+		p.id AS "courseInfo.parent.id",
+		p.name AS "courseInfo.parent.name"
 	</sql>
 	
 	<sql id="courseDataJoins">
 			LEFT JOIN course_info b ON b.id = a.courseid
+			LEFT JOIN course_info p ON b.parent_id = p.id
 	</sql>
 	
     
@@ -45,13 +52,30 @@
                         <if test="dbName == 'mysql'">CONCAT('%,', #{courseInfo.id}, ',%'))</if>
                         <if test="dbName == 'mssql'">'%'+#{courseInfo.id}+'%')</if>
                     </if>
+
+			<if test="courseInfo != null  and courseInfo.parent != null and courseInfo.parent.name != null and courseInfo.parent.name != ''">
+				AND p.name LIKE CONCAT('%,', #{courseInfo.parent.name}, ',%'))
+			</if>
+
+			<if test="courseInfo != null  and courseInfo.name != null and courseInfo.name != ''">
+				AND b.name LIKE CONCAT('%,', #{courseInfo.name}, ',%'))
+			</if>
+
+			<if test="courseInfo != null  and courseInfo.level != null and courseInfo.level != ''">
+				AND p.level LIKE CONCAT('%,', #{courseInfo.level}, ',%'))
+			</if>
+
+			<if test="courseInfo != null  and courseInfo.state != null and courseInfo.state != ''">
+				AND p.state LIKE CONCAT('%,', #{courseInfo.state}, ',%'))
+			</if>
+
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
 				ORDER BY ${page.orderBy}
 			</when>
 			<otherwise>
-				ORDER BY a.create_date ASC
+				ORDER BY cast( p.sort   as   SIGNED   INTEGER) ASC,cast( b.sort   as   SIGNED   INTEGER),a.create_date desc
 			</otherwise>
 		</choose>
 	</select>

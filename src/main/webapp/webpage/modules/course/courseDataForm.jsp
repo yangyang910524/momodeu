@@ -18,9 +18,53 @@
 			});
 		});
 
+		function chapterSelect() {
+            jp.openChapterSelectDialog(false, function (ids, names) {
+                $("#courseId").val(ids);
+                $("#courseName").val(names);
+                $("#courseName").blur();
+            },'');
+        }
+
+        function openFileDialog()
+        {
+            $("#file").click();
+        }
+
+        function fileSelected(){
+            var filename = $("#file").val();
+            var suffix=(filename.substr(filename.lastIndexOf("."))).toLowerCase();
+//            if(suffix!=".jpg"&&suffix!=".gif"&&suffix!=".jpeg"&& suffix!=".png") {
+//                layer.msg("您上传图片的类型不符合(.jpg|.jpeg|.gif|.png)！");
+//                return false;
+//            }
+            var formData = new FormData($("#uploadForm")[0]);
+            formData.append("filePath","avatar")
+            $.ajax({
+                url:"${ctx}/sys/file/fileUpload",
+                type: 'POST',
+                data:formData,
+                async: false,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success:function(data) {
+                    $("#data").val(data.body.url);
+                    $("#data").blur();
+                },
+                error:function(data) {
+                    layer.msg("上传失败");
+                }
+            });
+        }
 	</script>
 </head>
 <body>
+<!-- 文件上传form beigin-->
+<form id= "uploadForm" action= "" method= "post" enctype ="multipart/form-data">
+	<input type="file" id="file" name="file" style="display: none;"  onchange='fileSelected()'>
+</form>
+<!-- 文件上传form end-->
 <div class="wrapper wrapper-content">				
 <div class="row">
 	<div class="col-md-12">
@@ -34,22 +78,35 @@
 		<form:form id="inputForm" modelAttribute="courseData" action="${ctx}/course/courseData/save" method="post" class="form-horizontal">
 		<form:hidden path="id"/>
 				<div class="form-group">
-					<label class="col-sm-2 control-label">备注信息：</label>
+					<label class="col-sm-2 control-label"><font color="red">*</font>课程：</label>
+					<div class="col-sm-10" >
+						<div class="input-group input-append" style="width:100%" onclick="chapterSelect()">
+							<input id="courseId" name="courseInfo.id"  type="hidden" value="${courseInfo.id}"
+								   class="form-control required" readonly="readonly"/>
+							<input id="courseName" name="courseInfo.name"  type="text" value="${courseInfo.name}"
+								   class="form-control required" readonly="readonly"/>
+							<span class="input-group-btn">
+								 <button type="button"  id="btn" class="btn  btn-primary"><i class="fa fa-search"></i>
+								 </button>
+							 </span>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-2 control-label"><font color="red">*</font>资料：</label>
+					<div class="col-sm-10" >
+						<div class="input-group input-append" style="width:100%">
+							<input type="text" id="data" name="data"  class="form-control required" readonly="readonly" aria-invalid="false" value="${data}">
+							<span class="input-group-btn">
+									<button type="button" onclick="openFileDialog()" class="btn btn-primary "><i class="fa fa-cloud-upload"></i></button>
+								</span>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-2 control-label">简述说明：</label>
 					<div class="col-sm-10">
 						<form:textarea path="remarks" htmlEscape="false" rows="4"    class="form-control "/>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-sm-2 control-label">资料：</label>
-					<div class="col-sm-10">
-						<sys:fileUpload path="data"  value="${courseData.data}" type="file" uploadPath="/course/courseData" fileNumLimit="1" />
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-sm-2 control-label">课程：</label>
-					<div class="col-sm-10">
-						<sys:treeselect id="courseInfo" name="courseInfo.id" value="${courseData.courseInfo.id}" labelName="courseInfo.name" labelValue="${courseData.courseInfo.name}"
-							title="课程" url="/course/courseInfo/treeData" extId="${courseData.id}" cssClass="form-control required" allowClear="true"/>
 					</div>
 				</div>
 		<c:if test="${mode == 'add' || mode=='edit'}">

@@ -11,14 +11,12 @@ import com.jeeplus.core.persistence.Page;
 import com.jeeplus.core.web.BaseController;
 import com.jeeplus.modules.course.entity.CourseInfo;
 import com.jeeplus.modules.course.service.CourseInfoService;
+import com.jeeplus.modules.sys.utils.DictUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -53,16 +51,20 @@ public class CourseInfoController extends BaseController {
 	 * 课程信息列表页面
 	 */
 	@RequestMapping(value = {"list", ""})
-	public String list(CourseInfo courseInfo,  HttpServletRequest request, HttpServletResponse response, Model model) {
-		
+	public String list(CourseInfo courseInfo, @ModelAttribute("parentIds") String parentIds,  HttpServletRequest request, HttpServletResponse response, Model model) {
+
+		if(StringUtils.isNotBlank(parentIds)){
+			model.addAttribute("parentIds", parentIds);
+		}
+		model.addAttribute("courseInfo", courseInfo);
 		return "modules/course/courseInfoList";
 	}
 
 	/**
 	 * 查看，增加，编辑课程信息表单页面
 	 */
-	@RequestMapping(value = "form")
-	public String form(CourseInfo courseInfo, Model model) {
+	@RequestMapping(value = "form/{mode}")
+	public String form(@PathVariable String mode, CourseInfo courseInfo, Model model) {
 		if (courseInfo.getParent()!=null && StringUtils.isNotBlank(courseInfo.getParent().getId())){
 			courseInfo.setParent(courseInfoService.get(courseInfo.getParent().getId()));
 			// 获取排序号，最末节点排序号+30
@@ -79,8 +81,9 @@ public class CourseInfoController extends BaseController {
 			}
 		}
 		if (courseInfo.getSort() == null){
-			courseInfo.setSort(30);
+			courseInfo.setSort(1);
 		}
+		model.addAttribute("mode", mode);
 		model.addAttribute("courseInfo", courseInfo);
 		return "modules/course/courseInfoForm";
 	}
@@ -132,7 +135,6 @@ public class CourseInfoController extends BaseController {
 		return j;
 	}
 
-	@RequiresPermissions("user")
 	@ResponseBody
 	@RequestMapping(value = "treeData")
 	public List<Map<String, Object>> treeData(@RequestParam(required=false) String extId, HttpServletResponse response) {
@@ -143,7 +145,11 @@ public class CourseInfoController extends BaseController {
 			if (StringUtils.isBlank(extId) || (extId!=null && !extId.equals(e.getId()) && e.getParentIds().indexOf(","+extId+",")==-1)){
 				Map<String, Object> map = Maps.newHashMap();
 				map.put("id", e.getId());
-				map.put("text", e.getName());
+				if("1".equals(e.getLevel())){
+					map.put("text", "("+ DictUtils.getDictLabel(e.getState(), "bas_release_type", "未知")  +")"+e.getName());
+				}else{
+					map.put("text", e.getName());
+				}
 				if(StringUtils.isBlank(e.getParentId()) || "0".equals(e.getParentId())){
 					map.put("parent", "#");
 					Map<String, Object> state = Maps.newHashMap();
@@ -174,4 +180,34 @@ public class CourseInfoController extends BaseController {
         Page<CourseInfo> page = courseInfoService.findCourseList(new Page<CourseInfo>(request, response), courseInfo);
         return getBootstrapData(page);
     }
+
+	/**
+	 * 课程章节选择页面
+	 */
+	@RequestMapping(value = "openChapterSelectDialog")
+	public String openChapterSelectDialog(boolean isMultiSelect, Model model,String officeid) {
+		model.addAttribute("isMultiSelect", isMultiSelect);
+		model.addAttribute("officeid", officeid);
+		return "modules/common/chapterSelect";
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "chapterList")
+	public Map<String, Object> chapterList(CourseInfo courseInfo, HttpServletRequest request, HttpServletResponse response, Model model) {
+		Page<CourseInfo> page = courseInfoService.findChapterList(new Page<CourseInfo>(request, response), courseInfo);
+		return getBootstrapData(page);
+	}
+
+	/**
+	 * 发布、停用、启用课程
+	 */
+	@ResponseBody
+	@RequestMapping(value = "release")
+	public AjaxJson release(CourseInfo courseInfo) {
+		AjaxJson j = new AjaxJson();
+		courseInfoService.release(courseInfo);
+		j.setSuccess(true);
+		j.setMsg("操作成功");
+		return j;
+	}
 }

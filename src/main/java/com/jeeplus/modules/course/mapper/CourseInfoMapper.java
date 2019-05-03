@@ -18,4 +18,8 @@ import java.util.List;
 public interface CourseInfoMapper extends TreeMapper<CourseInfo> {
 
     List<CourseInfo> findCourseList(CourseInfo courseInfo);
+
+    List<CourseInfo> findChapterList(CourseInfo courseInfo);
+
+    void release(CourseInfo courseInfo);
 }

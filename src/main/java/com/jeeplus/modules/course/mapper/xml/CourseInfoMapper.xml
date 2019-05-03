@@ -69,7 +69,7 @@
 					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
 			</if>
 		</where>
-		ORDER BY a.sort ASC
+		ORDER BY cast( a.sort   as   SIGNED   INTEGER) ASC
 	</select>
 	
 	<select id="findAllList" resultType="CourseInfo">
@@ -81,11 +81,11 @@
 			a.del_flag = #{DEL_FLAG_NORMAL}
 			${dataScope}
 		</where>
-		ORDER BY a.sort ASC
+		ORDER BY cast( a.sort   as   SIGNED   INTEGER) ASC
 	</select>
 	
 	<select id="getChildren" parameterType="String" resultMap="courseInfoResult">  
-        select * from course_info where parent_id = #{id} ORDER BY sort 
+        select * from course_info where parent_id = #{id}  ORDER BY cast( sort   as   SIGNED   INTEGER) ASC
     </select> 
      
     <select id="hasChildren" parameterType="String" resultType="Boolean">  
@@ -103,7 +103,7 @@
 			a.del_flag = #{DEL_FLAG_NORMAL}
 			AND a.parent_ids LIKE #{parentIds}
 		</where>
-		ORDER BY a.sort ASC
+		ORDER BY cast( a.sort   as   SIGNED   INTEGER) ASC
 	</select>
 	
 	<insert id="insert">
@@ -205,7 +205,63 @@
                 <if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
             </if>
         </where>
-        ORDER BY a.sort ASC
+		ORDER BY cast( a.sort   as   SIGNED   INTEGER) ASC
     </select>
 
+	<select id="findChapterList" resultType="CourseInfo">
+		SELECT
+			a.id AS "id",
+			a.create_by AS "createBy.id",
+			a.create_date AS "createDate",
+			a.update_by AS "updateBy.id",
+			a.update_date AS "updateDate",
+			a.remarks AS "remarks",
+			a.del_flag AS "delFlag",
+			a.parent_ids AS "parentIds",
+			concat(p.name,' : ',a.name) AS "name",
+			a.sort AS "sort",
+			a.title_type AS "titleType",
+			a.parent_id AS "parent.id",
+			p.cover AS "cover",
+			p.level AS "level",
+			p.state AS "state"
+		FROM course_info a
+		left join course_info p on a.parent_id=p.id
+		<include refid="courseInfoJoins"/>
+		<where>
+			AND a.title_type='2'
+			<if test="office!=null and office.id != null and office.id != ''">
+				AND EXISTS (
+					select 1 from sys_coures_office sco where sco.couresid=a.id
+				)
+			</if>
+			<if test="state != null and state != ''">
+				AND p.state =#{state}
+			</if>
+			<if test="level != null and level != ''">
+				AND p.level =#{level}
+			</if>
+
+			<if test="name != null and name != ''">
+				AND a.name LIKE
+				<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+				<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+				<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+
+			<if test="parent!=null and parent.name != null and parent.name != ''">
+				AND p.name LIKE
+				<if test="dbName == 'oracle'">'%'||#{parent.name}||'%'</if>
+				<if test="dbName == 'mssql'">'%'+#{parent.name}+'%'</if>
+				<if test="dbName == 'mysql'">concat('%',#{parent.name},'%')</if>
+			</if>
+		</where>
+		ORDER BY cast( p.sort   as   SIGNED   INTEGER) ASC,cast( a.sort   as   SIGNED   INTEGER) ASC
+	</select>
+
+	<update id="release">
+		UPDATE course_info SET
+			state = #{state}
+		WHERE id = #{id}
+	</update>
 </mapper>

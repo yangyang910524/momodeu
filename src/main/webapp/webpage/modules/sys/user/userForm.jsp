@@ -44,16 +44,44 @@
 		
 	});
 
-	function changeRole(value) {
-        if(value=='f89f1a4157b249a2a621c37ab3941cdb'){
-            $("#score").removeAttr("disabled");
-        }else{
-            $("#score").attr("disabled","disabled");
+    function openFileDialog()
+    {
+        $("#file").click();
+    }
+
+    function fileSelected(){
+        var filename = $("#file").val();
+        var suffix=(filename.substr(filename.lastIndexOf("."))).toLowerCase();
+        if(suffix!=".jpg"&&suffix!=".gif"&&suffix!=".jpeg"&& suffix!=".png") {
+            layer.msg("您上传图片的类型不符合(.jpg|.jpeg|.gif|.png)！");
+            return false;
         }
+        var formData = new FormData($("#uploadForm")[0]);
+        formData.append("filePath","avatar")
+        $.ajax({
+            url:"${ctx}/sys/file/fileUpload",
+            type: 'POST',
+            data:formData,
+            async: false,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success:function(data) {
+                $("#photo").val(data.body.url);
+            },
+            error:function(data) {
+                layer.msg("上传失败");
+            }
+        });
     }
 	</script>
 </head>
 <body class="bg-white">
+<!-- 文件上传form beigin-->
+<form id= "uploadForm" action= "" method= "post" enctype ="multipart/form-data">
+	<input type="file" id="file" name="file" style="display: none;"  onchange='fileSelected()'>
+</form>
+<!-- 文件上传form end-->
 	<form:form id="inputForm" modelAttribute="user"  method="post" class="form-horizontal">
 		<form:hidden path="id"/>
 		<table class="table table-bordered">
@@ -61,8 +89,13 @@
 		      <tr>
 		         <td class="width-15 active">	<label class="pull-right"><font color="red">*</font>头像:</label></td>
 		         <td class="width-35">
-						<sys:fileUpload path="photo" value="${user.photo}" type="image" uploadPath="photo" fileNumLimit="4" readonly="false"/>
-                 </td>
+					 <div class="input-group" style="width:100%" >
+						 <input type="text" id="photo" name="photo"  class="form-control valid required" readonly="readonly" aria-invalid="false" value="${user.photo}">
+						 <span class="input-group-btn">
+							 <button type="button" id="photoButton" onclick="openFileDialog()" class="btn btn-primary "><i class="fa fa-cloud-upload"></i></button>
+						 </span>
+					 </div>
+				 </td>
                   <td class="active"><label class="pull-right"><font color="red">*</font><c:if test="${not empty user.id}">(不可修改)</c:if>角色:</label></td>
                   <td>
                       <c:if test="${not empty user.id}">

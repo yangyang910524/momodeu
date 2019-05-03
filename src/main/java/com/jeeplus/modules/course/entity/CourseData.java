@@ -17,7 +17,7 @@ public class CourseData extends DataEntity<CourseData> {
 	private static final long serialVersionUID = 1L;
 	private String data;		// 资料
 	private CourseInfo courseInfo;		// 课程 父类
-	
+
 	public CourseData() {
 		super();
 	}

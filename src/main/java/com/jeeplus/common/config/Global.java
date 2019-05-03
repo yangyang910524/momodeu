@@ -294,5 +294,11 @@ public class Global {
 		return prop;
 	}
 
+	/**
+	 * 获取文件后缀
+	 */
+	public static String getFilePath() {
+		return getConfig("filePath");
+	}
 	
 }

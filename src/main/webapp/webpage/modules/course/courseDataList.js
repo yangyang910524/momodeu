@@ -84,54 +84,48 @@ $(document).ready(function() {
 		        checkbox: true
 		       
 		    }
-			,{
-		        field: 'remarks',
-		        title: '备注信息',
-		        sortable: true,
-		        sortName: 'remarks'
-		        ,formatter:function(value, row , index){
-		        	value = jp.unescapeHTML(value);
-				   <c:choose>
-					   <c:when test="${fns:hasPermission('course:courseData:edit')}">
-					      return "<a href='javascript:edit(\""+row.id+"\")'>"+value+"</a>";
-				      </c:when>
-					  <c:when test="${fns:hasPermission('course:courseData:view')}">
-					      return "<a href='javascript:view(\""+row.id+"\")'>"+value+"</a>";
-				      </c:when>
-					  <c:otherwise>
-					      return value;
-				      </c:otherwise>
-				   </c:choose>
-		         }
-		       
-		    }
-		    ,{
-		        field: 'data',
-		        title: '资料',
-		        sortable: true,
-		        sortName: 'data',
-		        formatter:function(value, row , index){
-		        	var valueArray = value.split("|");
-		        	var labelArray = [];
-		        	for(var i =0 ; i<valueArray.length; i++){
-		        		if(!/\.(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(valueArray[i]))
-		        		{
-		        			labelArray[i] = "<a href=\""+valueArray[i]+"\" url=\""+valueArray[i]+"\" target=\"_blank\">"+decodeURIComponent(valueArray[i].substring(valueArray[i].lastIndexOf("/")+1))+"</a>"
-		        		}else{
-		        			labelArray[i] = '<img   onclick="jp.showPic(\''+valueArray[i]+'\')"'+' height="50px" src="'+valueArray[i]+'">';
-		        		}
-		        	}
-		        	return labelArray.join(" ");
-		        }
-		       
-		    }
+
 			,{
 		        field: 'courseInfo.name',
-		        title: '课程',
-		        sortable: true,
-		        sortName: 'courseInfo.name'
-		       
-		    }
+		        title: '课程名称 ： 章节名称',
+		        sortable: false
+		    },{
+				   field: 'courseInfo.level',
+				   title: '课程级别',
+				   sortable: false,
+				   formatter:function(value, row , index){
+					   return jp.getDictLabel(${fns:toJson(fns:getDictList('bae_course_level'))}, value, "-");
+				   }
+
+			   }, {
+				   field: 'courseInfo.state',
+				   title: '状态',
+				   sortable: false,
+				   formatter:function(value, row , index){
+					   return jp.getDictLabel(${fns:toJson(fns:getDictList('bas_release_type'))}, value, "-");
+				   }
+
+			   }
+                   ,{
+                       field: 'data',
+                       title: '资料',
+                       sortable: false,
+                       formatter:function(value, row , index){
+                           var valueArray = value.split("|");
+                           var labelArray = [];
+                           for(var i =0 ; i<valueArray.length; i++){
+                               labelArray[i] = "<a href='${ctx}/sys/file/download?source="+valueArray[i]+"' >下载材料</a>"
+                           }
+                           return labelArray.join(" ");
+                       }
+
+                   },{
+                       field: 'remarks',
+                       title: '备注信息',
+                       sortable: false
+
+
+                   }
 		     ]
 		
 		});
@@ -254,5 +248,8 @@ $(document).ready(function() {
       }
       jp.go("${ctx}/course/courseData/form/view?id=" + id);
   }
-  
+
+  function download(url) {
+	  windows.local.href="${ctx}/sys/file/download?fileUrl="+url
+  }
 </script>

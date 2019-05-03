@@ -6,61 +6,90 @@
 	<meta name="decorator" content="ani"/>
 	<script type="text/javascript">
 
-		$(document).ready(function() {
-		});
+        $(document).ready(function() {
+            jp.ajaxForm("#inputForm",function(data){
+                if(data.success){
+                    jp.success(data.msg);
+                    jp.go("${ctx}/course/courseInfo?parentIds="+data.body.parentIds);
+                }else{
+                    jp.error(data.msg);
+                    $("#inputForm").find("button:submit").button("reset");
+                }
+            });
+        });
 
-		function save() {
-		    	var titleType=$("#titleType").val();
-		    	if(titleType==1){
-		    	    if($("#cover").val()==""){
-		    	        layer.msg("请添加课程封面");
-                        return false;
-					}
-				}
-	            var isValidate = jp.validateForm('#inputForm');//校验表单
-	            if(!isValidate){
-	                return false;
-		    }else{
-	                jp.loading();
-	                jp.post("${ctx}/course/courseInfo/save",$('#inputForm').serialize(),function(data){
-	                    if(data.success){
-	                        jp.getParent().refreshTree();
-	                        var dialogIndex = parent.layer.getFrameIndex(window.name); // 获取窗口索引
-	                        parent.layer.close(dialogIndex);
-	                        jp.success(data.msg)
+        function openFileDialog()
+        {
+            $("#file").click();
+        }
 
-	                    }else{
-	                        jp.error(data.msg);
-	                    }
-	                })
-		  }
+        function fileSelected(){
+            var filename = $("#file").val();
+            var suffix=(filename.substr(filename.lastIndexOf("."))).toLowerCase();
+            if(suffix!=".jpg"&&suffix!=".gif"&&suffix!=".jpeg"&& suffix!=".png") {
+                layer.msg("您上传图片的类型不符合(.jpg|.jpeg|.gif|.png)！");
+                return false;
+            }
+            var formData = new FormData($("#uploadForm")[0]);
+            formData.append("filePath","coruse_cover")
+            $.ajax({
+                url:"${ctx}/sys/file/fileUpload",
+                type: 'POST',
+                data:formData,
+                async: false,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success:function(data) {
+                    $("#cover").val(data.body.url);
+                    $("#cover").blur();
+                    $("#coverShow").attr("src",data.body.url);
+                    $("#coverShow").attr("onclick","jp.showPic('"+data.body.url+"')");
+                },
+                error:function(data) {
+                    layer.msg("上传失败");
+                },
+            });
+        }
 
-	        }
 	</script>
 </head>
-<body class="bg-white">
-		<form:form id="inputForm" modelAttribute="courseInfo" method="post" class="form-horizontal">
-		<form:hidden path="id"/>
-		<input type="hidden" value="${courseInfo.parent.id}" name="parent.id"/>
-		<c:if test="${empty courseInfo.parent.id}">
-			<input id="titleType" type="hidden" value="1" name="titleType"/>
-		</c:if>
-		<c:if test="${not empty courseInfo.parent.id}">
-			<input id="titleType" type="hidden" value="2" name="titleType"/>
-		</c:if>
-		<table class="table table-bordered">
-		   <tbody>
-				<c:if test="${not empty courseInfo.parent.id}">
-					<tr>
-						<td class="width-15 active"><label class="pull-right">课程名称：</label></td>
-						<td class="width-35" colspan="3">
-							 ${courseInfo.parent.name}
-						</td>
-					</tr>
+<body>
+<!-- 文件上传form beigin-->
+<form id= "uploadForm" action= "" method= "post" enctype ="multipart/form-data">
+	<input type="file" id="file" name="file" style="display: none;"  onchange='fileSelected()'>
+</form>
+<!-- 文件上传form end-->
+<div class="wrapper wrapper-content">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="panel panel-primary">
+				<div class="panel-heading">
+					<h3 class="panel-title">
+						<a class="panelButton" href="${ctx}/course/courseInfo"><i class="ti-angle-left"></i> 返回</a>
+					</h3>
+				</div>
+				<form:form id="inputForm" modelAttribute="courseInfo" action="${ctx}/course/courseInfo/save" method="post" class="form-horizontal">
+				<form:hidden path="id"/>
+				<input type="hidden" value="${courseInfo.parent.id}" name="parent.id"/>
+				<c:if test="${empty courseInfo.parent.id}">
+					<input id="titleType" type="hidden" value="1" name="titleType"/>
 				</c:if>
-                <tr>
-					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>课程级别：</label></td>
-					<td class="width-35">
+				<c:if test="${not empty courseInfo.parent.id}">
+					<input id="titleType" type="hidden" value="2" name="titleType"/>
+				</c:if>
+
+				<c:if test="${not empty courseInfo.parent.id}">
+					<div class="form-group">
+						<label class="col-sm-2 control-label">课程名称：</label>
+						<div class="col-sm-10">
+								${courseInfo.parent.name}
+						</div>
+					</div>
+				</c:if>
+				<div class="form-group">
+					<label class="col-sm-2 control-label"><font color="red">*</font>课程级别：</label>
+					<div class="col-sm-10">
 						<c:if test="${empty courseInfo.parent.id}">
 							<form:select path="level" class="form-control required">
 								<form:options items="${fns:getDictList('bae_course_level')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
@@ -69,67 +98,95 @@
 						<c:if test="${not empty courseInfo.parent.id}">
 							${ fns:getDictLabel (courseInfo.parent.level, 'bae_course_level', '')}
 						</c:if>
-					</td>
-					<td class="width-15 active">
-						<label class="pull-right">
-							<font color="red">*</font>
+					</div>
+				</div>
 
-							<c:if test="${empty courseInfo.parent.id}">
-								课程名称：
-							</c:if>
-							<c:if test="${not empty courseInfo.parent.id}">
-								章节名称：
-							</c:if>
-						</label>
-					</td>
-					<td class="width-35">
+				<div class="form-group">
+					<label class="col-sm-2 control-label"><font color="red">*</font>
+						<c:if test="${empty courseInfo.parent.id}">
+							课程名称：
+						</c:if>
+						<c:if test="${not empty courseInfo.parent.id}">
+							章节名称：
+						</c:if>
+					</label>
+					<div class="col-sm-10">
 						<form:input path="name" htmlEscape="false"    class="form-control required"/>
-					</td>
-                </tr>
+					</div>
+				</div>
+
 				<c:if test="${empty courseInfo.parent.id}">
-					<tr>
-						<td class="width-15 active"><label class="pull-right"><font color="red">*</font>课程封面：</label></td>
-						<td class="width-35" colspan="3">
-							<sys:fileUpload path="cover"  value="${courseInfo.cover}" type="file" uploadPath="/course/courseInfo"/>
-						</td>
-					</tr>
+					<div class="form-group" >
+						<label class="col-sm-2 control-label"><font color="red">*</font>课程封面：</label>
+						<div class="col-sm-10">
+							<div class="input-group input-append" style="width:100%">
+								<input type="text" id="cover" name="cover"  class="form-control required" readonly="readonly" aria-invalid="false" value="${courseInfo.cover}">
+								<span class="input-group-btn">
+									<button type="button" id="photoButton" onclick="openFileDialog()" class="btn btn-primary "><i class="fa fa-cloud-upload"></i></button>
+								</span>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">封面预览：</label>
+						<div class="col-sm-10">
+							<div class="input-group" style="width:100%">
+								<img id="coverShow"  onclick="jp.showPic('${courseInfo.cover}')" height="34px" src="${courseInfo.cover}">
+							</div>
+						</div>
+					</div>
 				</c:if>
-                <tr>
-                    <td class="width-15 active"><label class="pull-right"><font color="red">*</font>状态：</label></td>
-                    <td class="width-35">
+				<div class="form-group">
+					<label class="col-sm-2 control-label"><font color="red">*</font>课程状态：</label>
+					<div class="col-sm-10">
 						<c:if test="${empty courseInfo.parent.id and empty courseInfo.id}">
 							草稿
 							<input type="hidden" value="0" name="state"/>
 						</c:if>
-						<c:if test="${empty courseInfo.parent.id and not empty courseInfo.id and courseInfo.state eq '0'} ">
-							<select path="state" class="form-control ">
-								<form:option value="" label=""/>
-								<form:options items="${fns:getDictList('bas_release_type')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
-							</select>
-						</c:if>
-						<c:if test="${empty courseInfo.parent.id and not empty courseInfo.id and courseInfo.state eq '0'} ">
-							<form:select path="state" class="form-control ">
-								<form:option value="" label=""/>
-								<form:options items="${fns:getDictList('bas_release_type')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
-							</form:select>
+						<c:if test="${empty courseInfo.parent.id and not empty courseInfo.id}">
+							${ fns:getDictLabel (courseInfo.state, 'bas_release_type', '')}
+							<input type="hidden" value="${courseInfo.state}" name="state"/>
 						</c:if>
 						<c:if test="${not empty courseInfo.parent.id}">
 							${ fns:getDictLabel (courseInfo.parent.state, 'bas_release_type', '')}
 						</c:if>
-                    </td>
-					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>排序：</label></td>
-					<td class="width-35">
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-sm-2 control-label"><font color="red">*</font>
+						<c:if test="${empty courseInfo.parent.id}">
+							课程排序：
+						</c:if>
+						<c:if test="${not empty courseInfo.parent.id}">
+							章节排序：
+						</c:if>
+					</label>
+					<div class="col-sm-10">
 						<form:input path="sort" htmlEscape="false"    class="form-control required digits"/>
-					</td>
-                </tr>
-				<tr>
-					<td class="width-15 active"><label class="pull-right">简述说明：</label></td>
-					<td class="width-35" colspan="3">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-2 control-label">简述说明：</label>
+					<div class="col-sm-10">
 						<form:textarea path="remarks" htmlEscape="false" rows="4"    class="form-control "/>
-					</td>
-				</tr>
-		 	</tbody>
-		</table>
-		</form:form>
+
+					</div>
+				</div>
+				<c:if test="${mode == 'add' || mode=='edit'}">
+					<div class="col-lg-3"></div>
+					<div class="col-lg-6">
+						<div class="form-group text-center">
+							<div>
+								<button class="btn btn-primary btn-block btn-lg btn-parsley" data-loading-text="正在提交...">提 交</button>
+							</div>
+						</div>
+					</div>
+				</c:if>
+				</form:form>
+				</div>
+			</div>
+	</div>
+</div>
 </body>
 </html>

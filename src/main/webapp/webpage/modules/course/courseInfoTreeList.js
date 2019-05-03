@@ -30,19 +30,23 @@
 						delete tmp.rename.action;
 						tmp.rename = null;
 						tmp.create = {
-							"label": "添加下级课程信息",
+							"label": "添加章节",
 							"action": function (data) {
-								var inst = jQuery.jstree.reference(data.reference),
-									obj = inst.get_node(data.reference);
-								jp.openSaveDialog('添加下级课程信息', '${ctx}/course/courseInfo/form?parent.id=' + obj.id + "&parent.name=" + obj.text, '800px', '500px');
+                                var inst = jQuery.jstree.reference(data.reference),
+                                    obj = inst.get_node(data.reference);
+								if(obj.parent=="#"){
+                                    jp.openSaveDialog('添加章节信息', '${ctx}/course/courseInfo/form?parent.id=' + obj.id + "&parent.name=" + obj.text, '800px', '500px');
+								}else{
+                                    layer.msg("请在课程标题下添加章节");
+								}
 							}
 						};
 						tmp.remove = {
-							"label": "删除课程信息",
+							"label": "删除",
 							"action": function (data) {
 								var inst = jQuery.jstree.reference(data.reference),
 									obj = inst.get_node(data.reference);
-								jp.confirm('确认要删除课程信息吗？', function(){
+								jp.confirm('确认要删除吗？', function(){
 									jp.loading();
 									$.get("${ctx}/course/courseInfo/delete?id="+obj.id, function(data){
 										if(data.success){
@@ -57,13 +61,13 @@
 							}
 						}
 						tmp.ccp = {
-							"label": "编辑课程信息",
+							"label": "编辑",
 							"action": function (data) {
 								var inst = jQuery.jstree.reference(data.reference),
 									obj = inst.get_node(data.reference);
 								var parentId = inst.get_parent(data.reference);
 								var parent = inst.get_node(parentId);
-								jp.openSaveDialog('编辑课程信息', '${ctx}/course/courseInfo/form?id=' + obj.id, '800px', '500px');
+								jp.openSaveDialog('编辑信息', '${ctx}/course/courseInfo/form?id=' + obj.id, '800px', '500px');
 							}
 						}
 						return tmp;

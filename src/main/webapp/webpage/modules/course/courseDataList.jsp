@@ -18,27 +18,7 @@
 	</div>
 	<div class="panel-body">
 		<div class="row">
-				<div class="col-sm-4 col-md-3" >
-					<div class="form-group">
-						<div class="row">
-							<div class="col-sm-10" >
-								<div class="input-search">
-									<button type="submit" class="input-search-btn">
-										<i class="fa fa-search" aria-hidden="true"></i></button>
-									<input   id="search_q" type="text" class="form-control input-sm" name="" placeholder="查找...">
-
-								</div>
-							</div>
-							<div class="col-sm-2" >
-								<button  class="btn btn-default btn-sm"  onclick="jp.openSaveDialog('新建课程', '${ctx}/course/courseInfo/form','800px', '500px')">
-									<i class="fa fa-plus"></i>
-								</button>
-							</div>
-						</div>
-					</div>
-					<div id="courseInfojsTree" style="overflow-x:auto; border:0px;"></div>
-				</div>
-				<div  class="col-sm-8 col-md-9 animated fadeInRight">
+				<div >
 	
 	<!-- 搜索 -->
 	<div id="search-collapse" class="collapse">
@@ -78,15 +58,7 @@
 	            	<i class="glyphicon glyphicon-remove"></i> 删除
 	        	</button>
 			</shiro:hasPermission>
-			<shiro:hasPermission name="course:courseData:import">
-				<button id="btnImport" class="btn btn-info"><i class="fa fa-folder-open-o"></i> 导入</button>
-			</shiro:hasPermission>
-			<shiro:hasPermission name="course:courseData:export">
-	        		<button id="export" class="btn btn-warning">
-					<i class="fa fa-file-excel-o"></i> 导出
-				</button>
-			 </shiro:hasPermission>
-	                 <shiro:hasPermission name="course:courseData:view">
+	        <shiro:hasPermission name="course:courseData:view">
 				<button id="view" class="btn btn-default" disabled onclick="view()">
 					<i class="fa fa-search-plus"></i> 查看
 				</button>

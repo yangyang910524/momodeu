@@ -278,10 +278,6 @@
             </div>
             </div>
 
-           <div class="footer">
-                <div class="pull-left"><a href="http://www.jeeplus.org">http://www.jeeplus.org</a> &copy; 2015-2025</div>
-            </div>
-
 </section>
 
 
