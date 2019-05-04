@@ -39,7 +39,7 @@
 //                return false;
 //            }
             var formData = new FormData($("#uploadForm")[0]);
-            formData.append("filePath","avatar")
+            formData.append("filePath","coruse_content")
             $.ajax({
                 url:"${ctx}/sys/file/fileUpload",
                 type: 'POST',
