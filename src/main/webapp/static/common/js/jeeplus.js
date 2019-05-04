@@ -270,7 +270,6 @@
                 yes: function(index, layero){
                     var ids = layero.find("iframe")[0].contentWindow.getIdSelections();
                     var names = layero.find("iframe")[0].contentWindow.getNameSelections();
-                    var loginNames = layero.find("iframe")[0].contentWindow.getLoginNameSelections();
                     if(ids.length ==0){
                         jp.warning("请选择至少一个课程!");
                         return;
@@ -300,7 +299,6 @@
                 yes: function(index, layero){
                     var ids = layero.find("iframe")[0].contentWindow.getIdSelections();
                     var names = layero.find("iframe")[0].contentWindow.getNameSelections();
-                    var loginNames = layero.find("iframe")[0].contentWindow.getLoginNameSelections();
                     if(ids.length ==0){
                         jp.warning("请选择至少一个材料!");
                         return;
@@ -330,7 +328,6 @@
                 yes: function(index, layero){
                     var ids = layero.find("iframe")[0].contentWindow.getIdSelections();
                     var names = layero.find("iframe")[0].contentWindow.getNameSelections();
-                    var loginNames = layero.find("iframe")[0].contentWindow.getLoginNameSelections();
                     if(ids.length ==0){
                         jp.warning("请选择至少一个课程章节!");
                         return;
@@ -382,40 +379,6 @@
             });
         },
 
-        /**角色选择框**/
-        openRoleSelectDialog:function(isMultiSelect, yesFuc){
-            var url = ctx + "/sys/role/data";
-            var fieldLabels = "角色名|英文名";
-            var fieldKeys = "name|enname";
-            top.layer.open({
-                type: 2,
-                area: ['800px', '500px'],
-                title:"角色选择",
-                auto:true,
-                name:'friend',
-                content: ctx+"/tag/gridselect?url="+encodeURIComponent(url)+"&fieldLabels="+encodeURIComponent(fieldLabels)+"&fieldKeys="+encodeURIComponent(fieldKeys)+"&searchLabels="+encodeURIComponent(fieldLabels)+"&searchKeys="+encodeURIComponent(fieldKeys)+"&isMultiSelected="+isMultiSelect,
-                btn: ['确定', '关闭'],
-                yes: function(index, layero){
-                    var iframeWin = layero.find('iframe')[0].contentWindow; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
-                    var items = iframeWin.getSelections();
-                    if(items == ""){
-                        jp.warning("必须选择一条数据!");
-                        return;
-                    }
-                    var ids = [];
-                    var names = [];
-                    for(var i=0; i<items.length; i++){
-                        var item = items[i];
-                        ids.push(item.id);
-                        names.push(item.enname)
-                    }
-                    yesFuc(ids.join(","), names.join(","));
-                    top.layer.close(index);//关闭对话框。
-                },
-                cancel: function(index){
-                }
-            });
-        },
         dateFormat:function (timestamp, format) {
           var _this =  new Date(timestamp);
            var o = {

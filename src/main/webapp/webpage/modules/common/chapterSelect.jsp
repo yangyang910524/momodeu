@@ -159,7 +159,7 @@
 		  
 		  function getNameSelections() {
 		        return $.map($("#table").bootstrapTable('getSelections'), function (row) {
-		            return row.name
+		            return row.father.name+" : "+row.name
 		        });
 		    }
         function getLoginNameSelections() {

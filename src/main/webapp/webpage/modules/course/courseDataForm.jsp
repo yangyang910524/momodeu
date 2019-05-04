@@ -83,7 +83,7 @@
 						<div class="input-group input-append" style="width:100%" onclick="chapterSelect()">
 							<input id="courseId" name="courseInfo.id"  type="hidden" value="${courseInfo.id}"
 								   class="form-control required" readonly="readonly"/>
-							<input id="courseName" name="courseInfo.name"  type="text" value="${courseInfo.name}"
+							<input id="courseName" name="courseInfo.name"  type="text" value="${courseData.father.name} : ${courseData.courseInfo.name}"
 								   class="form-control required" readonly="readonly"/>
 							<span class="input-group-btn">
 								 <button type="button"  id="btn" class="btn  btn-primary"><i class="fa fa-search"></i>
@@ -96,7 +96,7 @@
 					<label class="col-sm-2 control-label"><font color="red">*</font>资料：</label>
 					<div class="col-sm-10" >
 						<div class="input-group input-append" style="width:100%">
-							<input type="text" id="data" name="data"  class="form-control required" readonly="readonly" aria-invalid="false" value="${data}">
+							<input type="text" id="data" name="data"  class="form-control required" readonly="readonly" aria-invalid="false" value="${courseData.data}">
 							<span class="input-group-btn">
 									<button type="button" onclick="openFileDialog()" class="btn btn-primary "><i class="fa fa-cloud-upload"></i></button>
 								</span>
