@@ -126,7 +126,7 @@ $(document).ready(function() {
 
                    },{
                        field: 'remarks',
-                       title: '备注信息',
+                       title: '简述说明',
                        sortable: false
 
 
