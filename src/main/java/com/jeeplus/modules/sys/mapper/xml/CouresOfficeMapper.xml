@@ -4,19 +4,34 @@
     
 	<sql id="couresOfficeColumns">
 		a.id AS "id",
+		a.state as "state",
+
 		a.officeid AS "office.id",
 		so.name AS "office.name",
-		a.couresid AS "courseInfo.id",
-        ci.name AS "courseInfo.name",
-		ci.cover AS "courseInfo.cover",
-		ci.title_type AS "courseInfo.titleType",
-		ci.level AS "courseInfo.level",
-		ci.state AS "courseInfo.state"
+		so.campus AS "office.campus",
+
+		nr.id AS "courseData.id",
+        nr.data AS "courseData.data",
+        nr.remarks AS "courseData.remarks",
+
+		zj.name AS "courseInfo.name",
+		zj.sort AS "courseInfo.sort",
+		zj.title_type AS "courseInfo.titleType",
+		zj.remarks AS "courseInfo.remarks",
+		kc.name AS "father.name",
+		kc.cover AS "father.cover",
+		kc.level AS "father.level",
+		kc.state AS "father.state",
+		kc.sort AS "father.sort",
+		kc.title_type AS "father.titleType",
+		kc.remarks AS "father.remarks"
 	</sql>
 	
 	<sql id="couresOfficeJoins">
 		left join sys_office so on so.id=a.officeid
-		left join course_info ci on ci.id=a.couresid
+		left join course_data nr on nr.id=a.couresid
+		left join course_info zj on zj.id=nr.courseid
+		left join course_info kc on kc.id=zj.parent_id
 	</sql>
 	
     
@@ -38,22 +53,16 @@
             <if test="office != null and office.id != null and office.id != ''">
                 AND a.officeid = #{office.id}
             </if>
-            <if test="courseInfo!=null and courseInfo.id != null and courseInfo.id != ''">
-                AND a.couresid = #{courseInfo.id}
-            </if>
             <if test="courseInfo!=null and courseInfo.state != null and courseInfo.state != ''">
-                AND ci.state = #{courseInfo.state}
+                AND kc.state = #{courseInfo.state}
             </if>
-            <if test="courseInfo!=null and courseInfo.titleType != null and courseInfo.titleType != ''">
-                AND ci.title_type = #{courseInfo.titleType}
-            </if>
-
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
 				ORDER BY ${page.orderBy}
 			</when>
 			<otherwise>
+				ORDER BY cast( kc.sort   as   SIGNED   INTEGER) ASC,cast( zj.sort   as   SIGNED   INTEGER) ASC
 			</otherwise>
 		</choose>
 	</select>
