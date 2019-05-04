@@ -32,10 +32,11 @@
         }
 
         function fileSelected(){
+            var index =jp.loading("文件上传中……")
             var filename = $("#file").val();
             var suffix=(filename.substr(filename.lastIndexOf("."))).toLowerCase();
 //            if(suffix!=".jpg"&&suffix!=".gif"&&suffix!=".jpeg"&& suffix!=".png") {
-//                layer.msg("您上传图片的类型不符合(.jpg|.jpeg|.gif|.png)！");
+//                jp.info("您上传图片的类型不符合(.jpg|.jpeg|.gif|.png)！");
 //                return false;
 //            }
             var formData = new FormData($("#uploadForm")[0]);
@@ -51,9 +52,10 @@
                 success:function(data) {
                     $("#data").val(data.body.url);
                     $("#data").blur();
+                    jp.close(index);
                 },
                 error:function(data) {
-                    layer.msg("上传失败");
+                    jp.info("上传失败");
                 }
             });
         }

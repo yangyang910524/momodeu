@@ -84,41 +84,44 @@ $(document).ready(function() {
 		        checkbox: true
 		       
 		    }
-			,{
-		        field: 'remarks',
-		        title: '备注信息',
-		        sortable: true,
-		        sortName: 'remarks'
-		        ,formatter:function(value, row , index){
-		        	value = jp.unescapeHTML(value);
-				   <c:choose>
-					   <c:when test="${fns:hasPermission('homework:homework:edit')}">
-					      return "<a href='javascript:edit(\""+row.id+"\")'>"+value+"</a>";
-				      </c:when>
-					  <c:when test="${fns:hasPermission('homework:homework:view')}">
-					      return "<a href='javascript:view(\""+row.id+"\")'>"+value+"</a>";
-				      </c:when>
-					  <c:otherwise>
-					      return value;
-				      </c:otherwise>
-				   </c:choose>
-		         }
-		       
-		    }
+
+
 			,{
 		        field: 'name',
 		        title: '名称',
 		        sortable: true,
-		        sortName: 'name'
+		        sortName: 'name',
+			   formatter:function(value, row , index){
+				   value = jp.unescapeHTML(value);
+				   <c:choose>
+				   <c:when test="${fns:hasPermission('homework:homework:edit')}">
+				   return "<a href='javascript:edit(\""+row.id+"\")'>"+value+"</a>";
+				   </c:when>
+				   <c:when test="${fns:hasPermission('homework:homework:view')}">
+				   return "<a href='javascript:view(\""+row.id+"\")'>"+value+"</a>";
+				   </c:when>
+				   <c:otherwise>
+				   return value;
+				   </c:otherwise>
+				   </c:choose>
+			   }
 		       
-		    }
-                   ,{
+		    },{
                        field: 'courseLevel',
                        title: '课程级别',
                        sortable: true,
                        sortName: 'courseLevel',
                        formatter:function(value, row , index){
                            return jp.getDictLabel(${fns:toJson(fns:getDictList('bae_course_level'))}, value, "-");
+                       }
+
+                   },{
+                       field: 'type',
+                       title: '作业类型',
+                       sortable: true,
+                       sortName: 'type',
+                       formatter:function(value, row , index){
+                           return jp.getDictLabel(${fns:toJson(fns:getDictList('bas_material_type'))}, value, "-");
                        }
 
                    }
@@ -128,17 +131,16 @@ $(document).ready(function() {
 		        sortable: true,
 		        sortName: 'data1',
 		        formatter:function(value, row , index){
-		        	var valueArray = value.split("|");
-		        	var labelArray = [];
-		        	for(var i =0 ; i<valueArray.length; i++){
-		        		if(!/\.(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(valueArray[i]))
-		        		{
-		        			labelArray[i] = "<a href=\""+valueArray[i]+"\" url=\""+valueArray[i]+"\" target=\"_blank\">"+decodeURIComponent(valueArray[i].substring(valueArray[i].lastIndexOf("/")+1))+"</a>"
-		        		}else{
-		        			labelArray[i] = '<img   onclick="jp.showPic(\''+valueArray[i]+'\')"'+' height="50px" src="'+valueArray[i]+'">';
-		        		}
-		        	}
-		        	return labelArray.join(" ");
+		        	if(value==null||value==undefined||value==""||value=="undefined"){
+                        return "-";
+					}else{
+                        var valueArray = value.split("|");
+                        var labelArray = [];
+                        for(var i =0 ; i<valueArray.length; i++){
+                            labelArray[i] = "<a href='${ctx}/sys/file/download?source="+valueArray[i]+"' >下载材料</a>"
+                        }
+                        return labelArray.join(" ");
+					}
 		        }
 		       
 		    }
@@ -148,17 +150,16 @@ $(document).ready(function() {
 		        sortable: true,
 		        sortName: 'data2',
 		        formatter:function(value, row , index){
-		        	var valueArray = value.split("|");
-		        	var labelArray = [];
-		        	for(var i =0 ; i<valueArray.length; i++){
-		        		if(!/\.(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(valueArray[i]))
-		        		{
-		        			labelArray[i] = "<a href=\""+valueArray[i]+"\" url=\""+valueArray[i]+"\" target=\"_blank\">"+decodeURIComponent(valueArray[i].substring(valueArray[i].lastIndexOf("/")+1))+"</a>"
-		        		}else{
-		        			labelArray[i] = '<img   onclick="jp.showPic(\''+valueArray[i]+'\')"'+' height="50px" src="'+valueArray[i]+'">';
-		        		}
-		        	}
-		        	return labelArray.join(" ");
+                    if(value==null||value==undefined||value==""||value=="undefined"){
+                        return "-";
+                    }else{
+                        var valueArray = value.split("|");
+                        var labelArray = [];
+                        for(var i =0 ; i<valueArray.length; i++){
+                            labelArray[i] = "<a href='${ctx}/sys/file/download?source="+valueArray[i]+"' >下载材料</a>"
+                        }
+                        return labelArray.join(" ");
+                    }
 		        }
 		       
 		    }
@@ -182,14 +183,9 @@ $(document).ready(function() {
 		        }
 		       
 		    },{
-                       field: 'type',
-                       title: '作业类型',
-                       sortable: true,
-                       sortName: 'type',
-                       formatter:function(value, row , index){
-                           return jp.getDictLabel(${fns:toJson(fns:getDictList('bas_material_type'))}, value, "-");
-                       }
-
+                       field: 'remarks',
+                       title: '简述说明',
+                       sortable: false
                    }
 		     ]
 		
