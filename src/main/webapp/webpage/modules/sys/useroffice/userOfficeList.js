@@ -84,25 +84,61 @@
                 checkbox: true
 
             }
-                ,{
-                    field: 'officeName',
-                    title: '班级名称',
-                    sortable: false
-
-                } ,{
-                    field: 'userName',
-                    title: '用户名称',
-                    sortable: false
-
-                }
-                ,{
-                    field: 'userType',
-                    title: '用户类型',
-                    sortable: false,
+                , {
+                    field: 'photo',
+                    title: '头像',
                     formatter:function(value, row , index){
-                        return jp.getDictLabel(${fns:toJson(fns:getDictList('bas_user_type'))}, value, "-");
+                        if(value ==''){
+                            return '<img height="40px" src="${ctxStatic}/common/images/flat-avatar.png">';
+                        }else{
+                            return '<img   onclick="jp.showPic(\''+value+'\')"'+' height="40px" src="'+value+'">';
+                        }
+
                     }
 
+                }, {
+                    field: 'userType',
+                    title: '用户类型',
+                    sortable: true,
+                    formatter:function(value, row , index){
+                        if(value=='1'){
+                            return "班主任";
+                        }else if(value=='2'){
+                            return "老师";
+                        }else if(value=='3'){
+                            return "学生";
+                        }else{
+                            return "";
+                        }
+                    }
+                }, {
+                    field: 'loginName',
+                    title: '登录名',
+                    sortable: true
+
+                }, {
+                    field: 'userName',
+                    title: '姓名',
+                    sortable: true
+                }, {
+                    field: 'englishName',
+                    title: '英文名',
+                    sortable: true
+                }, {
+                    field: 'mobile',
+                    title: '手机',
+                    sortable: true
+                }, {
+                    field: 'score',
+                    title: '当前积分',
+                    sortable: true
+                    ,formatter:function(value, row , index){
+                        if(row.userType=='3'){
+                            return value;
+                        }else{
+                            return '-';
+                        }
+                    }
                 }
             ]
 

@@ -38,13 +38,21 @@
     <table class="table table-bordered">
         <tbody>
         <tr>
-            <td class="width-15 active"><label class="pull-right">名称：</label></td>
+            <td class="width-15 active"><label class="pull-right"><font color="red">*</font>校区：</label></td>
             <td class="width-35">
-                <form:input path="name" htmlEscape="false"    class="form-control " autocomplete="off"/>
+                <form:select path="campus" class="form-control required">
+                    <form:options items="${fns:getDictList('bas_campus')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+                </form:select>
             </td>
         </tr>
         <tr>
-            <td class="width-15 active"><label class="pull-right">备注信息：</label></td>
+            <td class="width-15 active"><label class="pull-right"><font color="red">*</font>名称：</label></td>
+            <td class="width-35">
+                <form:input path="name" htmlEscape="false"    class="form-control required" autocomplete="off"/>
+            </td>
+        </tr>
+        <tr>
+            <td class="width-15 active"><label class="pull-right">简述说明：</label></td>
             <td class="width-35">
                 <form:textarea path="remarks" htmlEscape="false" rows="4"    class="form-control " autocomplete="off"/>
             </td>

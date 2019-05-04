@@ -96,29 +96,50 @@
 	                		radio: true
 	                	</c:if>
 				    }, {
-				        field: 'loginName',
-				        title: '登录名',
-				        sortable: true
-				       
-				    }, {
-				        field: 'name',
-				        title: '姓名',
-				        sortable: true,
-				    }, {
-				        field: 'phone',
-				        title: '电话',
-				        sortable: true
-				    }, {
-				        field: 'mobile',
-				        title: '手机',
-				        sortable: true
-				    }, {
-				        field: 'company.name',
-				        title: '归属公司'
-				    }, {
-				        field: 'office.name',
-				        title: '归属部门'
-				    }]
+                        field: 'photo',
+                        title: '头像',
+                        formatter:function(value, row , index){
+                            if(value ==''){
+                                return '<img height="40px" src="${ctxStatic}/common/images/flat-avatar.png">';
+                            }else{
+                                return '<img   onclick="jp.showPic(\''+value+'\')"'+' height="40px" src="'+value+'">';
+                            }
+
+                        }
+
+                    }, {
+                        field: 'userType',
+                        title: '用户类型',
+                        sortable: true,
+                        formatter:function(value, row , index){
+                            if(value=='1'){
+                                return "管理员";
+                            }else if(value=='2'){
+                                return "老师";
+                            }else if(value=='3'){
+                                return "学生";
+                            }else{
+                                return "";
+                            }
+                        }
+                    }, {
+                        field: 'loginName',
+                        title: '登录名',
+                        sortable: true
+
+                    }, {
+                        field: 'name',
+                        title: '姓名',
+                        sortable: true
+                    }, {
+                        field: 'englishName',
+                        title: '英文名',
+                        sortable: true
+                    }, {
+                        field: 'mobile',
+                        title: '手机',
+                        sortable: true
+                    }]
 				
 				});
 			
@@ -182,15 +203,22 @@
 			<div id="collapseTwo" class="accordion-body">
 				<div class="accordion-inner">
 					<form id="searchForm" class="form form-horizontal well clearfix" >
-					    <input type="hidden" id="companyId" name="company.id"/>
-					    <div class="col-sm-4">
-					    	<label class="label-item single-overflow pull-left" title="登录名：">登录名：</label>
-					   		<input type="text" name="loginName" maxlength="100"  class=" form-control"/>
-					    </div>
-				    	<div class="col-sm-4">
-					    	<label class="label-item single-overflow pull-left" title="姓名：">姓名：</label>
-					   		<input type="text" name="name" maxlength="100"  class=" form-control"/>
-					    </div>
+						<div class="col-sm-2">
+							<label class="label-item single-overflow pull-left" title="登录名：">登录名：</label>
+							<input type="text" name="loginName" maxlength="100"  class=" form-control"/>
+						</div>
+						<div class="col-sm-2">
+							<label class="label-item single-overflow pull-left" title="姓名：">姓名：</label>
+							<input type="text" name="name" maxlength="100"  class=" form-control"/>
+						</div>
+						<div class="col-sm-2">
+							<label class="label-item single-overflow pull-left" title="姓名：">英文名：</label>
+							<input type="text" name="englishName" maxlength="100"  class=" form-control"/>
+						</div>
+						<div class="col-sm-2">
+							<label class="label-item single-overflow pull-left" title="姓名：">手机号码：</label>
+							<input type="text" name="mobile" maxlength="100"  class=" form-control"/>
+						</div>
 					    <div class="col-sm-4">
 							 <div style="margin-top:26px">
 							  <a  id="search" class="btn btn-primary btn-rounded  btn-bordered btn-sm"><i class="fa fa-search"></i> 查询</a>

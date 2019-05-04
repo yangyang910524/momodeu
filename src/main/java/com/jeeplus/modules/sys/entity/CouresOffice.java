@@ -5,6 +5,7 @@ package com.jeeplus.modules.sys.entity;
 
 
 import com.jeeplus.core.persistence.DataEntity;
+import com.jeeplus.modules.course.entity.CourseData;
 import com.jeeplus.modules.course.entity.CourseInfo;
 
 /**
@@ -17,7 +18,9 @@ public class CouresOffice extends DataEntity<CouresOffice> {
 	private static final long serialVersionUID = 1L;
     private String state;		// 学习状态
     private Office office;//班级信息
-    private CourseInfo courseInfo;//课程信息
+    private CourseData courseData;//课程-内容
+    private CourseInfo courseInfo;//课程-章节
+    private CourseInfo father;//课程
 
     public String getState() {
         return state;
@@ -41,5 +44,21 @@ public class CouresOffice extends DataEntity<CouresOffice> {
 
     public void setCourseInfo(CourseInfo courseInfo) {
         this.courseInfo = courseInfo;
+    }
+
+    public CourseData getCourseData() {
+        return courseData;
+    }
+
+    public void setCourseData(CourseData courseData) {
+        this.courseData = courseData;
+    }
+
+    public CourseInfo getFather() {
+        return father;
+    }
+
+    public void setFather(CourseInfo father) {
+        this.father = father;
     }
 }

@@ -20,6 +20,7 @@ public class Classes extends DataEntity<Classes> {
     private String studentTotal;//学生总数
     private String courseTotal;//课程总数
     private String homeworkTotal;//作业总数
+    private String campus;//校区
 
 
     public String getName() {
@@ -76,5 +77,13 @@ public class Classes extends DataEntity<Classes> {
 
     public void setHomeworkTotal(String homeworkTotal) {
         this.homeworkTotal = homeworkTotal;
+    }
+
+    public String getCampus() {
+        return campus;
+    }
+
+    public void setCampus(String campus) {
+        this.campus = campus;
     }
 }

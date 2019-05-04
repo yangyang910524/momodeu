@@ -58,7 +58,6 @@ public class CouresOfficeController extends BaseController {
 	/**
 	 * 信息列表页面
 	 */
-	@RequiresPermissions("sys:couresoffice:couresOffice:list")
 	@RequestMapping(value = {"list", ""})
 	public String list(CouresOffice couresOffice, Model model) {
 		model.addAttribute("couresOffice", couresOffice);
@@ -69,7 +68,6 @@ public class CouresOfficeController extends BaseController {
 	 * 信息列表数据
 	 */
 	@ResponseBody
-	@RequiresPermissions("sys:couresoffice:couresOffice:list")
 	@RequestMapping(value = "data")
 	public Map<String, Object> data(CouresOffice couresOffice, HttpServletRequest request, HttpServletResponse response, Model model) {
 		Page<CouresOffice> page = couresOfficeService.findPage(new Page<CouresOffice>(request, response), couresOffice); 
@@ -79,7 +77,6 @@ public class CouresOfficeController extends BaseController {
 	/**
 	 * 查看，增加，编辑信息表单页面
 	 */
-	@RequiresPermissions(value={"sys:couresoffice:couresOffice:view","sys:couresoffice:couresOffice:add","sys:couresoffice:couresOffice:edit"},logical=Logical.OR)
 	@RequestMapping(value = "form")
 	public String form(CouresOffice couresOffice, Model model) {
 		model.addAttribute("couresOffice", couresOffice);
@@ -90,7 +87,6 @@ public class CouresOfficeController extends BaseController {
 	 * 保存信息
 	 */
 	@ResponseBody
-	@RequiresPermissions(value={"sys:couresoffice:couresOffice:add","sys:couresoffice:couresOffice:edit"},logical=Logical.OR)
 	@RequestMapping(value = "save")
 	public AjaxJson save(CouresOffice couresOffice, Model model) throws Exception{
 		AjaxJson j = new AjaxJson();
@@ -114,7 +110,6 @@ public class CouresOfficeController extends BaseController {
 	 * 删除信息
 	 */
 	@ResponseBody
-	@RequiresPermissions("sys:couresoffice:couresOffice:del")
 	@RequestMapping(value = "delete")
 	public AjaxJson delete(CouresOffice couresOffice) {
 		AjaxJson j = new AjaxJson();
@@ -127,7 +122,6 @@ public class CouresOfficeController extends BaseController {
 	 * 批量删除信息
 	 */
 	@ResponseBody
-	@RequiresPermissions("sys:couresoffice:couresOffice:del")
 	@RequestMapping(value = "deleteAll")
 	public AjaxJson deleteAll(String ids) {
 		AjaxJson j = new AjaxJson();
@@ -171,7 +165,6 @@ public class CouresOfficeController extends BaseController {
 	 * 导出excel文件
 	 */
 	@ResponseBody
-	@RequiresPermissions("sys:couresoffice:couresOffice:export")
     @RequestMapping(value = "export")
     public AjaxJson exportFile(CouresOffice couresOffice, HttpServletRequest request, HttpServletResponse response) {
 		AjaxJson j = new AjaxJson();
@@ -194,7 +187,6 @@ public class CouresOfficeController extends BaseController {
 
 	 */
 	@ResponseBody
-	@RequiresPermissions("sys:couresoffice:couresOffice:import")
     @RequestMapping(value = "import")
    	public AjaxJson importFile(@RequestParam("file")MultipartFile file, HttpServletResponse response, HttpServletRequest request) {
 		AjaxJson j = new AjaxJson();
@@ -229,7 +221,6 @@ public class CouresOfficeController extends BaseController {
 	 * 下载导入信息数据模板
 	 */
 	@ResponseBody
-	@RequiresPermissions("sys:couresoffice:couresOffice:import")
     @RequestMapping(value = "import/template")
      public AjaxJson importFileTemplate(HttpServletResponse response) {
 		AjaxJson j = new AjaxJson();

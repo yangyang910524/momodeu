@@ -8,7 +8,12 @@
 		a.user_type AS "userType",
 		so.name AS "officeName",
 		su.name AS "userName",
-		a.id AS "id"
+		a.id AS "id",
+		su.photo AS "photo",
+		su.login_name AS "loginName",
+		su.score AS "score",
+		su.english_name AS "englishName",
+		su.mobile AS "mobile"
 	</sql>
 
 	<sql id="userOfficeJoins">
@@ -42,6 +47,32 @@
 			<if test="userType != null and userType != ''">
 				AND a.user_type = #{userType}
 			</if>
+
+			<if test="loginName != null and loginName != ''">
+				AND su.login_name like
+				<if test="dbName == 'oracle'">'%'||#{loginName}||'%'</if>
+				<if test="dbName == 'mysql'">CONCAT('%', #{loginName}, '%')</if>
+				<if test="dbName == 'mssql'">'%'+#{loginName}+'%'</if>
+			</if>
+			<if test="userName != null and userName != ''">
+				AND su.name like
+				<if test="dbName == 'oracle'">'%'||#{userName}||'%'</if>
+				<if test="dbName == 'mysql'">CONCAT('%', #{userName}, '%')</if>
+				<if test="dbName == 'mssql'">'%'+#{userName}+'%'</if>
+			</if>
+			<if test="englishName != null and englishName != ''">
+				AND su.english_name like
+				<if test="dbName == 'oracle'">'%'||#{englishName}||'%'</if>
+				<if test="dbName == 'mysql'">CONCAT('%', #{englishName}, '%')</if>
+				<if test="dbName == 'mssql'">'%'+#{englishName}+'%'</if>
+			</if>
+			<if test="mobile != null and mobile != ''">
+				AND su.mobile like
+				<if test="dbName == 'oracle'">'%'||#{mobile}||'%'</if>
+				<if test="dbName == 'mysql'">CONCAT('%', #{mobile}, '%')</if>
+				<if test="dbName == 'mssql'">'%'+#{mobile}+'%'</if>
+			</if>
+
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">

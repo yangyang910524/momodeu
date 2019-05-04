@@ -63,7 +63,6 @@ public class HomeworkOfficeController extends BaseController {
 	/**
 	 * 信息列表页面
 	 */
-	@RequiresPermissions("homeworkoffice:homeworkOffice:list")
 	@RequestMapping(value = {"list", ""})
 	public String list(HomeworkOffice homeworkOffice, Model model) {
 		model.addAttribute("homeworkOffice", homeworkOffice);
@@ -74,7 +73,6 @@ public class HomeworkOfficeController extends BaseController {
 	 * 信息列表数据
 	 */
 	@ResponseBody
-	@RequiresPermissions("homeworkoffice:homeworkOffice:list")
 	@RequestMapping(value = "data")
 	public Map<String, Object> data(HomeworkOffice homeworkOffice, HttpServletRequest request, HttpServletResponse response, Model model) {
 		Page<HomeworkOffice> page = homeworkOfficeService.findPage(new Page<HomeworkOffice>(request, response), homeworkOffice); 
@@ -84,7 +82,6 @@ public class HomeworkOfficeController extends BaseController {
 	/**
 	 * 查看，增加，编辑信息表单页面
 	 */
-	@RequiresPermissions(value={"homeworkoffice:homeworkOffice:view","homeworkoffice:homeworkOffice:add","homeworkoffice:homeworkOffice:edit"},logical=Logical.OR)
 	@RequestMapping(value = "form/{mode}")
 	public String form(@PathVariable String mode, HomeworkOffice homeworkOffice, Model model) {
 		model.addAttribute("homeworkOffice", homeworkOffice);
@@ -96,7 +93,6 @@ public class HomeworkOfficeController extends BaseController {
 	 * 保存信息
 	 */
 	@ResponseBody
-	@RequiresPermissions(value={"homeworkoffice:homeworkOffice:add","homeworkoffice:homeworkOffice:edit"},logical=Logical.OR)
 	@RequestMapping(value = "save")
 	public AjaxJson save(HomeworkOffice homeworkOffice, Model model) throws Exception{
 		AjaxJson j = new AjaxJson();
@@ -120,7 +116,6 @@ public class HomeworkOfficeController extends BaseController {
 	 * 删除信息
 	 */
 	@ResponseBody
-	@RequiresPermissions("homeworkoffice:homeworkOffice:del")
 	@RequestMapping(value = "delete")
 	public AjaxJson delete(HomeworkOffice homeworkOffice) {
 		AjaxJson j = new AjaxJson();
@@ -133,7 +128,6 @@ public class HomeworkOfficeController extends BaseController {
 	 * 批量删除信息
 	 */
 	@ResponseBody
-	@RequiresPermissions("homeworkoffice:homeworkOffice:del")
 	@RequestMapping(value = "deleteAll")
 	public AjaxJson deleteAll(String ids) {
 		AjaxJson j = new AjaxJson();
@@ -173,7 +167,6 @@ public class HomeworkOfficeController extends BaseController {
 	 * 导出excel文件
 	 */
 	@ResponseBody
-	@RequiresPermissions("homeworkoffice:homeworkOffice:export")
     @RequestMapping(value = "export")
     public AjaxJson exportFile(HomeworkOffice homeworkOffice, HttpServletRequest request, HttpServletResponse response) {
 		AjaxJson j = new AjaxJson();
@@ -196,7 +189,6 @@ public class HomeworkOfficeController extends BaseController {
 
 	 */
 	@ResponseBody
-	@RequiresPermissions("homeworkoffice:homeworkOffice:import")
     @RequestMapping(value = "import")
    	public AjaxJson importFile(@RequestParam("file")MultipartFile file, HttpServletResponse response, HttpServletRequest request) {
 		AjaxJson j = new AjaxJson();
@@ -231,7 +223,6 @@ public class HomeworkOfficeController extends BaseController {
 	 * 下载导入信息数据模板
 	 */
 	@ResponseBody
-	@RequiresPermissions("homeworkoffice:homeworkOffice:import")
     @RequestMapping(value = "import/template")
      public AjaxJson importFileTemplate(HttpServletResponse response) {
 		AjaxJson j = new AjaxJson();

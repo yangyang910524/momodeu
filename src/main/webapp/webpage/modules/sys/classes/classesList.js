@@ -105,6 +105,13 @@ $(document).ready(function() {
                        }
 
                    }, {
+                       field: 'campus',
+                       title: '校区',
+                       sortable: false,
+                       formatter:function(value, row , index){
+                           return jp.getDictLabel(${fns:toJson(fns:getDictList('bas_campus'))}, value, "-");
+                       }
+                   }, {
                        field: 'classroomTeacher',
                        title: '班主任',
                        sortable: false,

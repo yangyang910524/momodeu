@@ -54,7 +54,6 @@ public class UserHomeworkController extends BaseController {
 	/**
 	 * 信息列表页面
 	 */
-	@RequiresPermissions("userhomework:userHomework:list")
 	@RequestMapping(value = {"list", ""})
 	public String list(UserHomework userHomework, Model model) {
 		model.addAttribute("userHomework", userHomework);
@@ -65,7 +64,6 @@ public class UserHomeworkController extends BaseController {
 	 * 信息列表数据
 	 */
 	@ResponseBody
-	@RequiresPermissions("userhomework:userHomework:list")
 	@RequestMapping(value = "data")
 	public Map<String, Object> data(UserHomework userHomework, HttpServletRequest request, HttpServletResponse response, Model model) {
 		Page<UserHomework> page = userHomeworkService.findPage(new Page<UserHomework>(request, response), userHomework); 
@@ -75,7 +73,6 @@ public class UserHomeworkController extends BaseController {
 	/**
 	 * 查看，增加，编辑信息表单页面
 	 */
-	@RequiresPermissions(value={"userhomework:userHomework:view","userhomework:userHomework:add","userhomework:userHomework:edit"},logical=Logical.OR)
 	@RequestMapping(value = "form/{mode}")
 	public String form(@PathVariable String mode, UserHomework userHomework, Model model) {
 		model.addAttribute("userHomework", userHomework);
@@ -87,7 +84,6 @@ public class UserHomeworkController extends BaseController {
 	 * 保存信息
 	 */
 	@ResponseBody
-	@RequiresPermissions(value={"userhomework:userHomework:add","userhomework:userHomework:edit"},logical=Logical.OR)
 	@RequestMapping(value = "save")
 	public AjaxJson save(UserHomework userHomework, Model model) throws Exception{
 		AjaxJson j = new AjaxJson();
@@ -111,7 +107,6 @@ public class UserHomeworkController extends BaseController {
 	 * 删除信息
 	 */
 	@ResponseBody
-	@RequiresPermissions("userhomework:userHomework:del")
 	@RequestMapping(value = "delete")
 	public AjaxJson delete(UserHomework userHomework) {
 		AjaxJson j = new AjaxJson();
@@ -124,7 +119,6 @@ public class UserHomeworkController extends BaseController {
 	 * 批量删除信息
 	 */
 	@ResponseBody
-	@RequiresPermissions("userhomework:userHomework:del")
 	@RequestMapping(value = "deleteAll")
 	public AjaxJson deleteAll(String ids) {
 		AjaxJson j = new AjaxJson();
@@ -140,7 +134,6 @@ public class UserHomeworkController extends BaseController {
 	 * 导出excel文件
 	 */
 	@ResponseBody
-	@RequiresPermissions("userhomework:userHomework:export")
     @RequestMapping(value = "export")
     public AjaxJson exportFile(UserHomework userHomework, HttpServletRequest request, HttpServletResponse response) {
 		AjaxJson j = new AjaxJson();
@@ -163,7 +156,6 @@ public class UserHomeworkController extends BaseController {
 
 	 */
 	@ResponseBody
-	@RequiresPermissions("userhomework:userHomework:import")
     @RequestMapping(value = "import")
    	public AjaxJson importFile(@RequestParam("file")MultipartFile file, HttpServletResponse response, HttpServletRequest request) {
 		AjaxJson j = new AjaxJson();
@@ -198,7 +190,6 @@ public class UserHomeworkController extends BaseController {
 	 * 下载导入信息数据模板
 	 */
 	@ResponseBody
-	@RequiresPermissions("userhomework:userHomework:import")
     @RequestMapping(value = "import/template")
      public AjaxJson importFileTemplate(HttpServletResponse response) {
 		AjaxJson j = new AjaxJson();

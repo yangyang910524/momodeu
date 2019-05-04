@@ -28,6 +28,23 @@
 								<form:options items="${fns:getDictList('bas_user_type')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
 							</form:select>
 						</div>
+						<div class="col-sm-4">
+							<label class="label-item single-overflow pull-left" title="登录名：">登录名：</label>
+							<input type="text" name="loginName" maxlength="100"  class=" form-control"/>
+						</div>
+						<div class="col-sm-4">
+							<label class="label-item single-overflow pull-left" title="姓名：">姓名：</label>
+							<input type="text" name="userName" maxlength="100"  class=" form-control"/>
+						</div>
+						<div class="col-sm-4">
+							<label class="label-item single-overflow pull-left" title="姓名：">英文名：</label>
+							<input type="text" name="englishName" maxlength="100"  class=" form-control"/>
+						</div>
+						<div class="col-sm-4">
+							<label class="label-item single-overflow pull-left" title="姓名：">手机号码：</label>
+							<input type="text" name="mobile" maxlength="100"  class=" form-control"/>
+						</div>
+
 						<div class="col-xs-12 col-sm-6 col-md-4">
 							<div style="margin-top:26px">
 								<a  id="search" class="btn btn-primary btn-rounded  btn-bordered btn-sm"><i class="fa fa-search"></i> 查询</a>
@@ -43,27 +60,21 @@
                 <a href="${ctx}/sys/classes/classes" class="btn btn-primary">
                     返回
                 </a>
-				<shiro:hasPermission name="useroffice:userOffice:add">
-					<button id="add" class="btn btn-primary" onclick="add('1')">
+					<button class="btn btn-primary" onclick="add('1')">
 						<i class="glyphicon glyphicon-plus"></i>添加/变更班主任
 					</button>
-					<button id="add" class="btn btn-primary" onclick="add('2')">
+					<button class="btn btn-primary" onclick="add('2')">
 						<i class="glyphicon glyphicon-plus"></i>添加老师
 					</button>
-					<button id="add" class="btn btn-primary" onclick="add('3')">
+					<button class="btn btn-primary" onclick="add('3')">
 						<i class="glyphicon glyphicon-plus"></i>添加学生
 					</button>
-				</shiro:hasPermission>
-				<shiro:hasPermission name="useroffice:userOffice:del">
 					<button id="remove" class="btn btn-danger" disabled onclick="deleteAll()">
 						<i class="glyphicon glyphicon-remove"></i> 删除
 					</button>
-				</shiro:hasPermission>
-				<shiro:hasPermission name="useroffice:userOffice:view">
 					<button id="view" class="btn btn-default" disabled onclick="view()">
 						<i class="fa fa-search-plus"></i> 查看
 					</button>
-				</shiro:hasPermission>
 			</div>
 
 			<!-- 表格 -->
@@ -71,15 +82,9 @@
 
 			<!-- context menu -->
 			<ul id="context-menu" class="dropdown-menu">
-				<shiro:hasPermission name="useroffice:userOffice:view">
-					<li data-item="view"><a>查看</a></li>
-				</shiro:hasPermission>
-				<shiro:hasPermission name="useroffice:userOffice:edit">
-					<li data-item="edit"><a>编辑</a></li>
-				</shiro:hasPermission>
-				<shiro:hasPermission name="useroffice:userOffice:del">
-					<li data-item="delete"><a>删除</a></li>
-				</shiro:hasPermission>
+				<li data-item="view"><a>查看</a></li>
+				<li data-item="edit"><a>编辑</a></li>
+				<li data-item="delete"><a>删除</a></li>
 				<li data-item="action1"><a>取消</a></li>
 			</ul>
 		</div>

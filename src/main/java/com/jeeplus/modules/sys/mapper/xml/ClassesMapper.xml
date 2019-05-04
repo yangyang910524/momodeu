@@ -17,7 +17,8 @@
 		(select count(*) from sys_user_office suo where  user_type in ('1','2') and a.id=suo.officeid) AS "teacherTotal",
 		(select count(*) from sys_user_office suo where  user_type='3' and a.id=suo.officeid) AS "studentTotal",
 		(select count(*) from sys_coures_office sco where a.id=sco.officeid) AS "courseTotal",
-		(select count(*) from sys_homework_office sho where a.id=sho.officeid) AS "homeworkTotal"
+		(select count(*) from sys_homework_office sho where a.id=sho.officeid) AS "homeworkTotal",
+		campus as "campus"
 	</sql>
 	
 	<sql id="classesJoins">
@@ -42,11 +43,14 @@
 		<where>
 			a.del_flag = #{DEL_FLAG_NORMAL}
 			${dataScope}
+			<if test="campus != null and campus != ''">
+				AND a.campus =#{campus}
+			</if>
 			<if test="name != null and name != ''">
-				AND a.name LIKE 
-					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
-					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
-					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+				AND a.name LIKE
+				<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+				<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+				<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
 			</if>
 		</where>
 		<choose>
@@ -88,6 +92,7 @@
 			update_by,
 			update_date,
 			remarks,
+			campus,
 			del_flag
 		) VALUES (
 			#{id},
@@ -98,6 +103,7 @@
 			#{updateBy.id},
 			#{updateDate},
 			#{remarks},
+			#{campus},
 			#{delFlag}
 		)
 	</insert>
@@ -108,7 +114,8 @@
 			sort = #{sort},
 			update_by = #{updateBy.id},
 			update_date = #{updateDate},
-			remarks = #{remarks}
+			remarks = #{remarks},
+			campus = #{campus}
 		WHERE id = #{id}
 	</update>
 	

@@ -60,7 +60,6 @@ public class UserOfficeController extends BaseController {
 	/**
 	 * 信息列表页面
 	 */
-	@RequiresPermissions("useroffice:userOffice:list")
 	@RequestMapping(value = {"list", ""})
 	public String list(UserOffice userOffice, Model model) {
         model.addAttribute("userOffice", userOffice);
@@ -71,7 +70,6 @@ public class UserOfficeController extends BaseController {
 	 * 信息列表数据
 	 */
 	@ResponseBody
-	@RequiresPermissions("useroffice:userOffice:list")
 	@RequestMapping(value = "data")
 	public Map<String, Object> data(UserOffice userOffice, HttpServletRequest request, HttpServletResponse response, Model model) {
 		Page<UserOffice> page = userOfficeService.findPage(new Page<UserOffice>(request, response), userOffice);
@@ -81,7 +79,6 @@ public class UserOfficeController extends BaseController {
 	/**
 	 * 查看，增加，编辑信息表单页面
 	 */
-	@RequiresPermissions(value={"useroffice:userOffice:view","useroffice:userOffice:add","useroffice:userOffice:edit"},logical=Logical.OR)
 	@RequestMapping(value = "form")
 	public String form(UserOffice userOffice, Model model) {
 		model.addAttribute("userOffice", userOffice);
@@ -92,7 +89,6 @@ public class UserOfficeController extends BaseController {
 	 * 保存信息
 	 */
 	@ResponseBody
-	@RequiresPermissions(value={"useroffice:userOffice:add","useroffice:userOffice:edit"},logical=Logical.OR)
 	@RequestMapping(value = "save")
 	public AjaxJson save(UserOffice userOffice, Model model) throws Exception{
 		AjaxJson j = new AjaxJson();
@@ -116,7 +112,6 @@ public class UserOfficeController extends BaseController {
 	 * 删除信息
 	 */
 	@ResponseBody
-	@RequiresPermissions("useroffice:userOffice:del")
 	@RequestMapping(value = "delete")
 	public AjaxJson delete(UserOffice userOffice) {
 		AjaxJson j = new AjaxJson();
@@ -129,7 +124,6 @@ public class UserOfficeController extends BaseController {
 	 * 批量删除信息
 	 */
 	@ResponseBody
-	@RequiresPermissions("useroffice:userOffice:del")
 	@RequestMapping(value = "deleteAll")
 	public AjaxJson deleteAll(String ids) {
 		AjaxJson j = new AjaxJson();
@@ -145,7 +139,6 @@ public class UserOfficeController extends BaseController {
      * 班主任、老师、学生绑定班级
      */
     @ResponseBody
-    @RequiresPermissions("useroffice:userOffice:addUser")
     @RequestMapping(value = "addUser")
     public AjaxJson addUser(String ids,String officeid,String userType) {
         AjaxJson j = new AjaxJson();
@@ -186,8 +179,7 @@ public class UserOfficeController extends BaseController {
 	 * 导出excel文件
 	 */
 	@ResponseBody
-	@RequiresPermissions("useroffice:userOffice:export")
-    @RequestMapping(value = "export")
+	@RequestMapping(value = "export")
     public AjaxJson exportFile(UserOffice userOffice, HttpServletRequest request, HttpServletResponse response) {
 		AjaxJson j = new AjaxJson();
 		try {
@@ -209,8 +201,7 @@ public class UserOfficeController extends BaseController {
 
 	 */
 	@ResponseBody
-	@RequiresPermissions("useroffice:userOffice:import")
-    @RequestMapping(value = "import")
+	@RequestMapping(value = "import")
    	public AjaxJson importFile(@RequestParam("file")MultipartFile file, HttpServletResponse response, HttpServletRequest request) {
 		AjaxJson j = new AjaxJson();
 		try {
@@ -244,8 +235,7 @@ public class UserOfficeController extends BaseController {
 	 * 下载导入信息数据模板
 	 */
 	@ResponseBody
-	@RequiresPermissions("useroffice:userOffice:import")
-    @RequestMapping(value = "import/template")
+	@RequestMapping(value = "import/template")
      public AjaxJson importFileTemplate(HttpServletResponse response) {
 		AjaxJson j = new AjaxJson();
 		try {

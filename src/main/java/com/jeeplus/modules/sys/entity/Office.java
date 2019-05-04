@@ -30,6 +30,7 @@ public class Office extends TreeEntity<Office> {
 	private User primaryPerson;//主负责人
 	private User deputyPerson;//副负责人
 	private List<String> childDeptList;//快速添加子部门
+	private String campus;//校区
 	
 	public Office(){
 		super();
@@ -172,4 +173,14 @@ public class Office extends TreeEntity<Office> {
 	public String toString() {
 		return name;
 	}
+
+	public String getCampus() {
+		return campus;
+	}
+
+	public void setCampus(String campus) {
+		this.campus = campus;
+	}
+
+
 }
