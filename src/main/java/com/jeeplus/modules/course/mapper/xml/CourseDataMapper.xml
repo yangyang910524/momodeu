@@ -11,14 +11,17 @@
 		a.remarks AS "remarks",
 		a.del_flag AS "delFlag",
 		a.data AS "data",
-		a.courseid AS "courseInfo.id",
-		concat(p.name,' : ',b.name) AS "courseInfo.name",
+		b.id AS "courseInfo.id",
+		b.name AS "courseInfo.name",
+		b.title_type AS "courseInfo.titleType",
 
-		p.state AS "courseInfo.state",
-		p.level AS "courseInfo.level",
-
-		p.id AS "courseInfo.parent.id",
-		p.name AS "courseInfo.parent.name"
+		p.id AS "father.id",
+		p.name AS "father.name",
+		p.cover AS "father.cover",
+		p.level AS "father.level",
+		p.state AS "father.state",
+		p.title_type AS "father.titleType",
+		p.sort AS "father.sort"
 	</sql>
 	
 	<sql id="courseDataJoins">

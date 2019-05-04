@@ -85,12 +85,17 @@ $(document).ready(function() {
 		       
 		    }
 
-			,{
-		        field: 'courseInfo.name',
-		        title: '课程名称 ： 章节名称',
-		        sortable: false
-		    },{
-				   field: 'courseInfo.level',
+                   , {
+                       field: 'father.name',
+                       title: '课程名称',
+                       sortable: false
+
+                   },{
+                       field: 'courseInfo.name',
+                       title: '章节名称',
+                       sortable: false
+                   },{
+				   field: 'father.level',
 				   title: '课程级别',
 				   sortable: false,
 				   formatter:function(value, row , index){
@@ -98,7 +103,7 @@ $(document).ready(function() {
 				   }
 
 			   }, {
-				   field: 'courseInfo.state',
+				   field: 'father.state',
 				   title: '状态',
 				   sortable: false,
 				   formatter:function(value, row , index){

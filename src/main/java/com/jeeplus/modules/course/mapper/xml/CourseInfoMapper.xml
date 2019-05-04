@@ -218,13 +218,16 @@
 			a.remarks AS "remarks",
 			a.del_flag AS "delFlag",
 			a.parent_ids AS "parentIds",
-			concat(p.name,' : ',a.name) AS "name",
+			a.name AS "name",
 			a.sort AS "sort",
 			a.title_type AS "titleType",
-			a.parent_id AS "parent.id",
-			p.cover AS "cover",
-			p.level AS "level",
-			p.state AS "state"
+			a.parent_id AS "father.id",
+			p.name AS "father.name",
+			p.cover AS "father.cover",
+			p.level AS "father.level",
+			p.state AS "father.state",
+			p.title_type AS "father.titleType",
+			p.sort AS "father.sort"
 		FROM course_info a
 		left join course_info p on a.parent_id=p.id
 		<include refid="courseInfoJoins"/>

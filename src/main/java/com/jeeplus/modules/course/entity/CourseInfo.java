@@ -24,6 +24,7 @@ public class CourseInfo extends TreeEntity<CourseInfo> {
     private String titleType;
     private String level;
     private String state;
+    private CourseInfo father;
 	
 	public CourseInfo() {
 		super();
@@ -93,5 +94,13 @@ public class CourseInfo extends TreeEntity<CourseInfo> {
 
     public void setState(String state) {
         this.state = state;
+    }
+
+    public CourseInfo getFather() {
+        return father;
+    }
+
+    public void setFather(CourseInfo father) {
+        this.father = father;
     }
 }

@@ -96,12 +96,17 @@
 	                		radio: true
 	                	</c:if>
 				    }, {
-                        field: 'name',
-                        title: '课程 : 章节名称',
+                        field: 'father.name',
+                        title: '课程名称',
                         sortable: false
 
-                    } ,{
-                        field: 'level',
+                    }, {
+                        field: 'name',
+                        title: '章节名称',
+                        sortable: false
+
+                    }  ,{
+                        field: 'father.level',
                         title: '课程级别',
                         sortable: false,
                         formatter:function(value, row , index){
@@ -109,7 +114,7 @@
                         }
 
                     }, {
-                        field: 'state',
+                        field: 'father.state',
                         title: '状态',
                         sortable: false,
                         formatter:function(value, row , index){
