@@ -14,11 +14,20 @@
 		a.finish_date AS "finishDate",
 		a.file AS "file",
 		a.score AS "score",
-		a.comment AS "comment"
+		a.comment AS "comment",
+
+        h.id as "homework.id",
+		h.name AS "homework.name",
+		h.type AS "homework.type",
+		h.data1 AS "homework.data1",
+		h.data2 AS "homework.data2",
+		h.cover AS "homework.cover",
+		h.course_level AS "homework.courseLevel",
+        h.remarks AS "homework.remarks"
 	</sql>
 	
 	<sql id="userHomeworkJoins">
-		
+		left join homework h on a.homeworkid=h.id
 	</sql>
 	
     
@@ -56,21 +65,13 @@
             <if test="userid != null and userid != ''">
                 AND a.userid = #{userid}
             </if>
-            <choose>
-                <when test="timeType=='today'">
-
-                </when>
-                <when test="timeType=='History'">
-
-                </when>
-            </choose>
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
 				ORDER BY ${page.orderBy}
 			</when>
 			<otherwise>
-				ORDER BY a.update_date DESC
+				ORDER BY a.create_date desc
 			</otherwise>
 		</choose>
 	</select>

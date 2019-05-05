@@ -113,7 +113,7 @@ public interface UserMapper extends BaseMapper<User> {
 
     List<User> findTeacherListByOffice(String officeid);
 
-    List<User> findStudentListByOffice(@Param("officeid")String officeid,@Param("userid")String userid);
+    List<User> findStudentListByOffice(@Param("officeid")String officeid);
 
     void updateScore(User user);
 }

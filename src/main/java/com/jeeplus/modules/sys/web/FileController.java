@@ -10,19 +10,14 @@ import com.jeeplus.common.json.AjaxJson;
 import com.jeeplus.common.utils.DateUtils;
 import com.jeeplus.common.utils.FileUtils;
 import com.jeeplus.common.utils.StringUtils;
-import com.jeeplus.common.utils.time.DateUtil;
 import com.jeeplus.core.web.BaseController;
 import com.jeeplus.modules.sys.entity.FileData;
 import com.jeeplus.modules.sys.entity.User;
 import com.jeeplus.modules.sys.security.SystemAuthorizingRealm;
 import com.jeeplus.modules.sys.utils.UserUtils;
 import org.apache.commons.fileupload.disk.DiskFileItem;
-import org.apache.fop.util.DataURLUtil;
 import org.apache.ibatis.annotations.Param;
-import org.apache.poi.util.IOUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.h2.mvstore.DataUtils;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -376,23 +371,18 @@ public class FileController extends BaseController {
 		if ((dot >-1) && (dot < (fileName.length() - 1))) {
 			suffix= fileName.substring(dot).toLowerCase();
 		}
-		// Endpoint以杭州为例，其它Region请按实际情况填写。
-		String endpoint = "oss-cn-beijing.aliyuncs.com";
-		// 阿里云主账号AccessKey拥有所有API的访问权限，风险很高。强烈建议您创建并使用RAM账号进行API访问或日常运维，请登录 https://ram.console.aliyun.com 创建RAM账号。
-		String accessKeyId = "LTAIy1DroxAA5lYY";
-		String accessKeySecret = "KAB9PK1jk9s4NxJ3Q5bkhemy6DHSvf";
-		String bucketName = "webmomofile";
+
 		String newFileName=DateUtils.getDate("yyyyMMddHHmmssSSS")+suffix;
 		String objectName = filePath+"/"+UserUtils.getUser().getId()+"/"+ newFileName;
 
-		// 创建OSSClient实例。
-		OSSClient ossClient = new OSSClient(endpoint, accessKeyId, accessKeySecret);
+        // 创建OSSClient实例。
+        OSSClient ossClient = new OSSClient(Global.getEndpoint(), Global.getAccessKeyId(), Global.getAccessKeySecret());
 
-		// 上传内容到指定的存储空间（bucketName）并保存为指定的文件名称（objectName）。
-		ossClient.putObject(bucketName, objectName, inputStream);
+        // 上传内容到指定的存储空间（bucketName）并保存为指定的文件名称（objectName）。
+        ossClient.putObject(Global.getBucketName(), objectName, inputStream);
 
-		// 关闭OSSClient。
-		ossClient.shutdown();
+        // 关闭OSSClient。
+        ossClient.shutdown();
 
 		j.setSuccess(true);
 		j.put("fileName", fileName);

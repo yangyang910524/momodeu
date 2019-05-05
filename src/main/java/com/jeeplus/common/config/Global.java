@@ -3,23 +3,22 @@
  */
 package com.jeeplus.common.config;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.Reader;
-import java.util.Map;
-import java.util.Properties;
-
+import com.google.common.collect.Maps;
 import com.jeeplus.common.utils.FileUtils;
+import com.jeeplus.common.utils.PropertiesLoader;
+import com.jeeplus.common.utils.StringUtils;
 import com.jeeplus.core.web.Servlets;
 import com.jeeplus.modules.sys.security.SystemAuthorizingRealm;
 import com.jeeplus.modules.sys.utils.UserUtils;
 import org.apache.ibatis.io.Resources;
 import org.springframework.core.io.DefaultResourceLoader;
 
-import com.google.common.collect.Maps;
-import com.jeeplus.common.utils.PropertiesLoader;
-import com.jeeplus.common.utils.StringUtils;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * 全局配置类
@@ -65,6 +64,8 @@ public class Global {
 	 * 上传文件基础虚拟路径
 	 */
 	public static final String USERFILES_BASE_URL = "/userfiles/";
+
+
 
 	/**
 	 * 共享文档物理存储地址
@@ -294,11 +295,22 @@ public class Global {
 		return prop;
 	}
 
-	/**
-	 * 获取文件后缀
-	 */
-	public static String getFilePath() {
-		return getConfig("filePath");
-	}
-	
+    /**
+     * @Description 获取阿里OSS文件管理相关参数
+     **/
+    public static String getFilePath() {
+        return getConfig("filePath");
+    }
+    public static String getEndpoint() {
+        return getConfig("endpoint");
+    }
+    public static String getAccessKeyId() {
+        return getConfig("accessKeyId");
+    }
+    public static String getAccessKeySecret() {
+        return getConfig("accessKeySecret");
+    }
+    public static String getBucketName() {
+        return getConfig("bucketName");
+    }
 }

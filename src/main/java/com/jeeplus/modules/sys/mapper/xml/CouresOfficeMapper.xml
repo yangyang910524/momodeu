@@ -56,9 +56,23 @@
             <if test="office != null and office.id != null and office.id != ''">
                 AND a.officeid = #{office.id}
             </if>
-            <if test="courseInfo!=null and courseInfo.state != null and courseInfo.state != ''">
-                AND kc.state = #{courseInfo.state}
+
+            <if test="father != null  and father.name != null and father.name != ''">
+                AND kc.name LIKE CONCAT('%', #{father.name}, '%')
             </if>
+
+            <if test="courseInfo != null  and courseInfo.name != null and courseInfo.name != ''">
+                AND zj.name LIKE CONCAT('%', #{courseInfo.name}, '%')
+            </if>
+
+            <if test="father != null  and father.level != null and father.level != ''">
+                AND kc.level = #{father.level}
+            </if>
+
+            <if test="father != null  and father.state != null and father.state != ''">
+                AND kc.state =#{father.state}
+            </if>
+
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">

@@ -561,8 +561,8 @@ public class SystemService extends BaseService implements InitializingBean {
         return userMapper.findTeacherListByOffice(officeid);
     }
 
-    public List<User>  findStudentListByOffice(String officeid,String userid) {
-        return userMapper.findStudentListByOffice(officeid,userid);
+    public List<User>  findStudentListByOffice(String officeid) {
+        return userMapper.findStudentListByOffice(officeid);
     }
 
 	@Transactional(readOnly = false)

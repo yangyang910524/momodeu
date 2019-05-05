@@ -6,6 +6,9 @@ package com.jeeplus.modules.sys.entity;
 
 import com.jeeplus.core.persistence.DataEntity;
 import com.jeeplus.common.utils.excel.annotation.ExcelField;
+import com.jeeplus.modules.homework.entity.Homework;
+
+import java.util.Date;
 
 /**
  * 用户-作业关联Entity
@@ -16,7 +19,7 @@ public class UserHomework extends DataEntity<UserHomework> {
 	
 	private static final long serialVersionUID = 1L;
 	private String state;		// 状态
-	private String finishDate;		// 完成时间
+	private Date finishDate;		// 完成时间
 	private String file;		// 文件
 	private Integer score;		// 老师打分
 	private String comment;		// 老师评语
@@ -25,8 +28,17 @@ public class UserHomework extends DataEntity<UserHomework> {
 	private String userid;
 	private String homeworkid;
 	private String officeid;
-	
-	public UserHomework() {
+	private Homework homework;//作业信息
+
+    public Homework getHomework() {
+        return homework;
+    }
+
+    public void setHomework(Homework homework) {
+        this.homework = homework;
+    }
+
+    public UserHomework() {
 		super();
 	}
 
@@ -42,17 +54,16 @@ public class UserHomework extends DataEntity<UserHomework> {
 	public void setState(String state) {
 		this.state = state;
 	}
-	
-	@ExcelField(title="完成时间", align=2, sort=8)
-	public String getFinishDate() {
-		return finishDate;
-	}
 
-	public void setFinishDate(String finishDate) {
-		this.finishDate = finishDate;
-	}
-	
-	@ExcelField(title="文件", align=2, sort=9)
+    public Date getFinishDate() {
+        return finishDate;
+    }
+
+    public void setFinishDate(Date finishDate) {
+        this.finishDate = finishDate;
+    }
+
+    @ExcelField(title="文件", align=2, sort=9)
 	public String getFile() {
 		return file;
 	}

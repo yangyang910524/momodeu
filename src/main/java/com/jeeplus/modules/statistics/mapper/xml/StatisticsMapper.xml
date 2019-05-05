@@ -34,7 +34,7 @@
 					ORDER BY ${page.orderBy}
 				</when>
 				<otherwise>
-					ORDER BY a.score desc
+					ORDER BY  cast( a.score   as   SIGNED   INTEGER)   desc
 				</otherwise>
 			</choose>
 	</select>
@@ -64,7 +64,7 @@
             from sys_user_homework
             <where>
                 <if test="beginTime != null and beginTime!='' and endTime != null and endTime!=''">
-                    and create_date between str_to_date(CONCAT(#{beginTime},' 00:00:00'),'%Y-%m-%d %H:%i:%s') and str_to_date(CONCAT(#{endTime},' 23:59:59'),'%Y-%m-%d %H:%i:%s')
+                    and finish_date between str_to_date(CONCAT(#{beginTime},' 00:00:00'),'%Y-%m-%d %H:%i:%s') and str_to_date(CONCAT(#{endTime},' 23:59:59'),'%Y-%m-%d %H:%i:%s')
                 </if>
                 <if test="office !=null and office.id != null and office.id != ''">
                     and officeid=#{office.id}

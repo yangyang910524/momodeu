@@ -496,8 +496,8 @@
         sys_user_office suo
         left join sys_user su on suo.userid=su.id
         where suo.user_type ='3'
-        and suo.userid &lt;>#{userid}
         and officeid=#{officeid}
+        order by cast( su.score   as   SIGNED   INTEGER) desc
     </select>
 
 	<update id="updateScore">
