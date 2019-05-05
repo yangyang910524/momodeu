@@ -24,13 +24,32 @@
 	<div id="search-collapse" class="collapse">
 		<div class="accordion-inner">
 			<form:form id="searchForm" modelAttribute="courseData" class="form form-horizontal well clearfix">
-			 <div class="col-xs-12 col-sm-6 col-md-4">
-			</div>
-			 <div class="col-xs-12 col-sm-6 col-md-4">
-				<label class="label-item single-overflow pull-left" title="课程：">课程：</label>
-				<sys:treeselect id="courseInfo" name="courseInfo.id" value="${courseData.courseInfo.id}" labelName="courseInfo.name" labelValue="${courseData.courseInfo.name}"
-					title="课程" url="/course/courseInfo/treeData" extId="${courseData.id}" cssClass="form-control " allowClear="true"/>
-			</div>
+                <div class="col-sm-2">
+                    <label class="label-item single-overflow pull-left" title="课程名称：">课程名称：</label>
+                    <input type="text" name="father.name" maxlength="100"  class=" form-control" value="${father.name}"/>
+                </div>
+                <div class="col-sm-2">
+                    <label class="label-item single-overflow pull-left" title="章节名称：">章节名称：</label>
+                    <input type="text" name="courseInfo.name" maxlength="100"  class=" form-control" value="${courseInfo.name}"/>
+                </div>
+                <div class="col-sm-2">
+                    <label class="label-item single-overflow pull-left" title="课程级别：">课程级别：</label>
+                    <select  class="form-control m-b" name="father.level">
+                        <option value="" ></option>
+                        <c:forEach items="${fns:getDictList('bae_course_level')}" var="l">
+                            <option value="${l.value}" <c:if test="${l.value eq father.level}">selected</c:if>>${l.label}</option>
+                        </c:forEach>
+                    </select>
+                </div>
+                <div class="col-sm-2">
+                    <label class="label-item single-overflow pull-left" title="状态：">状态：</label>
+                    <select name="father.state"  class="form-control m-b">
+                        <option value="" ></option>
+                        <c:forEach items="${fns:getDictList('bas_release_type')}" var="l">
+                            <option value="${l.value}" <c:if test="${l.value eq father.state}">selected</c:if>>${l.label}</option>
+                        </c:forEach>
+                    </select>
+                </div>
 		 <div class="col-xs-12 col-sm-6 col-md-4">
 			<div style="margin-top:26px">
 			  <a  id="search" class="btn btn-primary btn-rounded  btn-bordered btn-sm"><i class="fa fa-search"></i> 查询</a>

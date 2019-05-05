@@ -73,7 +73,7 @@
 	                //可供选择的每页的行数（*）    
 	                pageList: [5, 10,  'ALL'],
 	                //这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据  
-	                url: "${ctx}/course/courseInfo/courseList?office.id=${officeid}",
+	                url: "${ctx}/course/courseData/courseList?officeid=${officeid}",
 	                //默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
 	                //queryParamsType:'',   
 	                ////查询参数,每次调用是会带上这个参数，可自定义                         
@@ -95,12 +95,50 @@
 	                	<c:if test="${!isMultiSelect}">
 	                		radio: true
 	                	</c:if>
-				    }, {
-				        field: 'name',
-				        title: '课程名称',
-				        sortable: true
-				       
-				    }]
+				    } , {
+                        field: 'father.name',
+                        title: '课程名称',
+                        sortable: false
+
+                    },{
+                        field: 'courseInfo.name',
+                        title: '章节名称',
+                        sortable: false
+                    },{
+                        field: 'father.level',
+                        title: '课程级别',
+                        sortable: false,
+                        formatter:function(value, row , index){
+                            return jp.getDictLabel(${fns:toJson(fns:getDictList('bae_course_level'))}, value, "-");
+                        }
+
+                    }, {
+                        field: 'father.state',
+                        title: '状态',
+                        sortable: false,
+                        formatter:function(value, row , index){
+                            return jp.getDictLabel(${fns:toJson(fns:getDictList('bas_release_type'))}, value, "-");
+                        }
+
+                    }
+                        ,{
+                            field: 'data',
+                            title: '资料',
+                            sortable: false,
+                            formatter:function(value, row , index){
+                                if(value==null||value==undefined||value==""||value=="undefined"){
+                                    return "-";
+                                }else{
+                                    var valueArray = value.split("|");
+                                    var labelArray = [];
+                                    for(var i =0 ; i<valueArray.length; i++){
+                                        labelArray[i] = "<a href='${ctx}/sys/file/download?source="+valueArray[i]+"' >下载材料</a>"
+                                    }
+                                    return labelArray.join(" ");
+                                }
+                            }
+
+                        }]
 				
 				});
 			
@@ -164,11 +202,23 @@
 			<div id="collapseTwo" class="accordion-body">
 				<div class="accordion-inner">
 					<form id="searchForm" class="form form-horizontal well clearfix" >
-					    <input type="hidden" id="companyId" name="company.id"/>
-					    <div class="col-sm-4">
-					    	<label class="label-item single-overflow pull-left" title="课程名称：">课程名称：</label>
-					   		<input type="text" name="name" maxlength="100"  class=" form-control"/>
-					    </div>
+                        <div class="col-sm-2">
+                            <label class="label-item single-overflow pull-left" title="课程名称：">课程名称：</label>
+                            <input type="text" name="father.name" maxlength="100"  class=" form-control" value="${father.name}"/>
+                        </div>
+                        <div class="col-sm-2">
+                            <label class="label-item single-overflow pull-left" title="章节名称：">章节名称：</label>
+                            <input type="text" name="courseInfo.name" maxlength="100"  class=" form-control" value="${courseInfo.name}"/>
+                        </div>
+                        <div class="col-sm-2">
+                            <label class="label-item single-overflow pull-left" title="课程级别：">课程级别：</label>
+                            <select  class="form-control m-b" name="father.level">
+                                <option value="" ></option>
+                                <c:forEach items="${fns:getDictList('bae_course_level')}" var="l">
+                                    <option value="${l.value}" <c:if test="${l.value eq father.level}">selected</c:if>>${l.label}</option>
+                                </c:forEach>
+                            </select>
+                        </div>
 					    <div class="col-sm-4">
 							 <div style="margin-top:26px">
 							  <a  id="search" class="btn btn-primary btn-rounded  btn-bordered btn-sm"><i class="fa fa-search"></i> 查询</a>

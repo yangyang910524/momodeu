@@ -36,32 +36,22 @@
             <a href="${ctx}/sys/classes/classes" class="btn btn-primary">
                 返回
             </a>
-			<shiro:hasPermission name="sys:couresoffice:couresOffice:add">
-				<button id="add" class="btn btn-primary" onclick="add()">
-					<i class="glyphicon glyphicon-plus"></i> 添加课程
-				</button>
-			</shiro:hasPermission>
-			<shiro:hasPermission name="sys:couresoffice:couresOffice:del">
-				<button id="remove" class="btn btn-danger" disabled onclick="deleteAll()">
-					<i class="glyphicon glyphicon-remove"></i> 删除
-				</button>
-			</shiro:hasPermission>
-		    </div>
+            <button id="add" class="btn btn-primary" onclick="add()">
+                <i class="glyphicon glyphicon-plus"></i> 添加课程
+            </button>
+            <button id="remove" class="btn btn-danger" disabled onclick="deleteAll()">
+                <i class="glyphicon glyphicon-remove"></i> 删除
+            </button>
+    </div>
 		
 	<!-- 表格 -->
 	<table id="couresOfficeTable"   data-toolbar="#toolbar"></table>
 
     <!-- context menu -->
     <ul id="context-menu" class="dropdown-menu">
-    	<shiro:hasPermission name="sys:couresoffice:couresOffice:view">
         <li data-item="view"><a>查看</a></li>
-        </shiro:hasPermission>
-    	<shiro:hasPermission name="sys:couresoffice:couresOffice:edit">
         <li data-item="edit"><a>编辑</a></li>
-        </shiro:hasPermission>
-        <shiro:hasPermission name="sys:couresoffice:couresOffice:del">
         <li data-item="delete"><a>删除</a></li>
-        </shiro:hasPermission>
         <li data-item="action1"><a>取消</a></li>
     </ul>  
 	</div>

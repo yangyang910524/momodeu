@@ -214,5 +214,20 @@ public class CourseDataController extends BaseController {
 		return j;
     }
 
+    /**
+     * 课程内容列表页面
+     */
+    @RequestMapping(value = "openCourseSelectDialog")
+    public String openCourseSelectDialog(boolean isMultiSelect, Model model,String officeid) {
+        model.addAttribute("isMultiSelect", isMultiSelect);
+        model.addAttribute("officeid", officeid);
+        return "modules/common/courseSelect";
+    }
 
+    @ResponseBody
+    @RequestMapping(value = "courseList")
+    public Map<String, Object> courseList(CourseData courseData, HttpServletRequest request, HttpServletResponse response, Model model) {
+        Page<CourseData> page = courseDataService.findCourseList(new Page<CourseData>(request, response), courseData);
+        return getBootstrapData(page);
+    }
 }

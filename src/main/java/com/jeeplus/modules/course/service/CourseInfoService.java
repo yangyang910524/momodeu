@@ -50,14 +50,6 @@ public class CourseInfoService extends TreeService<CourseInfoMapper, CourseInfo>
 		super.delete(courseInfo);
 	}
 
-    public Page<CourseInfo> findCourseList(Page<CourseInfo> page, CourseInfo courseInfo) {
-        dataRuleFilter(courseInfo);
-        // 设置分页参数
-        courseInfo.setPage(page);
-        // 执行分页查询
-        page.setList(courseInfoMapper.findCourseList(courseInfo));
-        return page;
-    }
 
 	public Page<CourseInfo> findChapterList(Page<CourseInfo> page, CourseInfo courseInfo) {
 		dataRuleFilter(courseInfo);

@@ -150,7 +150,7 @@ $(document).ready(function() {
                            </shiro:hasPermission>
 
                            <shiro:hasPermission name="sys:classes:classes:course">
-                           result+= "&nbsp;&nbsp;<a href='${ctx}/sys/couresoffice/couresOffice?officeid="+value+"'>课程管理</a>&nbsp;&nbsp;";
+                           result+= "&nbsp;&nbsp;<a href='${ctx}/sys/couresoffice/couresOffice?office.id="+value+"'>课程管理</a>&nbsp;&nbsp;";
                            </shiro:hasPermission>
 
                            <shiro:hasPermission name="sys:classes:classes:homework">

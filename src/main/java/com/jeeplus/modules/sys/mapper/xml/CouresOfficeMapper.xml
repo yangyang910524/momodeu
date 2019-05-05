@@ -50,6 +50,9 @@
 		<include refid="couresOfficeJoins"/>
 		<where>
 			${dataScope}
+            <if test="courseData!=null and courseData.id != null and courseData.id != ''">
+                AND nr.id = #{courseData.id}
+            </if>
             <if test="office != null and office.id != null and office.id != ''">
                 AND a.officeid = #{office.id}
             </if>
@@ -93,16 +96,16 @@
 			state
 		) VALUES (
 			#{id},
-			#{officeid},
-			#{couresid},
+			#{office.id},
+			#{courseData.id},
 			#{state}
 		)
 	</insert>
 	
 	<update id="update">
 		UPDATE sys_coures_office SET 	
-			officeid = #{officeid},
-			couresid = #{couresid},
+			officeid = #{office.id},
+			couresid = #{courseData.id},
 			state = #{state}
 		WHERE id = #{id}
 	</update>

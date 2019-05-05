@@ -5,7 +5,6 @@ package com.jeeplus.modules.course.entity;
 
 
 import com.jeeplus.core.persistence.DataEntity;
-import com.jeeplus.common.utils.excel.annotation.ExcelField;
 
 /**
  * 课程内容Entity
@@ -18,41 +17,37 @@ public class CourseData extends DataEntity<CourseData> {
 	private String data;		// 资料
 	private CourseInfo courseInfo;		// 章节
 	private CourseInfo father;			//课程
+    private String officeid;//班级id
 
-	public CourseData() {
-		super();
-	}
+    public String getData() {
+        return data;
+    }
 
-	public CourseData(String id){
-		super(id);
-	}
+    public void setData(String data) {
+        this.data = data;
+    }
 
-	public CourseData(CourseInfo courseInfo){
-		this.courseInfo = courseInfo;
-	}
+    public CourseInfo getCourseInfo() {
+        return courseInfo;
+    }
 
-	@ExcelField(title="资料", align=2, sort=7)
-	public String getData() {
-		return data;
-	}
+    public void setCourseInfo(CourseInfo courseInfo) {
+        this.courseInfo = courseInfo;
+    }
 
-	public void setData(String data) {
-		this.data = data;
-	}
-	
-	public CourseInfo getCourseInfo() {
-		return courseInfo;
-	}
+    public CourseInfo getFather() {
+        return father;
+    }
 
-	public void setCourseInfo(CourseInfo courseInfo) {
-		this.courseInfo = courseInfo;
-	}
+    public void setFather(CourseInfo father) {
+        this.father = father;
+    }
 
-	public CourseInfo getFather() {
-		return father;
-	}
+    public String getOfficeid() {
+        return officeid;
+    }
 
-	public void setFather(CourseInfo father) {
-		this.father = father;
-	}
+    public void setOfficeid(String officeid) {
+        this.officeid = officeid;
+    }
 }

@@ -56,23 +56,24 @@
                         <if test="dbName == 'mssql'">'%'+#{courseInfo.id}+'%')</if>
                     </if>
 
-			<if test="courseInfo != null  and courseInfo.parent != null and courseInfo.parent.name != null and courseInfo.parent.name != ''">
-				AND p.name LIKE CONCAT('%,', #{courseInfo.parent.name}, ',%'))
-			</if>
+            <if test="father != null  and father.name != null and father.name != ''">
+                AND p.name LIKE CONCAT('%', #{father.name}, '%')
+            </if>
 
-			<if test="courseInfo != null  and courseInfo.name != null and courseInfo.name != ''">
-				AND b.name LIKE CONCAT('%,', #{courseInfo.name}, ',%'))
-			</if>
+            <if test="courseInfo != null  and courseInfo.name != null and courseInfo.name != ''">
+                AND b.name LIKE CONCAT('%', #{courseInfo.name}, '%')
+            </if>
 
-			<if test="courseInfo != null  and courseInfo.level != null and courseInfo.level != ''">
-				AND p.level LIKE CONCAT('%,', #{courseInfo.level}, ',%'))
-			</if>
+            <if test="father != null  and father.level != null and father.level != ''">
+                AND p.level = #{father.level}
+            </if>
 
-			<if test="courseInfo != null  and courseInfo.state != null and courseInfo.state != ''">
-				AND p.state LIKE CONCAT('%,', #{courseInfo.state}, ',%'))
-			</if>
+            <if test="father != null  and father.state != null and father.state != ''">
+                AND p.state =#{father.state}
+            </if>
 
-		</where>
+
+        </where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
 				ORDER BY ${page.orderBy}
@@ -169,5 +170,50 @@
 	<select id="findUniqueByProperty" resultType="CourseData" statementType="STATEMENT">
 		select * FROM course_data  where ${propertyName} = '${value}'
 	</select>
-	
+
+    <select id="findCourseList" resultType="CourseData" >
+        SELECT
+        <include refid="courseDataColumns"/>
+        FROM course_data a
+        <include refid="courseDataJoins"/>
+        <where>
+            a.del_flag = #{DEL_FLAG_NORMAL}
+            AND p.state='1'
+            <if test="data != null and data != ''">
+                AND a.data = #{data}
+            </if>
+            <if test="courseInfo != null  and courseInfo.id != null and courseInfo.id != ''">
+                AND (b.id = #{courseInfo.id} OR b.parent_ids LIKE
+                <if test="dbName == 'oracle'">'%,'||#{courseInfo.id}||',%')</if>
+                <if test="dbName == 'mysql'">CONCAT('%,', #{courseInfo.id}, ',%'))</if>
+                <if test="dbName == 'mssql'">'%'+#{courseInfo.id}+'%')</if>
+            </if>
+
+            <if test="father != null  and father.name != null and father.name != ''">
+                AND p.name LIKE CONCAT('%', #{father.name}, '%')
+            </if>
+
+            <if test="courseInfo != null  and courseInfo.name != null and courseInfo.name != ''">
+                AND b.name LIKE CONCAT('%', #{courseInfo.name}, '%')
+            </if>
+
+            <if test="father != null  and father.level != null and father.level != ''">
+                AND p.level = #{father.level}
+            </if>
+
+            <if test="officeid != null  and officeid != ''">
+                AND not exists(
+                  select 1 from sys_coures_office suo where suo.officeid=#{officeid} and suo.couresid=a.id
+                )
+            </if>
+        </where>
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+                ORDER BY cast( p.sort   as   SIGNED   INTEGER) ASC,cast( b.sort   as   SIGNED   INTEGER),a.create_date desc
+            </otherwise>
+        </choose>
+    </select>
 </mapper>

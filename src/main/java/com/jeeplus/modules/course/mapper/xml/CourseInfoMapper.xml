@@ -184,30 +184,6 @@
         <if test="dbName == 'mysql'">CONCAT('%,', #{id}, ',%')</if>
 	</update>
 
-
-    <select id="findCourseList" resultType="CourseInfo">
-        SELECT
-        <include refid="courseInfoColumns"/>
-        FROM course_info a
-        <include refid="courseInfoJoins"/>
-        <where>
-            a.del_flag = #{DEL_FLAG_NORMAL}
-            ${dataScope}
-            AND a.parent_id = '0'
-			AND not exists
-			(
-				select 1 from sys_coures_office sco where sco.couresid=a.id and sco.officeid=#{office.id}
-			)
-            <if test="name != null and name != ''">
-                AND a.name LIKE
-                <if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
-                <if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
-                <if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
-            </if>
-        </where>
-		ORDER BY cast( a.sort   as   SIGNED   INTEGER) ASC
-    </select>
-
 	<select id="findChapterList" resultType="CourseInfo">
 		SELECT
 			a.id AS "id",

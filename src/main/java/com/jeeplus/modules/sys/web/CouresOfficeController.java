@@ -11,12 +11,10 @@ import com.jeeplus.common.utils.excel.ExportExcel;
 import com.jeeplus.common.utils.excel.ImportExcel;
 import com.jeeplus.core.persistence.Page;
 import com.jeeplus.core.web.BaseController;
-import com.jeeplus.modules.course.entity.CourseInfo;
+import com.jeeplus.modules.course.entity.CourseData;
 import com.jeeplus.modules.sys.entity.CouresOffice;
 import com.jeeplus.modules.sys.entity.Office;
 import com.jeeplus.modules.sys.service.CouresOfficeService;
-import org.apache.shiro.authz.annotation.Logical;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -144,13 +142,14 @@ public class CouresOfficeController extends BaseController {
         Office o=new Office();
         o.setId(officeid);
         couresOffice.setOffice(o);
-        CourseInfo c=new CourseInfo();
+        couresOffice.setState("0");
+        CourseData c=new CourseData();
         String idArray[] =ids.split(",");
         List<CouresOffice> list=null;
         for(String id : idArray){
             couresOffice.setId(null);
             c.setId(id);
-            couresOffice.setCourseInfo(c);
+            couresOffice.setCourseData(c);
             list=couresOfficeService.findList(couresOffice);
             if(list.size()>0){
                 continue;

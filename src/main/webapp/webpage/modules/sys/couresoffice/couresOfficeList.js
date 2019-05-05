@@ -84,19 +84,51 @@ $(document).ready(function() {
 		        checkbox: true
 		       
 		    }
-           ,{
-               field: 'officeName',
-               title: '班级名称',
-               sortable: false
+                   , {
+                       field: 'father.name',
+                       title: '课程名称',
+                       sortable: false
 
-           } ,{
-               field: 'couresName',
-               title: '课程名称',
-               sortable: false
+                   },{
+                       field: 'courseInfo.name',
+                       title: '章节名称',
+                       sortable: false
+                   },{
+                       field: 'father.level',
+                       title: '课程级别',
+                       sortable: false,
+                       formatter:function(value, row , index){
+                           return jp.getDictLabel(${fns:toJson(fns:getDictList('bae_course_level'))}, value, "-");
+                       }
 
-           }
-		     ]
-		
+                   }, {
+                       field: 'father.state',
+                       title: '状态',
+                       sortable: false,
+                       formatter:function(value, row , index){
+                           return jp.getDictLabel(${fns:toJson(fns:getDictList('bas_release_type'))}, value, "-");
+                       }
+
+                   }
+                   ,{
+                       field: 'courseData.data',
+                       title: '资料',
+                       sortable: false,
+                       formatter:function(value, row , index){
+                           if(value==null||value==undefined||value==""||value=="undefined"){
+                               return "-";
+                           }else{
+                               var valueArray = value.split("|");
+                               var labelArray = [];
+                               for(var i =0 ; i<valueArray.length; i++){
+                                   labelArray[i] = "<a href='${ctx}/sys/file/download?source="+valueArray[i]+"' >下载材料</a>"
+                               }
+                               return labelArray.join(" ");
+                           }
+                       }
+
+                   }
+         ]
 		});
 		
 		  

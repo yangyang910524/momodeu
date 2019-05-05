@@ -3,15 +3,15 @@
  */
 package com.jeeplus.modules.course.service;
 
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.jeeplus.core.persistence.Page;
 import com.jeeplus.core.service.CrudService;
 import com.jeeplus.modules.course.entity.CourseData;
 import com.jeeplus.modules.course.mapper.CourseDataMapper;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * 课程内容Service
@@ -21,6 +21,8 @@ import com.jeeplus.modules.course.mapper.CourseDataMapper;
 @Service
 @Transactional(readOnly = true)
 public class CourseDataService extends CrudService<CourseDataMapper, CourseData> {
+    @Resource
+    private CourseDataMapper courseDataMapper;
 
 	public CourseData get(String id) {
 		return super.get(id);
@@ -43,5 +45,11 @@ public class CourseDataService extends CrudService<CourseDataMapper, CourseData>
 	public void delete(CourseData courseData) {
 		super.delete(courseData);
 	}
-	
+
+    public Page<CourseData> findCourseList(Page<CourseData> page, CourseData entity) {
+        dataRuleFilter(entity);
+        entity.setPage(page);
+        page.setList(courseDataMapper.findCourseList(entity));
+        return page;
+    }
 }

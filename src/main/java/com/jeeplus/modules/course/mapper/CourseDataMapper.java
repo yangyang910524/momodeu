@@ -7,6 +7,8 @@ import com.jeeplus.core.persistence.BaseMapper;
 import com.jeeplus.core.persistence.annotation.MyBatisMapper;
 import com.jeeplus.modules.course.entity.CourseData;
 
+import java.util.List;
+
 /**
  * 课程内容MAPPER接口
  * @author yangyang
@@ -14,5 +16,6 @@ import com.jeeplus.modules.course.entity.CourseData;
  */
 @MyBatisMapper
 public interface CourseDataMapper extends BaseMapper<CourseData> {
-	
+
+    List<CourseData> findCourseList(CourseData entity);
 }

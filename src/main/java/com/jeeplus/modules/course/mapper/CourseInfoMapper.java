@@ -17,7 +17,6 @@ import java.util.List;
 @MyBatisMapper
 public interface CourseInfoMapper extends TreeMapper<CourseInfo> {
 
-    List<CourseInfo> findCourseList(CourseInfo courseInfo);
 
     List<CourseInfo> findChapterList(CourseInfo courseInfo);
 
