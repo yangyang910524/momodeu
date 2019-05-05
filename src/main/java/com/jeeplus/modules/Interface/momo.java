@@ -11,17 +11,18 @@ import com.jeeplus.core.persistence.Page;
 import com.jeeplus.modules.advertisement.entity.Advertisement;
 import com.jeeplus.modules.advertisement.service.AdvertisementService;
 import com.jeeplus.modules.course.entity.CourseInfo;
-import com.jeeplus.modules.course.service.CourseDataService;
 import com.jeeplus.modules.notice.entity.Notice;
 import com.jeeplus.modules.notice.service.NoticeService;
 import com.jeeplus.modules.scoreexchange.entity.ScoreExchange;
 import com.jeeplus.modules.scoreexchange.service.ScoreExchangeService;
 import com.jeeplus.modules.statistics.entity.Statistics;
 import com.jeeplus.modules.statistics.service.StatisticsService;
+import com.jeeplus.modules.sys.entity.Classes;
 import com.jeeplus.modules.sys.entity.CouresOffice;
 import com.jeeplus.modules.sys.entity.User;
 import com.jeeplus.modules.sys.entity.UserHomework;
 import com.jeeplus.modules.sys.mapper.UserMapper;
+import com.jeeplus.modules.sys.service.ClassesService;
 import com.jeeplus.modules.sys.service.CouresOfficeService;
 import com.jeeplus.modules.sys.service.SystemService;
 import com.jeeplus.modules.sys.service.UserHomeworkService;
@@ -60,7 +61,7 @@ public class momo {
     @Resource
     private CouresOfficeService couresOfficeService;
     @Resource
-    private CourseDataService courseDataService;
+    private ClassesService classesService;
     @Resource
     private SystemService systemService;
     @Resource
@@ -527,6 +528,9 @@ public class momo {
             }
             //同学列表
             j.put("student",systemService.findStudentListByOffice(user.getOffice().getId()));
+            //课程级别
+            Classes classes = classesService.get(user.getOffice().getId());
+            j.put("level",DictUtils.getDictLabel(classes.getLevel(),"bae_course_level",""));
             j.setSuccess(true);
             j.setErrorCode("-1");
             j.setMsg("查询成功!");

@@ -50,16 +50,16 @@
 		ifnull(a.phone,'') as phone,
 		ifnull(a.mobile,'') as mobile,
 		ifnull(a.login_ip,'') as "loginIp",
-		ifnull(a.login_date,'') as "loginDate",
+		a.login_date as "loginDate",
 		ifnull(a.remarks,'') as remarks,
 		ifnull(a.login_flag,'') as "loginFlag",
 		ifnull(a.photo,'') as photo,
 		ifnull(a.qrcode,'') as qrcode,
 		ifnull(a.sign,'') as sign,
 		ifnull(a.create_by,'') AS "createBy.id",
-		ifnull(a.create_date,'') AS "createDate",
+		a.create_date AS "createDate",
 		ifnull(a.update_by,'') AS "updateBy.id",
-		ifnull(a.update_date,'') AS "updateDate",
+		a.update_date AS "updateDate",
 		ifnull(a.del_flag,'') AS "delFlag",
 		ifnull(xsso.id,'') AS "office.id",
 		ifnull(xsso.name,'') AS "office.name",
@@ -482,17 +482,17 @@
 
     <select id="findStudentListByOffice" resultType="com.jeeplus.modules.sys.entity.User">
         SELECT
-        su.id as id,
-        su.login_name AS "loginName",
-        su.name,
-        su.english_name AS "englishName",
-        su.score,
-        su.user_type as "userType",
-        su.email,
-        su.phone,
-        su.mobile,
-        su.remarks,
-        su.photo
+        ifnull(su.id,'') as id,
+        ifnull(su.login_name,'') AS "loginName",
+        ifnull(su.name,'') as name,
+        ifnull(su.english_name,'') AS "englishName",
+        ifnull(su.score,'') as score,
+        ifnull(su.user_type,'') as "userType",
+        ifnull(su.email,'') as email,
+        ifnull(su.phone,'') as phone,
+        ifnull(su.mobile,'') as mobile,
+        ifnull(su.remarks,'') as remarks,
+        ifnull(su.photo,'') as photo
         FROM
         sys_user_office suo
         left join sys_user su on suo.userid=su.id

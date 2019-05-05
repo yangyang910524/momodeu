@@ -9,7 +9,7 @@
 		ifnull(h.name,'') as "homeworkName",
 		ifnull(so.name,'') as "officeName",
 		ifnull(a.statue,'') AS "statue",
-		ifnull(a.issue_date,'') AS "issueDate",
+		a.issue_date AS "issueDate",
 
         ifnull(h.id,'') AS "homework.id",
 		ifnull(h.name,'') AS "homework.name",
