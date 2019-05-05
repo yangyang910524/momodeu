@@ -78,6 +78,11 @@
             <if test="student!=null and student.id != null and student.id != ''">
                 AND a.userid = #{student.id}
             </if>
+            <if test="teacher!=null and teacher.id != null and teacher.id != ''">
+                AND exists(
+                  select 1 from sys_user_office tsuo where tsho.officeid=a.officeid
+                )
+            </if>
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
