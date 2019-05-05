@@ -3,16 +3,16 @@
 <mapper namespace="com.jeeplus.modules.advertisement.mapper.AdvertisementMapper">
     
 	<sql id="advertisementColumns">
-		a.id AS "id",
-		a.create_by AS "createBy.id",
-		a.create_date AS "createDate",
-		a.update_by AS "updateBy.id",
-		a.update_date AS "updateDate",
-		a.remarks AS "remarks",
-		a.del_flag AS "delFlag",
-		a.picture AS "picture",
-		a.state AS "state",
-		a.issue_time AS "issueTime"
+		ifnull(a.id,'') AS "id",
+		ifnull(a.create_by,'') AS "createBy.id",
+		ifnull(a.create_date,'') AS "createDate",
+		ifnull(a.update_by,'') AS "updateBy.id",
+		ifnull(a.update_date,'') AS "updateDate",
+		ifnull(a.remarks,'') AS "remarks",
+		ifnull(a.del_flag,'') AS "delFlag",
+		ifnull(a.picture,'') AS "picture",
+		ifnull(a.state,'') AS "state",
+		ifnull(a.issue_time,'') AS "issueTime"
 	</sql>
 	
 	<sql id="advertisementJoins">

@@ -3,36 +3,36 @@
 <mapper namespace="com.jeeplus.modules.sys.mapper.UserHomeworkMapper">
     
 	<sql id="userHomeworkColumns">
-		a.id AS "id",
-		a.create_by AS "createBy.id",
-		a.create_date AS "createDate",
-		a.update_by AS "updateBy.id",
-		a.update_date AS "updateDate",
-		a.remarks AS "remarks",
-		a.del_flag AS "delFlag",
-		a.state AS "state",
-		a.finish_date AS "finishDate",
-		a.file AS "file",
-		a.score AS "score",
-		a.comment AS "comment",
+		ifnull(a.id,'') AS "id",
+		ifnull(a.create_by,'') AS "createBy.id",
+		ifnull(a.create_date,'') AS "createDate",
+		ifnull(a.update_by,'') AS "updateBy.id",
+		ifnull(a.update_date,'') AS "updateDate",
+		ifnull(a.remarks,'') AS "remarks",
+		ifnull(a.del_flag,'') AS "delFlag",
+		ifnull(a.state,'') AS "state",
+		ifnull(a.finish_date,'') AS "finishDate",
+		ifnull(a.file,'') AS "file",
+		ifnull(a.score,'') AS "score",
+		ifnull(a.comment,'') AS "comment",
 
-		student.id as "student.id",
-		student.name as "student.name",
+		ifnull(student.id,'') as "student.id",
+		ifnull(student.name,'') as "student.name",
 
-		nvl(teacher.id,'') as "teacher.id",
-		teacher.name as "teacher.name",
+		ifnull(teacher.id,'') as "teacher.id",
+		ifnull(teacher.name,'') as "teacher.name",
 
-		so.id as "office.id",
-		so.name as "office.name",
+		ifnull(so.id,'') as "office.id",
+		ifnull(so.name,'') as "office.name",
 
-        h.id as "homework.id",
-		h.name AS "homework.name",
-		h.type AS "homework.type",
-		h.data1 AS "homework.data1",
-		h.data2 AS "homework.data2",
-		h.cover AS "homework.cover",
-		h.course_level AS "homework.courseLevel",
-        h.remarks AS "homework.remarks"
+        ifnull(h.id,'') as "homework.id",
+		ifnull(h.name,'') AS "homework.name",
+		ifnull(h.type,'') AS "homework.type",
+		ifnull(h.data1,'') AS "homework.data1",
+		ifnull(h.data2,'') AS "homework.data2",
+		ifnull(h.cover,'') AS "homework.cover",
+		ifnull(h.course_level,'') AS "homework.courseLevel",
+        ifnull(h.remarks,'') AS "homework.remarks"
 	</sql>
 	
 	<sql id="userHomeworkJoins">

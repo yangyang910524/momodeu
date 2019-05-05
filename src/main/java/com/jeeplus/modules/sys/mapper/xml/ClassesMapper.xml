@@ -3,23 +3,23 @@
 <mapper namespace="com.jeeplus.modules.sys.mapper.ClassesMapper">
     
 	<sql id="classesColumns">
-		a.id AS "id",
-		a.name AS "name",
-		a.sort AS "sort",
-		a.create_by AS "createBy.id",
-		a.create_date AS "createDate",
-		a.update_by AS "updateBy.id",
-		a.update_date AS "updateDate",
-		a.remarks AS "remarks",
-		a.del_flag AS "delFlag",
-		suo.userid AS "classroomTeacher.id",
-		so.name AS "classroomTeacher.name",
+		ifnull(a.id,'') AS "id",
+		ifnull(a.name,'') AS "name",
+		ifnull(a.sort,'') AS "sort",
+		ifnull(a.create_by,'') AS "createBy.id",
+		ifnull(a.create_date,'') AS "createDate",
+		ifnull(a.update_by,'') AS "updateBy.id",
+		ifnull(a.update_date,'') AS "updateDate",
+		ifnull(a.remarks,'') AS "remarks",
+		ifnull(a.del_flag,'') AS "delFlag",
+		ifnull(suo.userid,'') AS "classroomTeacher.id",
+		ifnull(so.name,'') AS "classroomTeacher.name",
 		(select count(*) from sys_user_office suo where  user_type in ('1','2') and a.id=suo.officeid) AS "teacherTotal",
 		(select count(*) from sys_user_office suo where  user_type='3' and a.id=suo.officeid) AS "studentTotal",
 		(select count(*) from sys_coures_office sco where a.id=sco.officeid) AS "courseTotal",
 		(select count(*) from sys_homework_office sho where a.id=sho.officeid) AS "homeworkTotal",
-		a.campus as "campus",
-		a.level as "level"
+		ifnull(a.campus,'') as "campus",
+		ifnull(a.level,'') as "level"
 	</sql>
 	
 	<sql id="classesJoins">

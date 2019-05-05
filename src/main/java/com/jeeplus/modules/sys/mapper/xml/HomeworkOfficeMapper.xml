@@ -3,21 +3,21 @@
 <mapper namespace="com.jeeplus.modules.sys.mapper.HomeworkOfficeMapper">
     
 	<sql id="homeworkOfficeColumns">
-		a.id AS "id",
-		a.officeid AS "officeid",
-		a.homeworkid AS "homeworkid",
-		h.name as "homeworkName",
-		so.name as "officeName",
-		a.statue AS "statue",
-		a.issue_date AS "issueDate",
+		ifnull(a.id,'') AS "id",
+		ifnull(a.officeid,'') AS "officeid",
+		ifnull(a.homeworkid,'') AS "homeworkid",
+		ifnull(h.name,'') as "homeworkName",
+		ifnull(so.name,'') as "officeName",
+		ifnull(a.statue,'') AS "statue",
+		ifnull(a.issue_date,'') AS "issueDate",
 
-        h.id AS "homework.id",
-		h.name AS "homework.name",
-		h.type AS "homework.type",
-		h.data1 AS "homework.data1",
-		h.data2 AS "homework.data2",
-		h.cover AS "homework.cover",
-		h.course_level AS "homework.courseLevel"
+        ifnull(h.id,'') AS "homework.id",
+		ifnull(h.name,'') AS "homework.name",
+		ifnull(h.type,'') AS "homework.type",
+		ifnull(h.data1,'') AS "homework.data1",
+		ifnull(h.data2,'') AS "homework.data2",
+		ifnull(h.cover,'') AS "homework.cover",
+		ifnull(h.course_level,'') AS "homework.courseLevel"
 	</sql>
 	
 	<sql id="homeworkOfficeJoins">

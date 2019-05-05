@@ -3,28 +3,28 @@
 <mapper namespace="com.jeeplus.modules.sys.mapper.CouresOfficeMapper">
     
 	<sql id="couresOfficeColumns">
-		a.id AS "id",
-		a.state as "state",
+		ifnull(a.id,'') AS "id",
+		ifnull(a.state,'') as "state",
 
-		a.officeid AS "office.id",
-		so.name AS "office.name",
-		so.campus AS "office.campus",
+		ifnull(a.officeid,'') AS "office.id",
+		ifnull(so.name,'') AS "office.name",
+		ifnull(so.campus,'') AS "office.campus",
 
-		nr.id AS "courseData.id",
-        nr.data AS "courseData.data",
-        nr.remarks AS "courseData.remarks",
+		ifnull(nr.id,'') AS "courseData.id",
+        ifnull(nr.data,'') AS "courseData.data",
+        ifnull(nr.remarks,'') AS "courseData.remarks",
 
-		zj.name AS "courseInfo.name",
-		zj.sort AS "courseInfo.sort",
-		zj.title_type AS "courseInfo.titleType",
-		zj.remarks AS "courseInfo.remarks",
-		kc.name AS "father.name",
-		kc.cover AS "father.cover",
-		kc.level AS "father.level",
-		kc.state AS "father.state",
-		kc.sort AS "father.sort",
-		kc.title_type AS "father.titleType",
-		kc.remarks AS "father.remarks"
+		ifnull(zj.name,'') AS "courseInfo.name",
+		ifnull(zj.sort,'') AS "courseInfo.sort",
+		ifnull(zj.title_type,'') AS "courseInfo.titleType",
+		ifnull(zj.remarks,'') AS "courseInfo.remarks",
+		ifnull(kc.name,'') AS "father.name",
+		ifnull(kc.cover,'') AS "father.cover",
+		ifnull(kc.level,'') AS "father.level",
+		ifnull(kc.state,'') AS "father.state",
+		ifnull(kc.sort,'') AS "father.sort",
+		ifnull(kc.title_type,'') AS "father.titleType",
+		ifnull(kc.remarks,'') AS "father.remarks"
 	</sql>
 	
 	<sql id="couresOfficeJoins">

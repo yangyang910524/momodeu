@@ -3,16 +3,16 @@
 <mapper namespace="com.jeeplus.modules.scorerecord.mapper.ScoreRecordMapper">
     
 	<sql id="scoreRecordColumns">
-		a.id AS "id",
-		a.create_by AS "createBy.id",
-		a.create_date AS "createDate",
-		a.update_by AS "updateBy.id",
-		a.update_date AS "updateDate",
-		a.remarks AS "remarks",
-		a.del_flag AS "delFlag",
-		a.user AS "user.id",
-		a.old_score AS "oldScore",
-		a.new_score AS "newScore"
+		ifnull(a.id,'') AS "id",
+		ifnull(a.create_by,'') AS "createBy.id",
+		ifnull(a.create_date,'') AS "createDate",
+		ifnull(a.update_by,'') AS "updateBy.id",
+		ifnull(a.update_date,'') AS "updateDate",
+		ifnull(a.remarks,'') AS "remarks",
+		ifnull(a.del_flag,'') AS "delFlag",
+		ifnull(a.user,'') AS "user.id",
+		ifnull(a.old_score,'') AS "oldScore",
+		ifnull(a.new_score,'') AS "newScore"
 	</sql>
 	
 	<sql id="scoreRecordJoins">

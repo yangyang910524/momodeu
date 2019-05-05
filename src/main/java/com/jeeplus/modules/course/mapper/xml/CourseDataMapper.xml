@@ -3,25 +3,25 @@
 <mapper namespace="com.jeeplus.modules.course.mapper.CourseDataMapper">
     
 	<sql id="courseDataColumns">
-		a.id AS "id",
-		a.create_by AS "createBy.id",
-		a.create_date AS "createDate",
-		a.update_by AS "updateBy.id",
-		a.update_date AS "updateDate",
-		a.remarks AS "remarks",
-		a.del_flag AS "delFlag",
-		a.data AS "data",
-		b.id AS "courseInfo.id",
-		b.name AS "courseInfo.name",
-		b.title_type AS "courseInfo.titleType",
+		ifnull(a.id,'') AS "id",
+		ifnull(a.create_by,'') AS "createBy.id",
+		ifnull(a.create_date,'') AS "createDate",
+		ifnull(a.update_by,'') AS "updateBy.id",
+		ifnull(a.update_date,'') AS "updateDate",
+		ifnull(a.remarks,'') AS "remarks",
+		ifnull(a.del_flag,'') AS "delFlag",
+		ifnull(a.data,'') AS "data",
+		ifnull(b.id,'') AS "courseInfo.id",
+		ifnull(b.name,'') AS "courseInfo.name",
+		ifnull(b.title_type,'') AS "courseInfo.titleType",
 
-		p.id AS "father.id",
-		p.name AS "father.name",
-		p.cover AS "father.cover",
-		p.level AS "father.level",
-		p.state AS "father.state",
-		p.title_type AS "father.titleType",
-		p.sort AS "father.sort"
+		ifnull(p.id,'') AS "father.id",
+		ifnull(p.name,'') AS "father.name",
+		ifnull(p.cover,'') AS "father.cover",
+		ifnull(p.level,'') AS "father.level",
+		ifnull(p.state,'') AS "father.state",
+		ifnull(p.title_type,'') AS "father.titleType",
+		ifnull(p.sort,'') AS "father.sort"
 	</sql>
 	
 	<sql id="courseDataJoins">

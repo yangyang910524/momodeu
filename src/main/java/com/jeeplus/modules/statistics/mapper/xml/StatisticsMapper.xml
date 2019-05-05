@@ -4,15 +4,15 @@
 
 	<select id="scoreRankingByUser" resultType="Statistics" >
 		SELECT
-			a.id as "user.id",
-			a.name as "user.name",
-			a.english_name AS "user.englishName",
-			a.score AS "user.score",
-			a.phone AS "user.phone",
-			a.mobile AS "user.mobile",
-			a.photo AS "user.photo",
-			so.id as "office.id",
-			so.name as "office.name"
+			ifnull(a.id,'') as "user.id",
+            ifnull(a.name,'') as "user.name",
+            ifnull(a.english_name,'') AS "user.englishName",
+            ifnull(a.score,'') AS "user.score",
+            ifnull(a.phone,'') AS "user.phone",
+            ifnull(a.mobile,'') AS "user.mobile",
+            ifnull(a.photo,'') AS "user.photo",
+            ifnull(so.id,'') as "office.id",
+            ifnull(so.name,'') as "office.name"
 		FROM
 			sys_user a
 			left join sys_user_office suo on a.id=suo.userid
@@ -41,15 +41,15 @@
 
     <select id="homeworkStatistics" resultType="Statistics" >
         SELECT
-            a.id as "user.id",
-            a.name as "user.name",
-            a.english_name AS "user.englishName",
-            a.score AS "user.score",
-            a.phone AS "user.phone",
-            a.mobile AS "user.mobile",
-            a.photo AS "user.photo",
-            so.id as "office.id",
-            so.name as "office.name",
+            ifnull(a.id,'') as "user.id",
+            ifnull(a.name,'') as "user.name",
+            ifnull(a.english_name,'') AS "user.englishName",
+            ifnull(a.score,'') AS "user.score",
+            ifnull(a.phone,'') AS "user.phone",
+            ifnull(a.mobile,'') AS "user.mobile",
+            ifnull(a.photo,'') AS "user.photo",
+            ifnull(so.id,'') as "office.id",
+            ifnull(so.name,'') as "office.name",
             ifnull(suh.homeworkFinishToal,0) as "homeworkFinishToal",
             ifnull(suh.homeworkNotFinishToal,0) as "homeworkNotFinishToal"
         FROM

@@ -3,19 +3,19 @@
 <mapper namespace="com.jeeplus.modules.homework.mapper.HomeworkMapper">
     
 	<sql id="homeworkColumns">
-		a.id AS "id",
-		a.create_by AS "createBy.id",
-		a.create_date AS "createDate",
-		a.update_by AS "updateBy.id",
-		a.update_date AS "updateDate",
-		a.remarks AS "remarks",
-		a.del_flag AS "delFlag",
-		a.name AS "name",
-		a.type AS "type",
-		a.data1 AS "data1",
-		a.data2 AS "data2",
-		a.cover AS "cover",
-		a.course_level AS "courseLevel"
+		ifnull(a.id,'') AS "id",
+		ifnull(a.create_by,'') AS "createBy.id",
+		ifnull(a.create_date,'') AS "createDate",
+		ifnull(a.update_by,'') AS "updateBy.id",
+		ifnull(a.update_date,'') AS "updateDate",
+		ifnull(a.remarks,'') AS "remarks",
+		ifnull(a.del_flag,'') AS "delFlag",
+		ifnull(a.name,'') AS "name",
+		ifnull(a.type,'') AS "type",
+		ifnull(a.data1,'') AS "data1",
+		ifnull(a.data2,'') AS "data2",
+		ifnull(a.cover,'') AS "cover",
+		ifnull(a.course_level,'') AS "courseLevel"
 	</sql>
 	
 	<sql id="homeworkJoins">

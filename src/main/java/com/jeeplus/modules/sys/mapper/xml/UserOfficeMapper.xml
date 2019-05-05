@@ -3,17 +3,17 @@
 <mapper namespace="com.jeeplus.modules.sys.mapper.UserOfficeMapper">
 
 	<sql id="userOfficeColumns">
-		a.officeid AS "officeid",
-		a.userid AS "userid",
-		a.user_type AS "userType",
-		so.name AS "officeName",
-		su.name AS "userName",
-		a.id AS "id",
-		su.photo AS "photo",
-		su.login_name AS "loginName",
-		su.score AS "score",
-		su.english_name AS "englishName",
-		su.mobile AS "mobile"
+		ifnull(a.officeid,'') AS "officeid",
+		ifnull(a.userid,'') AS "userid",
+		ifnull(a.user_type,'') AS "userType",
+		ifnull(so.name,'') AS "officeName",
+		ifnull(su.name,'') AS "userName",
+		ifnull(a.id,'') AS "id",
+		ifnull(su.photo,'') AS "photo",
+		ifnull(su.login_name,'') AS "loginName",
+		ifnull(su.score,'') AS "score",
+		ifnull(su.english_name,'') AS "englishName",
+		ifnull(su.mobile,'') AS "mobile"
 	</sql>
 
 	<sql id="userOfficeJoins">

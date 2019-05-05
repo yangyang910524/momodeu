@@ -3,16 +3,16 @@
 <mapper namespace="com.jeeplus.modules.scoreexchange.mapper.ScoreExchangeMapper">
     
 	<sql id="scoreExchangeColumns">
-		a.id AS "id",
-		a.create_by AS "createBy.id",
-		a.create_date AS "createDate",
-		a.update_by AS "updateBy.id",
-		a.update_date AS "updateDate",
-		a.remarks AS "remarks",
-		a.del_flag AS "delFlag",
-		a.score AS "score",
-		a.photo AS "photo",
-		a.name AS "name"
+		ifnull(a.id,'') AS "id",
+		ifnull(a.create_by,'') AS "createBy.id",
+		ifnull(a.create_date,'') AS "createDate",
+		ifnull(a.update_by,'') AS "updateBy.id",
+		ifnull(a.update_date,'') AS "updateDate",
+		ifnull(a.remarks,'') AS "remarks",
+		ifnull(a.del_flag,'') AS "delFlag",
+		ifnull(a.score,'') AS "score",
+		ifnull(a.photo,'') AS "photo",
+		ifnull(a.name,'') AS "name"
 	</sql>
 	
 	<sql id="scoreExchangeJoins">
