@@ -25,6 +25,11 @@
         <result property="updateDate" column="updateDate" />
         <result property="delFlag" column="delFlag" />
         <result property="userType" column="userType" />
+
+        <result property="loginIp" column="loginIp" />
+        <result property="loginDate" column="loginDate" />
+        <result property="loginFlag" column="loginFlag" />
+
 		<collection property="roleList" ofType="Role">
 			<id property="id" column="role.id" />
 			<result property="name" column="role.name"/>
@@ -44,10 +49,10 @@
 		a.email,
 		a.phone,
 		a.mobile,
-		a.login_ip,
-		a.login_date,
+		a.login_ip as "loginIp",
+		a.login_date as "loginDate",
 		a.remarks,
-		a.login_flag,
+		a.login_flag as "loginFlag",
 		a.photo,
 		a.qrcode,
 		a.sign,

@@ -3,11 +3,11 @@
  */
 package com.jeeplus.modules.sys.security;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.jeeplus.common.json.AjaxJson;
+import com.jeeplus.common.json.PrintJSON;
+import com.jeeplus.common.utils.StringUtils;
+import com.jeeplus.modules.sys.security.SystemAuthorizingRealm.Principal;
+import com.jeeplus.modules.sys.utils.UserUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.IncorrectCredentialsException;
@@ -15,12 +15,10 @@ import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.web.util.WebUtils;
 import org.springframework.stereotype.Service;
 
-import com.jeeplus.common.json.AjaxJson;
-import com.jeeplus.common.json.PrintJSON;
-import com.jeeplus.common.utils.StringUtils;
-import com.jeeplus.core.mapper.JsonMapper;
-import com.jeeplus.modules.sys.security.SystemAuthorizingRealm.Principal;
-import com.jeeplus.modules.sys.utils.UserUtils;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * 表单验证（包含验证码）过滤类
@@ -93,6 +91,7 @@ public class FormAuthenticationFilter extends org.apache.shiro.web.filter.authc.
 			j.put("name", p.getName());
 			j.put("mobileLogin", p.isMobileLogin());
 			j.put("JSESSIONID", p.getSessionid());
+            j.put("user",UserUtils.getUser());
 			PrintJSON.write((HttpServletResponse)response, j.getJsonStr());
 		}
 	}

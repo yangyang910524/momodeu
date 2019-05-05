@@ -111,6 +111,7 @@ public class momo {
             j.setErrorCode("-1");
             j.setMsg("登录成功!");
             JSONObject body= JSON.parseObject(json.get("body").toString());
+            j.put("user",body.get("user")==null?new User():body.get("user"));
             j.put("JSESSIONID",body.get("JSESSIONID")==null?"":body.get("JSESSIONID").toString());
         } catch (Exception e) {
             e.printStackTrace();
