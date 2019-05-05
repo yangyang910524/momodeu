@@ -155,19 +155,21 @@
 		<where>
 			a.del_flag = #{DEL_FLAG_NORMAL}
 			${dataScope}
+            <if test="office != null and office.id != null and office.id != ''">
 			and not EXISTS
 			(
 				select 1 from sys_homework_office sho where sho.homeworkid=a.id and sho.officeid=#{office.id}
 			)
-			<if test="name != null and name != ''">
-				AND a.name LIKE
-				<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
-				<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
-				<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
-			</if>
-			<if test="type != null and type != ''">
-				AND a.type = #{type}
-			</if>
+            </if>
+            <if test="name != null and name != ''">
+                AND a.name LIKE
+                <if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+                <if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+                <if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+            </if>
+            <if test="type != null and type != ''">
+                AND a.type = #{type}
+            </if>
             <if test="courseLevel != null and courseLevel != ''">
                 AND a.course_level = #{courseLevel}
             </if>

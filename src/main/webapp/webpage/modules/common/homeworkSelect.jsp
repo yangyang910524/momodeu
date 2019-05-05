@@ -95,12 +95,107 @@
 	                	<c:if test="${!isMultiSelect}">
 	                		radio: true
 	                	</c:if>
-				    }, {
-				        field: 'name',
-				        title: '作业名称',
-				        sortable: true
-				       
-				    }]
+				    },{
+                        field: 'name',
+                        title: '名称',
+                        sortable: true,
+                        sortName: 'name',
+                        formatter:function(value, row , index){
+                            value = jp.unescapeHTML(value);
+                            <c:choose>
+                            <c:when test="${fns:hasPermission('homework:homework:edit')}">
+                            return "<a href='javascript:edit(\""+row.id+"\")'>"+value+"</a>";
+                            </c:when>
+                            <c:when test="${fns:hasPermission('homework:homework:view')}">
+                            return "<a href='javascript:view(\""+row.id+"\")'>"+value+"</a>";
+                            </c:when>
+                            <c:otherwise>
+                            return value;
+                            </c:otherwise>
+                            </c:choose>
+                        }
+
+                    },{
+                        field: 'courseLevel',
+                        title: '课程级别',
+                        sortable: true,
+                        sortName: 'courseLevel',
+                        formatter:function(value, row , index){
+                            return jp.getDictLabel(${fns:toJson(fns:getDictList('bae_course_level'))}, value, "-");
+                        }
+
+                    },{
+                        field: 'type',
+                        title: '作业类型',
+                        sortable: true,
+                        sortName: 'type',
+                        formatter:function(value, row , index){
+                            return jp.getDictLabel(${fns:toJson(fns:getDictList('bas_material_type'))}, value, "-");
+                        }
+
+                    }
+                        ,{
+                            field: 'data1',
+                            title: '材料1',
+                            sortable: true,
+                            sortName: 'data1',
+                            formatter:function(value, row , index){
+                                if(value==null||value==undefined||value==""||value=="undefined"){
+                                    return "-";
+                                }else{
+                                    var valueArray = value.split("|");
+                                    var labelArray = [];
+                                    for(var i =0 ; i<valueArray.length; i++){
+                                        labelArray[i] = "<a href='${ctx}/sys/file/download?source="+valueArray[i]+"' >下载材料</a>"
+                                    }
+                                    return labelArray.join(" ");
+                                }
+                            }
+
+                        }
+                        ,{
+                            field: 'data2',
+                            title: '材料2',
+                            sortable: true,
+                            sortName: 'data2',
+                            formatter:function(value, row , index){
+                                if(value==null||value==undefined||value==""||value=="undefined"){
+                                    return "-";
+                                }else{
+                                    var valueArray = value.split("|");
+                                    var labelArray = [];
+                                    for(var i =0 ; i<valueArray.length; i++){
+                                        labelArray[i] = "<a href='${ctx}/sys/file/download?source="+valueArray[i]+"' >下载材料</a>"
+                                    }
+                                    return labelArray.join(" ");
+                                }
+                            }
+
+                        }
+                        ,{
+                            field: 'cover',
+                            title: '封面',
+                            sortable: true,
+                            sortName: 'cover',
+                            formatter:function(value, row , index){
+                                var valueArray = value.split("|");
+                                var labelArray = [];
+                                for(var i =0 ; i<valueArray.length; i++){
+                                    if(!/\.(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(valueArray[i]))
+                                    {
+                                        labelArray[i] = "<a href=\""+valueArray[i]+"\" url=\""+valueArray[i]+"\" target=\"_blank\">"+decodeURIComponent(valueArray[i].substring(valueArray[i].lastIndexOf("/")+1))+"</a>"
+                                    }else{
+                                        labelArray[i] = '<img   onclick="jp.showPic(\''+valueArray[i]+'\')"'+' height="50px" src="'+valueArray[i]+'">';
+                                    }
+                                }
+                                return labelArray.join(" ");
+                            }
+
+                        },{
+                            field: 'remarks',
+                            title: '简述说明',
+                            sortable: false
+                        }]
 				
 				});
 			
@@ -165,10 +260,24 @@
 				<div class="accordion-inner">
 					<form id="searchForm" class="form form-horizontal well clearfix" >
 					    <input type="hidden" id="companyId" name="company.id"/>
-					    <div class="col-sm-4">
-					    	<label class="label-item single-overflow pull-left" title="材料名称：">作业名称：</label>
-					   		<input type="text" name="name" maxlength="100"  class=" form-control"/>
-					    </div>
+                        <div class="col-sm-2">
+                            <label class="label-item single-overflow pull-left" title="名称：">名称：</label>
+                            <form:input path="homework.name" htmlEscape="false" maxlength="64"  class=" form-control"/>
+                        </div>
+                        <div class="col-sm-2">
+                            <label class="label-item single-overflow pull-left" title="课程级别：">课程级别：</label>
+                            <form:select path="homework.courseLevel"  class="form-control m-b">
+                                <form:option value="" label=""/>
+                                <form:options items="${fns:getDictList('bae_course_level')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+                            </form:select>
+                        </div>
+                        <div class="col-sm-2">
+                            <label class="label-item single-overflow pull-left" title="作业类型：">作业类型：</label>
+                            <form:select path="homework.type"  class="form-control m-b">
+                                <form:option value="" label=""/>
+                                <form:options items="${fns:getDictList('bas_material_type')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+                            </form:select>
+                        </div>
 					    <div class="col-sm-4">
 							 <div style="margin-top:26px">
 							  <a  id="search" class="btn btn-primary btn-rounded  btn-bordered btn-sm"><i class="fa fa-search"></i> 查询</a>

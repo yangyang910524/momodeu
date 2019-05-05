@@ -18,9 +18,48 @@
 			});
 
 		});
+
+        function openFileDialog()
+        {
+            $("#file").click();
+        }
+
+        function fileSelected(){
+            var index =jp.loading("文件上传中……")
+            var filename = $("#file").val();
+            var suffix=(filename.substr(filename.lastIndexOf("."))).toLowerCase();
+            if(suffix!=".jpg"&&suffix!=".gif"&&suffix!=".jpeg"&& suffix!=".png") {
+                jp.info("您上传图片的类型不符合(.jpg|.jpeg|.gif|.png)！");
+                return false;
+            }
+            var formData = new FormData($("#uploadForm")[0]);
+            formData.append("filePath","score_exchange_photo")
+            $.ajax({
+                url:"${ctx}/sys/file/fileUpload",
+                type: 'POST',
+                data:formData,
+                async: false,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success:function(data) {
+                    $("#photo").val(data.body.url);
+                    $("#photo").blur();
+                    jp.close(index);
+                },
+                error:function(data) {
+                    jp.info("上传失败");
+                },
+            });
+        }
 	</script>
 </head>
 <body>
+<!-- 文件上传form beigin-->
+<form id= "uploadForm" action= "" method= "post" enctype ="multipart/form-data">
+    <input type="file" id="file" name="file" style="display: none;"  onchange='fileSelected()'>
+</form>
+<!-- 文件上传form end-->
 <div class="wrapper wrapper-content">				
 <div class="row">
 	<div class="col-md-12">
@@ -33,30 +72,36 @@
 		<div class="panel-body">
 		<form:form id="inputForm" modelAttribute="scoreExchange" action="${ctx}/scoreexchange/scoreExchange/save" method="post" class="form-horizontal">
 		<form:hidden path="id"/>
-				<div class="form-group">
-					<label class="col-sm-2 control-label">备注信息：</label>
-					<div class="col-sm-10">
-						<form:textarea path="remarks" htmlEscape="false" rows="4"    class="form-control "/>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-sm-2 control-label">所需分数：</label>
-					<div class="col-sm-10">
-						<form:input path="score" htmlEscape="false"    class="form-control  isIntGteZero"/>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-sm-2 control-label">照片：</label>
-					<div class="col-sm-10">
-						<form:input path="photo" htmlEscape="false"    class="form-control "/>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-sm-2 control-label">名称：</label>
-					<div class="col-sm-10">
-						<form:input path="name" htmlEscape="false"    class="form-control "/>
-					</div>
-				</div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">名称：</label>
+            <div class="col-sm-10">
+                <form:input path="name" htmlEscape="false"    class="form-control "/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">照片：</label>
+            <div class="col-sm-10">
+                <div class="input-group input-append" style="width:100%">
+                    <input type="text" id="photo" name="photo"  class="form-control required" readonly="readonly" aria-invalid="false" value="${scoreExchange.cover}">
+                    <span class="input-group-btn">
+                           <button type="button" id="photoButton" onclick="openFileDialog()" class="btn btn-primary "><i class="fa fa-cloud-upload"></i></button>
+                     </span>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">所需分数：</label>
+            <div class="col-sm-10">
+                <form:input path="score" htmlEscape="false"    class="form-control  isIntGteZero"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">备注信息：</label>
+            <div class="col-sm-10">
+                <form:textarea path="remarks" htmlEscape="false" rows="4"    class="form-control "/>
+            </div>
+        </div>
 		<c:if test="${mode == 'add' || mode=='edit'}">
 				<div class="col-lg-3"></div>
 		        <div class="col-lg-6">

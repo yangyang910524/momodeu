@@ -84,27 +84,28 @@ $(document).ready(function() {
 		        checkbox: true
 		       
 		    }
-			,{
-		        field: 'remarks',
-		        title: '备注信息',
-		        sortable: true,
-		        sortName: 'remarks'
-		        ,formatter:function(value, row , index){
-		        	value = jp.unescapeHTML(value);
-				   <c:choose>
-					   <c:when test="${fns:hasPermission('scoreexchange:scoreExchange:edit')}">
-					      return "<a href='javascript:edit(\""+row.id+"\")'>"+value+"</a>";
-				      </c:when>
-					  <c:when test="${fns:hasPermission('scoreexchange:scoreExchange:view')}">
-					      return "<a href='javascript:view(\""+row.id+"\")'>"+value+"</a>";
-				      </c:when>
-					  <c:otherwise>
-					      return value;
-				      </c:otherwise>
-				   </c:choose>
-		         }
-		       
-		    }
+
+               ,{
+                   field: 'name',
+                   title: '名称',
+                   sortable: true,
+                   sortName: 'name',
+                   formatter:function(value, row , index){
+                       value = jp.unescapeHTML(value);
+                       <c:choose>
+                       <c:when test="${fns:hasPermission('scoreexchange:scoreExchange:edit')}">
+                       return "<a href='javascript:edit(\""+row.id+"\")'>"+value+"</a>";
+                       </c:when>
+                       <c:when test="${fns:hasPermission('scoreexchange:scoreExchange:view')}">
+                       return "<a href='javascript:view(\""+row.id+"\")'>"+value+"</a>";
+                       </c:when>
+                       <c:otherwise>
+                       return value;
+                       </c:otherwise>
+                       </c:choose>
+                   }
+
+               }
 			,{
 		        field: 'score',
 		        title: '所需分数',
@@ -115,17 +116,25 @@ $(document).ready(function() {
 			,{
 		        field: 'photo',
 		        title: '照片',
-		        sortable: true,
-		        sortName: 'photo'
+		        sortable: false,
+		        sortName: 'photo',
+               formatter:function(value, row , index){
+                   if(value ==''){
+                       return '';
+                   }else{
+                       return '<img   onclick="jp.showPic(\''+value+'\')"'+' height="40px" src="'+value+'">';
+                   }
+
+               }
 		       
-		    }
-			,{
-		        field: 'name',
-		        title: '名称',
-		        sortable: true,
-		        sortName: 'name'
-		       
-		    }
+		    },{
+                   field: 'remarks',
+                   title: '备注信息',
+                   sortable: true,
+                   sortName: 'remarks'
+
+
+               }
 		     ]
 		
 		});

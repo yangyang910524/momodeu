@@ -83,7 +83,12 @@ $(document).ready(function() {
                columns: [{
 		        checkbox: true
 		       
-		    }
+		    }, {
+                   field: 'office.name',
+                   title: '班级名称',
+                   sortable: false
+
+               }
                    , {
                        field: 'father.name',
                        title: '课程名称',

@@ -83,10 +83,16 @@
             columns: [{
                 checkbox: true
 
+            }, {
+                field: 'officeName',
+                title: '班级',
+                sortable: false
+
             }
                 , {
                     field: 'photo',
                     title: '头像',
+                    sortable: false,
                     formatter:function(value, row , index){
                         if(value ==''){
                             return '<img height="40px" src="${ctxStatic}/common/images/flat-avatar.png">';
@@ -99,7 +105,7 @@
                 }, {
                     field: 'userType',
                     title: '用户类型',
-                    sortable: true,
+                    sortable: false,
                     formatter:function(value, row , index){
                         if(value=='1'){
                             return "班主任";
@@ -114,24 +120,24 @@
                 }, {
                     field: 'loginName',
                     title: '登录名',
-                    sortable: true
+                    sortable: false
 
                 }, {
                     field: 'userName',
                     title: '姓名',
-                    sortable: true
+                    sortable: false
                 }, {
                     field: 'englishName',
                     title: '英文名',
-                    sortable: true
+                    sortable: false
                 }, {
                     field: 'mobile',
                     title: '手机',
-                    sortable: true
+                    sortable: false
                 }, {
                     field: 'score',
                     title: '当前积分',
-                    sortable: true
+                    sortable: false
                     ,formatter:function(value, row , index){
                         if(row.userType=='3'){
                             return value;

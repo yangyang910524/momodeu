@@ -9,7 +9,15 @@
 		h.name as "homeworkName",
 		so.name as "officeName",
 		a.statue AS "statue",
-		a.issue_date AS "issueDate"
+		a.issue_date AS "issueDate",
+
+        h.id AS "homework.id",
+		h.name AS "homework.name",
+		h.type AS "homework.type",
+		h.data1 AS "homework.data1",
+		h.data2 AS "homework.data2",
+		h.cover AS "homework.cover",
+		h.course_level AS "homework.courseLevel"
 	</sql>
 	
 	<sql id="homeworkOfficeJoins">
@@ -86,7 +94,7 @@
 			#{officeid},
 			#{homeworkid},
 			#{statue},
-			#{issueDate}
+			SYSDATE()
 		)
 	</insert>
 	
@@ -94,8 +102,7 @@
 		UPDATE sys_homework_office SET 	
 			officeid = #{officeid},
 			homeworkid = #{homeworkid},
-			statue = #{statue},
-			issue_date = #{issueDate}
+			statue = #{statue}
 		WHERE id = #{id}
 	</update>
 	
@@ -118,5 +125,40 @@
 	<select id="findUniqueByProperty" resultType="HomeworkOffice" statementType="STATEMENT">
 		select * FROM sys_homework_office  where ${propertyName} = '${value}'
 	</select>
-	
+
+    <insert id="insertStudentHomework">
+        INSERT INTO sys_user_homework(
+            id,
+            create_by,
+            create_date,
+            update_by,
+            update_date,
+            del_flag,
+            state,
+            userid,
+            homeworkid,
+            officeid
+        )
+        select
+            UUID(),
+            #{createBy.id},
+            SYSDATE(),
+            #{createBy.id},
+            SYSDATE(),
+            '0',
+            '0',
+            userid,
+            #{homeworkid},
+            officeid
+        from sys_user_office
+        where
+        user_type='3'
+        and officeid='37886d37fdc44e9aa8552d5cb071e663'
+
+    </insert>
+
+    <delete id="deleteStudentHomework">
+        delete from sys_user_homework where homeworkid=#{homeworkid}
+    </delete>
+
 </mapper>

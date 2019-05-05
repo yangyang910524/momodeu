@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
@@ -70,7 +71,7 @@ public class momo {
      **/
     @ResponseBody
     @RequestMapping(value= "/momo/login" , method = RequestMethod.POST)
-    public AjaxJson login(@RequestBody Map<String,String> params)  {
+    public AjaxJson login(@RequestBody Map<String,String> params,HttpServletRequest request)  {
         AjaxJson j = new AjaxJson();
         try {
             if(params.get("username")==null||StringUtils.isEmpty(params.get("username").toString())){
@@ -87,7 +88,7 @@ public class momo {
             }
             String sessionid= (String) UserUtils.getSession().getId();
 //            String url="http://localhost:8081/jeeplus/a/login;JSESSIONID="+sessionid+"?__ajax=true";
-            String url="http://localhost:8080/jeeplus/a/login;JSESSIONID="+sessionid+"?__ajax=true";
+            String url=request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+"/jeeplus/a/login;JSESSIONID="+sessionid+"?__ajax=true";
             params.put("mobileLogin","true");
             HttpPostTest test = new HttpPostTest(url,params);
             String result=  test.post();
@@ -125,7 +126,7 @@ public class momo {
      **/
     @ResponseBody
     @RequestMapping(value= "/momo/logout" , method = RequestMethod.POST)
-    public AjaxJson logout(@RequestBody Map<String,String> params)  {
+    public AjaxJson logout(@RequestBody Map<String,String> params,HttpServletRequest request)  {
         AjaxJson j = new AjaxJson();
         try {
             if(params.get("JSESSIONID")==null||StringUtils.isEmpty(params.get("JSESSIONID").toString())){
@@ -134,8 +135,7 @@ public class momo {
                 j.setMsg("JSESSIONID不能为空!");
                 return j;
             }
-//            URL url=new URL("http://localhost:8081/jeeplus/a/logout;JSESSIONID="+params.get("JSESSIONID").toString()+"?__ajax=true");
-            URL url=new URL("http://localhost:8080/jeeplus/a/logout;JSESSIONID="+params.get("JSESSIONID").toString()+"?__ajax=true");
+            URL url=new URL(request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+"/jeeplus/a/logout;JSESSIONID="+params.get("JSESSIONID").toString()+"?__ajax=true");
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream(),"UTF-8"));

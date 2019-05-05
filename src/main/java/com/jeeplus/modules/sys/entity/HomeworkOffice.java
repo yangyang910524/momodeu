@@ -6,6 +6,7 @@ package com.jeeplus.modules.sys.entity;
 
 import com.jeeplus.core.persistence.DataEntity;
 import com.jeeplus.common.utils.excel.annotation.ExcelField;
+import com.jeeplus.modules.homework.entity.Homework;
 
 /**
  * 作业-班级关联Entity
@@ -18,13 +19,21 @@ public class HomeworkOffice extends DataEntity<HomeworkOffice> {
 	private String officeid;		// 班级id
 	private String homeworkid;		// 作业id
 	private String officeName;  //班级名称
-	private String homeworkName;  //作业名称
     private String statue;		// 状态
     private String issueDate;		// 发布时间
     private String beginIssueDate;		// 开始 发布时间
     private String endIssueDate;		// 结束 发布时间
-	
-	public HomeworkOffice() {
+    private Homework homework;
+
+    public Homework getHomework() {
+        return homework;
+    }
+
+    public void setHomework(Homework homework) {
+        this.homework = homework;
+    }
+
+    public HomeworkOffice() {
 		super();
 	}
 
@@ -56,14 +65,6 @@ public class HomeworkOffice extends DataEntity<HomeworkOffice> {
 
 	public void setOfficeName(String officeName) {
 		this.officeName = officeName;
-	}
-
-	public String getHomeworkName() {
-		return homeworkName;
-	}
-
-	public void setHomeworkName(String homeworkName) {
-		this.homeworkName = homeworkName;
 	}
 
     public String getStatue() {

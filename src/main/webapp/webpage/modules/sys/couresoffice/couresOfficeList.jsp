@@ -49,8 +49,6 @@
 
     <!-- context menu -->
     <ul id="context-menu" class="dropdown-menu">
-        <li data-item="view"><a>查看</a></li>
-        <li data-item="edit"><a>编辑</a></li>
         <li data-item="delete"><a>删除</a></li>
         <li data-item="action1"><a>取消</a></li>
     </ul>  

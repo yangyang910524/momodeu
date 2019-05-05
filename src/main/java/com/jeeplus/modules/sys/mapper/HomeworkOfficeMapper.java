@@ -14,5 +14,8 @@ import com.jeeplus.modules.sys.entity.HomeworkOffice;
  */
 @MyBatisMapper
 public interface HomeworkOfficeMapper extends BaseMapper<HomeworkOffice> {
-	
+
+    void insertStudentHomework(HomeworkOffice homeworkOffice);
+
+    void deleteStudentHomework(HomeworkOffice homeworkOffice);
 }

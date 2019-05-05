@@ -3,38 +3,28 @@
  */
 package com.jeeplus.modules.sys.web;
 
-import java.util.List;
-import java.util.Map;
+import com.google.common.collect.Lists;
+import com.jeeplus.common.json.AjaxJson;
+import com.jeeplus.common.utils.DateUtils;
+import com.jeeplus.common.utils.StringUtils;
+import com.jeeplus.common.utils.excel.ExportExcel;
+import com.jeeplus.common.utils.excel.ImportExcel;
+import com.jeeplus.core.persistence.Page;
+import com.jeeplus.core.web.BaseController;
+import com.jeeplus.modules.sys.entity.HomeworkOffice;
+import com.jeeplus.modules.sys.service.HomeworkOfficeService;
+import com.jeeplus.modules.sys.utils.UserUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
-
-import com.jeeplus.modules.sys.entity.CouresOffice;
-import com.jeeplus.modules.sys.entity.HomeworkOffice;
-import com.jeeplus.modules.sys.service.HomeworkOfficeService;
-import org.apache.shiro.authz.annotation.Logical;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.multipart.MultipartFile;
-
-import com.google.common.collect.Lists;
-import com.jeeplus.common.utils.DateUtils;
-import com.jeeplus.common.config.Global;
-import com.jeeplus.common.json.AjaxJson;
-import com.jeeplus.core.persistence.Page;
-import com.jeeplus.core.web.BaseController;
-import com.jeeplus.common.utils.StringUtils;
-import com.jeeplus.common.utils.excel.ExportExcel;
-import com.jeeplus.common.utils.excel.ImportExcel;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 作业-班级关联Controller
@@ -119,6 +109,7 @@ public class HomeworkOfficeController extends BaseController {
 	@RequestMapping(value = "delete")
 	public AjaxJson delete(HomeworkOffice homeworkOffice) {
 		AjaxJson j = new AjaxJson();
+        homeworkOfficeService.deleteStudentHomework(homeworkOffice);
 		homeworkOfficeService.delete(homeworkOffice);
 		j.setMsg("删除信息成功");
 		return j;
@@ -132,8 +123,11 @@ public class HomeworkOfficeController extends BaseController {
 	public AjaxJson deleteAll(String ids) {
 		AjaxJson j = new AjaxJson();
 		String idArray[] =ids.split(",");
+        HomeworkOffice homeworkOffice=new HomeworkOffice();
 		for(String id : idArray){
-			homeworkOfficeService.delete(homeworkOfficeService.get(id));
+            homeworkOffice=homeworkOfficeService.get(id);
+            homeworkOfficeService.deleteStudentHomework(homeworkOffice);
+			homeworkOfficeService.delete(homeworkOffice);
 		}
 		j.setMsg("删除信息成功");
 		return j;
@@ -148,6 +142,7 @@ public class HomeworkOfficeController extends BaseController {
 		AjaxJson j = new AjaxJson();
 		HomeworkOffice homeworkOffice=new HomeworkOffice();
 		homeworkOffice.setOfficeid(officeid);
+        homeworkOffice.setCreateBy(UserUtils.getUser());
 		String idArray[] =ids.split(",");
 		List<HomeworkOffice> list=null;
 		for(String id : idArray){
@@ -158,6 +153,8 @@ public class HomeworkOfficeController extends BaseController {
 				continue;
 			}
 			homeworkOfficeService.save(homeworkOffice);
+			//发布作业
+            homeworkOfficeService.insertStudentHomework(homeworkOffice);
 		}
 		j.setMsg("添加成功");
 		return j;

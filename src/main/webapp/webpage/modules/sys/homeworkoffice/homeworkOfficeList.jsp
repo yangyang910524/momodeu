@@ -21,7 +21,24 @@
 	<div id="search-collapse" class="collapse">
 		<div class="accordion-inner">
 			<form:form id="searchForm" modelAttribute="homeworkOffice" class="form form-horizontal well clearfix">
-
+                <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label class="label-item single-overflow pull-left" title="名称：">名称：</label>
+                    <form:input path="homework.name" htmlEscape="false" maxlength="64"  class=" form-control"/>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label class="label-item single-overflow pull-left" title="课程级别：">课程级别：</label>
+                    <form:select path="homework.courseLevel"  class="form-control m-b">
+                        <form:option value="" label=""/>
+                        <form:options items="${fns:getDictList('bae_course_level')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+                    </form:select>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label class="label-item single-overflow pull-left" title="作业类型：">作业类型：</label>
+                    <form:select path="homework.type"  class="form-control m-b">
+                        <form:option value="" label=""/>
+                        <form:options items="${fns:getDictList('bas_material_type')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+                    </form:select>
+                </div>
 		 <div class="col-xs-12 col-sm-6 col-md-4">
 			<div style="margin-top:26px">
 			  <a  id="search" class="btn btn-primary btn-rounded  btn-bordered btn-sm"><i class="fa fa-search"></i> 查询</a>
@@ -37,16 +54,12 @@
 			<a href="${ctx}/sys/classes/classes" class="btn btn-primary">
 				返回
 			</a>
-			<shiro:hasPermission name="homeworkoffice:homeworkOffice:add">
 				<button id="add" class="btn btn-primary" onclick="add()">
 					<i class="glyphicon glyphicon-plus"></i> 添加作业
 				</button>
-			</shiro:hasPermission>
-			<shiro:hasPermission name="homeworkoffice:homeworkOffice:del">
 				<button id="remove" class="btn btn-danger" disabled onclick="deleteAll()">
 	            	<i class="glyphicon glyphicon-remove"></i> 删除
 	        	</button>
-			</shiro:hasPermission>
 		    </div>
 		
 	<!-- 表格 -->
@@ -54,15 +67,7 @@
 
     <!-- context menu -->
     <ul id="context-menu" class="dropdown-menu">
-    	<shiro:hasPermission name="homeworkoffice:homeworkOffice:view">
-        <li data-item="view"><a>查看</a></li>
-        </shiro:hasPermission>
-    	<shiro:hasPermission name="homeworkoffice:homeworkOffice:edit">
-        <li data-item="edit"><a>编辑</a></li>
-        </shiro:hasPermission>
-        <shiro:hasPermission name="homeworkoffice:homeworkOffice:del">
         <li data-item="delete"><a>删除</a></li>
-        </shiro:hasPermission>
         <li data-item="action1"><a>取消</a></li>
     </ul>  
 	</div>

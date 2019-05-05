@@ -88,12 +88,85 @@ $(document).ready(function() {
                        field: 'officeName',
                        title: '班级名称',
                        sortable: false
+                   },{
+                       field: 'homework.name',
+                       title: '名称',
+                       sortable: false
+                   },{
+                       field: 'homework.courseLevel',
+                       title: '课程级别',
+                       sortable: false,
+                       formatter:function(value, row , index){
+                           return jp.getDictLabel(${fns:toJson(fns:getDictList('bae_course_level'))}, value, "-");
+                       }
 
                    },{
-                       field: 'homeworkName',
-                       title: '作业名称',
-                       sortable: false
+                       field: 'homework.type',
+                       title: '作业类型',
+                       sortable: false,
+                       formatter:function(value, row , index){
+                           return jp.getDictLabel(${fns:toJson(fns:getDictList('bas_material_type'))}, value, "-");
+                       }
 
+                   }
+                   ,{
+                       field: 'homework.data1',
+                       title: '材料1',
+                       sortable: false,
+                       formatter:function(value, row , index){
+                           if(value==null||value==undefined||value==""||value=="undefined"){
+                               return "-";
+                           }else{
+                               var valueArray = value.split("|");
+                               var labelArray = [];
+                               for(var i =0 ; i<valueArray.length; i++){
+                                   labelArray[i] = "<a href='${ctx}/sys/file/download?source="+valueArray[i]+"' >下载材料</a>"
+                               }
+                               return labelArray.join(" ");
+                           }
+                       }
+
+                   }
+                   ,{
+                       field: 'homework.data2',
+                       title: '材料2',
+                       sortable: false,
+                       formatter:function(value, row , index){
+                           if(value==null||value==undefined||value==""||value=="undefined"){
+                               return "-";
+                           }else{
+                               var valueArray = value.split("|");
+                               var labelArray = [];
+                               for(var i =0 ; i<valueArray.length; i++){
+                                   labelArray[i] = "<a href='${ctx}/sys/file/download?source="+valueArray[i]+"' >下载材料</a>"
+                               }
+                               return labelArray.join(" ");
+                           }
+                       }
+
+                   }
+                   ,{
+                       field: 'homework.cover',
+                       title: '封面',
+                       sortable: false,
+                       formatter:function(value, row , index){
+                           var valueArray = value.split("|");
+                           var labelArray = [];
+                           for(var i =0 ; i<valueArray.length; i++){
+                               if(!/\.(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(valueArray[i]))
+                               {
+                                   labelArray[i] = "<a href=\""+valueArray[i]+"\" url=\""+valueArray[i]+"\" target=\"_blank\">"+decodeURIComponent(valueArray[i].substring(valueArray[i].lastIndexOf("/")+1))+"</a>"
+                               }else{
+                                   labelArray[i] = '<img   onclick="jp.showPic(\''+valueArray[i]+'\')"'+' height="50px" src="'+valueArray[i]+'">';
+                               }
+                           }
+                           return labelArray.join(" ");
+                       }
+
+                   },{
+                       field: 'homework.remarks',
+                       title: '简述说明',
+                       sortable: false
                    }
 		     ]
 		
@@ -201,6 +274,7 @@ $(document).ready(function() {
   	$('#homeworkOfficeTable').bootstrapTable('refresh');
   }
   function add(){
+      console.log('${homeworkOffice.officeid}');
       jp.openHomeworkSelectDialog(true, function (ids, names) {
           jp.get("${ctx}/homeworkoffice/homeworkOffice/addHomework?ids=" + ids+"&officeid=${homeworkOffice.officeid}", function(data){
               if(data.success){
