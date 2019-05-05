@@ -26,6 +26,15 @@
                    $("#data2Div").hide();
 			   }
             });
+
+            var type=$("#type").val();
+            if(type=='1'){
+                $("#data2").removeAttr("disabled");
+                $("#data2Div").show();
+            }else{
+                $("#data2").attr("disabled","disabled")
+                $("#data2Div").hide();
+            }
 		});
 
         function openFileDialog(type)

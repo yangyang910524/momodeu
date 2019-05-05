@@ -11,8 +11,11 @@ import com.jeeplus.core.persistence.Page;
 import com.jeeplus.modules.advertisement.entity.Advertisement;
 import com.jeeplus.modules.advertisement.service.AdvertisementService;
 import com.jeeplus.modules.course.entity.CourseInfo;
+import com.jeeplus.modules.homework.entity.Homework;
 import com.jeeplus.modules.notice.entity.Notice;
 import com.jeeplus.modules.notice.service.NoticeService;
+import com.jeeplus.modules.publiccours.entity.PublicCourse;
+import com.jeeplus.modules.publiccours.service.PublicCourseService;
 import com.jeeplus.modules.scoreexchange.entity.ScoreExchange;
 import com.jeeplus.modules.scoreexchange.service.ScoreExchangeService;
 import com.jeeplus.modules.statistics.entity.Statistics;
@@ -72,6 +75,8 @@ public class momo {
     private UserHomeworkService userHomeworkService;
     @Resource
     private UserMapper userMapper;
+    @Resource
+    private PublicCourseService publicCourseService;
 
     /**
      * @Description 登录
@@ -559,8 +564,15 @@ public class momo {
                 j.setErrorCode("10002");
                 j.setMsg("未获取到用户信息!");
                 return j;
-            }else{
-                userHomework.setStudent(user);
+            }
+
+
+            if(params.get("level")==null||"".equals(params.get("level"))
+                    || "".equals(DictUtils.getDictLabel(params.get("level"),"bae_course_level",""))){
+                j.setSuccess(false);
+                j.setErrorCode("10002");
+                j.setMsg("未指定课程级别!");
+                return j;
             }
 
             if(params.get("state")==null||"".equals(params.get("state"))
@@ -569,9 +581,12 @@ public class momo {
                 j.setErrorCode("10002");
                 j.setMsg("未指定作业完成状态!");
                 return j;
-            }else{
-                userHomework.setState(params.get("state"));
             }
+            userHomework.setStudent(user);
+            userHomework.setState(params.get("state"));
+            Homework homework=new Homework();
+            homework.setCourseLevel(params.get("level"));
+            userHomework.setHomework(homework);
 
             if(params.get("isPage")==null||StringUtils.isEmpty(params.get("isPage").toString())){
                 params.put("isPage","0");
@@ -681,20 +696,32 @@ public class momo {
         return j;
     }
 
+
     /**
-     * @Description 广告图
+     * @Description 公共课程
      **/
     @ResponseBody
-    @RequestMapping(value= "/momo/advertisement" , method = RequestMethod.POST)
+    @RequestMapping(value= "/momo/publicCourse" , method = RequestMethod.POST)
     public AjaxJson advertisement(@RequestBody Map<String,String> params)  {
         AjaxJson j = new AjaxJson();
         try {
+            if(params.get("type")==null||"".equals(params.get("type"))
+                    || "".equals(DictUtils.getDictLabel(params.get("type"),"bas_public_course_type",""))){
+                j.setSuccess(false);
+                j.setErrorCode("10002");
+                j.setMsg("未指定课程类型!");
+                return j;
+            }
+
             if(params.get("isPage")==null||StringUtils.isEmpty(params.get("isPage").toString())){
                 params.put("isPage","0");
             }
 
+            PublicCourse publicCourse=new PublicCourse();
+            publicCourse.setType(params.get("type"));
+
             if("1".equals(params.get("isPage").toString())){
-                Page<Advertisement> p=new Page<Advertisement>();
+                Page<PublicCourse> p=new Page<PublicCourse>();
                 if(params.get("pageNo")==null||StringUtils.isEmpty(params.get("pageNo").toString())){
                     p.setPageNo(1);
                 }else{
@@ -706,13 +733,13 @@ public class momo {
                     p.setPageSize(Integer.valueOf(params.get("pageSize").toString()));
                 }
 
-                Page<Advertisement> pages = advertisementService.findPage(p,new Advertisement());
+                Page<PublicCourse> pages = publicCourseService.findPage(p,publicCourse);
                 j.put("count",pages.getCount());
                 j.put("pageNo",pages.getPageNo());
                 j.put("pageSize",pages.getPageSize());
                 j.put("list",pages.getList());
             }else{
-                List<Advertisement> list=advertisementService.findList(new Advertisement());
+                List<PublicCourse> list=publicCourseService.findList(publicCourse);
                 j.put("count",list.size());
                 j.put("list",list);
                 j.put("pageNo","");
@@ -729,4 +756,53 @@ public class momo {
         }
         return j;
     }
+
+//    /**
+//     * @Description 广告图
+//     **/
+//    @ResponseBody
+//    @RequestMapping(value= "/momo/advertisement" , method = RequestMethod.POST)
+//    public AjaxJson advertisement(@RequestBody Map<String,String> params)  {
+//        AjaxJson j = new AjaxJson();
+//        try {
+//            if(params.get("isPage")==null||StringUtils.isEmpty(params.get("isPage").toString())){
+//                params.put("isPage","0");
+//            }
+//
+//            if("1".equals(params.get("isPage").toString())){
+//                Page<Advertisement> p=new Page<Advertisement>();
+//                if(params.get("pageNo")==null||StringUtils.isEmpty(params.get("pageNo").toString())){
+//                    p.setPageNo(1);
+//                }else{
+//                    p.setPageNo(Integer.valueOf(params.get("pageNo").toString()));
+//                }
+//                if(params.get("pageSize")==null||StringUtils.isEmpty(params.get("pageSize").toString())){
+//                    p.setPageSize(10);
+//                }else{
+//                    p.setPageSize(Integer.valueOf(params.get("pageSize").toString()));
+//                }
+//
+//                Page<Advertisement> pages = advertisementService.findPage(p,new Advertisement());
+//                j.put("count",pages.getCount());
+//                j.put("pageNo",pages.getPageNo());
+//                j.put("pageSize",pages.getPageSize());
+//                j.put("list",pages.getList());
+//            }else{
+//                List<Advertisement> list=advertisementService.findList(new Advertisement());
+//                j.put("count",list.size());
+//                j.put("list",list);
+//                j.put("pageNo","");
+//                j.put("pageSize","");
+//            }
+//            j.setSuccess(true);
+//            j.setErrorCode("-1");
+//            j.setMsg("查询成功!");
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            j.setSuccess(false);
+//            j.setErrorCode("10001");
+//            j.setMsg("数据异常!");
+//        }
+//        return j;
+//    }
 }

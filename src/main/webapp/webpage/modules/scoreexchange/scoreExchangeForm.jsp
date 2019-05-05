@@ -74,16 +74,16 @@
 		<form:hidden path="id"/>
 
         <div class="form-group">
-            <label class="col-sm-2 control-label">名称：</label>
+            <label class="col-sm-2 control-label"><font color="red">*</font>名称：</label>
             <div class="col-sm-10">
-                <form:input path="name" htmlEscape="false"    class="form-control "/>
+                <form:input path="name" htmlEscape="false"    class="form-control required"/>
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-2 control-label">照片：</label>
+            <label class="col-sm-2 control-label"><font color="red">*</font>照片：</label>
             <div class="col-sm-10">
                 <div class="input-group input-append" style="width:100%">
-                    <input type="text" id="photo" name="photo"  class="form-control required" readonly="readonly" aria-invalid="false" value="${scoreExchange.cover}">
+                    <input type="text" id="photo" name="photo"  class="form-control required" readonly="readonly" aria-invalid="false" value="${scoreExchange.photo}">
                     <span class="input-group-btn">
                            <button type="button" id="photoButton" onclick="openFileDialog()" class="btn btn-primary "><i class="fa fa-cloud-upload"></i></button>
                      </span>
@@ -91,9 +91,9 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-2 control-label">所需分数：</label>
+            <label class="col-sm-2 control-label"><font color="red">*</font>所需分数：</label>
             <div class="col-sm-10">
-                <form:input path="score" htmlEscape="false"    class="form-control  isIntGteZero"/>
+                <form:input path="score" htmlEscape="false"    class="form-control  isIntGteZero required"/>
             </div>
         </div>
         <div class="form-group">

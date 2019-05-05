@@ -22,7 +22,7 @@
 		ifnull(teacher.id,'') as "teacher.id",
 		ifnull(teacher.name,'') as "teacher.name",
 
-		ifnull(so.id,'') as "office.id",
+		ifnull(a.id,'') as "office.id",
 		ifnull(so.name,'') as "office.name",
 
         ifnull(h.id,'') as "homework.id",
@@ -39,8 +39,7 @@
         left join sys_user student on student.id=a.userid
         left join sys_user teacher on teacher.id=a.teacherid
 		left join homework h on h.id=a.homeworkid
-		left join sys_user_office suo on suo.userid=a.officeid
-		left join sys_office so on so.id=suo.userid
+		left join sys_office so on so.id=a.officeid
 	</sql>
 	
     
@@ -78,13 +77,20 @@
             <if test="student!=null and student.id != null and student.id != ''">
                 AND a.userid = #{student.id}
             </if>
+			<if test="teacher!=null and teacher.id != null and teacher.id != ''">
+				AND exists (
+					select 1 from sys_user_office tsuo where tsuo.userid=#{teacher.id} and tsuo.officeid=a.officeid
+				)
+			</if>
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
 				ORDER BY ${page.orderBy}
 			</when>
 			<otherwise>
-				ORDER BY a.create_date desc
+				ORDER BY
+				case when a.state='0' then 1 else 2 end asc
+				,a.create_date desc
 			</otherwise>
 		</choose>
 	</select>
