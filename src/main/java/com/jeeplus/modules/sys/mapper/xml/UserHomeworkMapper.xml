@@ -16,6 +16,15 @@
 		a.score AS "score",
 		a.comment AS "comment",
 
+		student.id as "student.id",
+		student.name as "student.name",
+
+		nvl(teacher.id,'') as "teacher.id",
+		teacher.name as "teacher.name",
+
+		so.id as "office.id",
+		so.name as "office.name",
+
         h.id as "homework.id",
 		h.name AS "homework.name",
 		h.type AS "homework.type",
@@ -27,7 +36,11 @@
 	</sql>
 	
 	<sql id="userHomeworkJoins">
-		left join homework h on a.homeworkid=h.id
+        left join sys_user student on student.id=a.userid
+        left join sys_user teacher on teacher.id=a.teacherid
+		left join homework h on h.id=a.homeworkid
+		left join sys_user_office suo on suo.userid=a.officeid
+		left join sys_office so on so.id=suo.userid
 	</sql>
 	
     
@@ -62,8 +75,8 @@
 					<if test="dbName == 'mssql'">'%'+#{comment}+'%'</if>
 					<if test="dbName == 'mysql'">concat('%',#{comment},'%')</if>
 			</if>
-            <if test="userid != null and userid != ''">
-                AND a.userid = #{userid}
+            <if test="student!=null and student.id != null and student.id != ''">
+                AND a.userid = #{student.id}
             </if>
 		</where>
 		<choose>
@@ -75,7 +88,11 @@
 			</otherwise>
 		</choose>
 	</select>
-	
+
+    <select id="findHomeworkGradingList" resultType="UserHomework" >
+
+    </select>
+
 	<select id="findAllList" resultType="UserHomework" >
 		SELECT 
 			<include refid="userHomeworkColumns"/>
@@ -108,6 +125,8 @@
 			finish_date,
 			file,
 			score,
+			userid,
+			teacherid,
 			comment
 		) VALUES (
 			#{id},
@@ -121,6 +140,8 @@
 			#{finishDate},
 			#{file},
 			#{score},
+			#{student.id},
+			#{teacher.id},
 			#{comment}
 		)
 	</insert>
@@ -134,7 +155,8 @@
 			finish_date = #{finishDate},
 			file = #{file},
 			score = #{score},
-			comment = #{comment}
+			comment = #{comment},
+			teacherid = #{teacher.id}
 		WHERE id = #{id}
 	</update>
 	

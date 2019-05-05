@@ -3,35 +3,29 @@
  */
 package com.jeeplus.modules.homework.web;
 
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.ConstraintViolationException;
-
+import com.google.common.collect.Lists;
+import com.jeeplus.common.json.AjaxJson;
+import com.jeeplus.common.utils.DateUtils;
+import com.jeeplus.common.utils.StringUtils;
+import com.jeeplus.common.utils.excel.ExportExcel;
+import com.jeeplus.common.utils.excel.ImportExcel;
+import com.jeeplus.core.persistence.Page;
+import com.jeeplus.core.web.BaseController;
+import com.jeeplus.modules.homework.entity.Homework;
+import com.jeeplus.modules.homework.service.HomeworkService;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.google.common.collect.Lists;
-import com.jeeplus.common.utils.DateUtils;
-import com.jeeplus.common.json.AjaxJson;
-import com.jeeplus.core.persistence.Page;
-import com.jeeplus.core.web.BaseController;
-import com.jeeplus.common.utils.StringUtils;
-import com.jeeplus.common.utils.excel.ExportExcel;
-import com.jeeplus.common.utils.excel.ImportExcel;
-import com.jeeplus.modules.homework.entity.Homework;
-import com.jeeplus.modules.homework.service.HomeworkService;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.ConstraintViolationException;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 作业管理Controller
@@ -239,4 +233,5 @@ public class HomeworkController extends BaseController {
 		Page<Homework> page = homeworkService.findHomework(new Page<Homework>(request, response), homework);
 		return getBootstrapData(page);
 	}
+
 }

@@ -28,6 +28,13 @@
 					<form:options items="${fns:getDictList('bas_campus')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
 				</form:select>
 			</div>
+            <div class="col-sm-2">
+                <label class="label-item single-overflow pull-left" title="课程级别：">课程级别：</label>
+                <form:select path="level"  class="form-control m-b">
+                    <form:option value="" label=""/>
+                    <form:options items="${fns:getDictList('bae_course_level')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+                </form:select>
+            </div>
 			  <div class="col-xs-12 col-sm-6 col-md-4">
 				<label class="label-item single-overflow pull-left" title="班级名称：">班级名称：</label>
 				<form:input path="name" htmlEscape="false" maxlength="100"  class=" form-control"/>

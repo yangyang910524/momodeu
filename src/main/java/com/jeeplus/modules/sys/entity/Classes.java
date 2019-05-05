@@ -21,6 +21,7 @@ public class Classes extends DataEntity<Classes> {
     private String courseTotal;//课程总数
     private String homeworkTotal;//作业总数
     private String campus;//校区
+    private String level;//课程级别
 
 
     public String getName() {
@@ -85,5 +86,13 @@ public class Classes extends DataEntity<Classes> {
 
     public void setCampus(String campus) {
         this.campus = campus;
+    }
+
+    public String getLevel() {
+        return level;
+    }
+
+    public void setLevel(String level) {
+        this.level = level;
     }
 }

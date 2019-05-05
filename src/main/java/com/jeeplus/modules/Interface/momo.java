@@ -556,7 +556,7 @@ public class momo {
                 j.setMsg("未获取到用户信息!");
                 return j;
             }else{
-                userHomework.setUserid(user.getId());
+                userHomework.setStudent(user);
             }
 
             if(params.get("state")==null||"".equals(params.get("state"))

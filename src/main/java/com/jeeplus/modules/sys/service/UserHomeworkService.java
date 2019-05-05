@@ -10,6 +10,7 @@ import com.jeeplus.modules.sys.mapper.UserHomeworkMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -20,6 +21,8 @@ import java.util.List;
 @Service
 @Transactional(readOnly = true)
 public class UserHomeworkService extends CrudService<UserHomeworkMapper, UserHomework> {
+    @Resource
+    private UserHomeworkMapper userHomeworkMapper;
 
 	@Override
     public UserHomework get(String id) {
@@ -47,5 +50,5 @@ public class UserHomeworkService extends CrudService<UserHomeworkMapper, UserHom
 	public void delete(UserHomework userHomework) {
 		super.delete(userHomework);
 	}
-	
+
 }

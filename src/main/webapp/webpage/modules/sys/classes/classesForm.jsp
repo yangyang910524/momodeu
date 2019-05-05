@@ -46,6 +46,14 @@
             </td>
         </tr>
         <tr>
+            <td class="width-15 active"><label class="pull-right"><font color="red">*</font>课程级别：</label></td>
+            <td class="width-35">
+                <form:select path="level" class="form-control required">
+                    <form:options items="${fns:getDictList('bae_course_level')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+                </form:select>
+            </td>
+        </tr>
+        <tr>
             <td class="width-15 active"><label class="pull-right"><font color="red">*</font>名称：</label></td>
             <td class="width-35">
                 <form:input path="name" htmlEscape="false"    class="form-control required" autocomplete="off"/>

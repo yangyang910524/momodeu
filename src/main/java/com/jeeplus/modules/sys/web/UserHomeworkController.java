@@ -13,8 +13,6 @@ import com.jeeplus.core.persistence.Page;
 import com.jeeplus.core.web.BaseController;
 import com.jeeplus.modules.sys.entity.UserHomework;
 import com.jeeplus.modules.sys.service.UserHomeworkService;
-import org.apache.shiro.authz.annotation.Logical;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -205,4 +203,22 @@ public class UserHomeworkController extends BaseController {
 		return j;
     }
 
+    /**
+     * 作业打分列表
+     */
+    @RequestMapping(value ="homeworkGradingList")
+    public String homeworkGradingList(UserHomework userHomework, Model model) {
+        model.addAttribute("userHomework", userHomework);
+        return "modules/userhomework/homeworkGradingList";
+    }
+
+    /**
+     * 作业打分列表数据
+     */
+    @ResponseBody
+    @RequestMapping(value = "homeworkGradingListData")
+    public Map<String, Object> homeworkGradingListData(UserHomework userHomework, HttpServletRequest request, HttpServletResponse response, Model model) {
+        Page<UserHomework> page = userHomeworkService.findPage(new Page<UserHomework>(request, response), userHomework);
+        return getBootstrapData(page);
+    }
 }

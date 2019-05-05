@@ -18,7 +18,8 @@
 		(select count(*) from sys_user_office suo where  user_type='3' and a.id=suo.officeid) AS "studentTotal",
 		(select count(*) from sys_coures_office sco where a.id=sco.officeid) AS "courseTotal",
 		(select count(*) from sys_homework_office sho where a.id=sho.officeid) AS "homeworkTotal",
-		campus as "campus"
+		a.campus as "campus",
+		a.level as "level"
 	</sql>
 	
 	<sql id="classesJoins">
@@ -93,6 +94,7 @@
 			update_date,
 			remarks,
 			campus,
+			level,
 			del_flag
 		) VALUES (
 			#{id},
@@ -104,6 +106,7 @@
 			#{updateDate},
 			#{remarks},
 			#{campus},
+			#{level},
 			#{delFlag}
 		)
 	</insert>
@@ -115,7 +118,8 @@
 			update_by = #{updateBy.id},
 			update_date = #{updateDate},
 			remarks = #{remarks},
-			campus = #{campus}
+			campus = #{campus},
+			level = #{level}
 		WHERE id = #{id}
 	</update>
 	

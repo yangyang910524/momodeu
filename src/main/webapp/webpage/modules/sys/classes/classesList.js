@@ -111,6 +111,14 @@ $(document).ready(function() {
                        formatter:function(value, row , index){
                            return jp.getDictLabel(${fns:toJson(fns:getDictList('bas_campus'))}, value, "-");
                        }
+                   },{
+                       field: 'level',
+                       title: '课程级别',
+                       sortable: false,
+                       formatter:function(value, row , index){
+                           return jp.getDictLabel(${fns:toJson(fns:getDictList('bae_course_level'))}, value, "-");
+                       }
+
                    }, {
                        field: 'classroomTeacher',
                        title: '班主任',

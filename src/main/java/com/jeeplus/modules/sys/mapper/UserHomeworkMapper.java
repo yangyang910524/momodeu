@@ -14,5 +14,5 @@ import com.jeeplus.modules.sys.entity.UserHomework;
  */
 @MyBatisMapper
 public interface UserHomeworkMapper extends BaseMapper<UserHomework> {
-	
+
 }
