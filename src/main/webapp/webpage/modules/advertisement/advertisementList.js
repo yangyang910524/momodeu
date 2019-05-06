@@ -132,6 +132,7 @@ $(document).ready(function() {
                sortable: true,
                sortName: 'remarks',
                formatter:function(value, row , index){
+                   <shiro:hasPermission name="advertisement:advertisement:edit">
                    if(row.state=='0'){
                        return "<a onclick='updateState(\""+value+"\",\"0\")'>发布</a>";
                    }else if(row.state=='1'){
@@ -139,6 +140,7 @@ $(document).ready(function() {
                    }else if(row.state=='2'){
                        return "<a onclick='updateState(\""+value+"\",\"2\")'>启用</a>";
                    }
+                   </shiro:hasPermission>
                    return "";
                }
            }
@@ -221,10 +223,10 @@ $(document).ready(function() {
 		});
 		
 		$('#beginIssueTime').datetimepicker({
-			 format: "YYYY-MM-DD HH:mm:ss"
+			 format: "YYYY-MM-DD"
 		});
 		$('#endIssueTime').datetimepicker({
-			 format: "YYYY-MM-DD HH:mm:ss"
+			 format: "YYYY-MM-DD"
 		});
 		
 	});

@@ -39,9 +39,6 @@
 			<if test="state != null and state != ''">
 				AND a.state = #{state}
 			</if>
-			<if test="beginIssueTime != null and endIssueTime != null ">
-				AND a.issue_time BETWEEN #{beginIssueTime} AND #{endIssueTime}
-			</if>
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">

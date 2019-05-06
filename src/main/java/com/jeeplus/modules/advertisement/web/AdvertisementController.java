@@ -109,7 +109,7 @@ public class AdvertisementController extends BaseController {
 	}
 
     /**
-     * 保存广告信息
+     * 修改状态
      */
     @ResponseBody
     @RequestMapping(value = "updateState")

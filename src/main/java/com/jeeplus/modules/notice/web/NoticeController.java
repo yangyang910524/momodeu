@@ -3,37 +3,30 @@
  */
 package com.jeeplus.modules.notice.web;
 
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.ConstraintViolationException;
-
+import com.google.common.collect.Lists;
+import com.jeeplus.common.json.AjaxJson;
+import com.jeeplus.common.utils.DateUtils;
+import com.jeeplus.common.utils.StringUtils;
+import com.jeeplus.common.utils.excel.ExportExcel;
+import com.jeeplus.common.utils.excel.ImportExcel;
+import com.jeeplus.core.persistence.Page;
+import com.jeeplus.core.web.BaseController;
+import com.jeeplus.modules.notice.entity.Notice;
+import com.jeeplus.modules.notice.service.NoticeService;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.google.common.collect.Lists;
-import com.jeeplus.common.utils.DateUtils;
-import com.jeeplus.common.config.Global;
-import com.jeeplus.common.json.AjaxJson;
-import com.jeeplus.core.persistence.Page;
-import com.jeeplus.core.web.BaseController;
-import com.jeeplus.common.utils.StringUtils;
-import com.jeeplus.common.utils.excel.ExportExcel;
-import com.jeeplus.common.utils.excel.ImportExcel;
-import com.jeeplus.modules.notice.entity.Notice;
-import com.jeeplus.modules.notice.service.NoticeService;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.ConstraintViolationException;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 消息公告Controller
@@ -114,7 +107,29 @@ public class NoticeController extends BaseController {
 		j.setMsg("保存消息公告成功");
 		return j;
 	}
-	
+
+    /**
+     * 修改状态
+     */
+    @ResponseBody
+    @RequestMapping(value = "updateState")
+    public AjaxJson updateState(Notice notice, Model model) throws Exception{
+        AjaxJson j = new AjaxJson();
+        if("0".equals(notice.getState())){
+            notice.setIssueTime(new Date());
+            notice.setState("1");
+        }else if("1".equals(notice.getState())){
+            notice.setState("2");
+        }else{
+            notice.setState("1");
+        }
+        //新增或编辑表单保存
+        noticeService.save(notice);//保存
+        j.setSuccess(true);
+        j.setMsg("操作成功");
+        return j;
+    }
+
 	/**
 	 * 删除消息公告
 	 */

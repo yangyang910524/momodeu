@@ -47,12 +47,16 @@
 				</div>
 				<div class="form-group">
 					<label class="col-sm-2 control-label"><font color="red">*</font>状态：</label>
-					<div class="col-sm-10">
-						<form:select path="state" class="form-control  required">
-							<form:option value="" label=""/>
-							<form:options items="${fns:getDictList('bas_release_type')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
-						</form:select>
-					</div>
+                    <div class="col-sm-10">
+                        <c:if test="${mode eq 'add'}">
+                            <input type="hidden" name="state" value="0"/>
+                            <input type="text" class="form-control "  value="${ fns:getDictLabel ('0', 'bas_release_type', '')}" readonly="readonly"/>
+                        </c:if>
+                        <c:if test="${mode ne 'add'}">
+                            <input type="hidden" name="state" value="${advertisement.state}"/>
+                            <input type="text" class="form-control "  value="${ fns:getDictLabel (advertisement.state, 'bas_release_type', '')}"  readonly="readonly"/>
+                        </c:if>
+                    </div>
 				</div>
 			<div class="form-group">
 				<label class="col-sm-2 control-label">备注信息：</label>
