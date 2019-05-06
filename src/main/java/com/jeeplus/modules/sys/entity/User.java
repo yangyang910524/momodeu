@@ -141,7 +141,6 @@ public class User extends DataEntity<User> {
 		return name;
 	}
 	
-	@Length(min=1, max=100, message="工号长度必须介于 1 和 100 之间")
 	@ExcelField(title="工号", align=2, sort=45)
 	public String getNo() {
 		return no;
@@ -166,7 +165,6 @@ public class User extends DataEntity<User> {
 		this.email = email;
 	}
 	
-	@Length(min=0, max=200, message="电话长度必须介于 1 和 200 之间")
 	@ExcelField(title="电话", align=2, sort=60)
 	public String getPhone() {
 		return phone;

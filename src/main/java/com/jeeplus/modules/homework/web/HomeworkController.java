@@ -100,6 +100,9 @@ public class HomeworkController extends BaseController {
 			j.setMsg(errMsg);
 			return j;
 		}
+		if(!"1".equals(homework.getType())){
+			homework.setData2("");
+		}
 		//新增或编辑表单保存
 		homeworkService.save(homework);//保存
 		j.setSuccess(true);

@@ -153,7 +153,7 @@
         from sys_user_office
         where
         user_type='3'
-        and officeid='37886d37fdc44e9aa8552d5cb071e663'
+        and officeid=#{officeid}
 
     </insert>
 

@@ -2,7 +2,7 @@
 <%@ include file="/webpage/include/taglib.jsp"%>
 <html>
 <head>
-	<title>课程内容管理</title>
+	<title>课程信息管理</title>
 	<meta name="decorator" content="ani"/>
 	<script type="text/javascript">
 
@@ -10,21 +10,14 @@
 			jp.ajaxForm("#inputForm",function(data){
 				if(data.success){
 				    jp.success(data.msg);
-					jp.go("${ctx}/course/courseData");
+					jp.go("${ctx}/publiccours/publicCourse");
 				}else{
 				    jp.error(data.msg);
 				    $("#inputForm").find("button:submit").button("reset");
 				}
 			});
-		});
 
-		function chapterSelect() {
-            jp.openChapterSelectDialog(false, function (ids, names) {
-                $("#courseId").val(ids);
-                $("#courseName").val(names);
-                $("#courseName").blur();
-            },'');
-        }
+		});
 
         function openFileDialog()
         {
@@ -40,7 +33,7 @@
 //                return false;
 //            }
             var formData = new FormData($("#uploadForm")[0]);
-            formData.append("filePath","coruse_content")
+            formData.append("filePath","public_coruse")
             $.ajax({
                 url:"${ctx}/sys/file/fileUpload",
                 type: 'POST',
@@ -73,29 +66,20 @@
 	<div class="panel panel-primary">
 		<div class="panel-heading">
 			<h3 class="panel-title"> 
-				<a class="panelButton" href="${ctx}/course/courseData"><i class="ti-angle-left"></i> 返回</a>
+				<a class="panelButton" href="${ctx}/publiccours/publicCourse"><i class="ti-angle-left"></i> 返回</a>
 			</h3>
 		</div>
 		<div class="panel-body">
-		<form:form id="inputForm" modelAttribute="courseData" action="${ctx}/course/courseData/save" method="post" class="form-horizontal">
+		<form:form id="inputForm" modelAttribute="publicCourse" action="${ctx}/publiccours/publicCourse/save" method="post" class="form-horizontal">
 		<form:hidden path="id"/>
 				<div class="form-group">
-					<label class="col-sm-2 control-label"><font color="red">*</font>课程：</label>
-					<div class="col-sm-10" >
-						<div class="input-group input-append" style="width:100%" onclick="chapterSelect()">
-							<input id="courseId" name="courseInfo.id"  type="hidden" value="${courseData.courseInfo.id}"
-								   class="form-control required" readonly="readonly"/>
-							<input id="courseName" name="courseInfo.name"  type="text" value="${courseData.father.name} : ${courseData.courseInfo.name}"
-								   class="form-control required" readonly="readonly"/>
-							<span class="input-group-btn">
-								 <button type="button"  id="btn" class="btn  btn-primary"><i class="fa fa-search"></i>
-								 </button>
-							 </span>
-						</div>
+					<label class="col-sm-2 control-label"><font color="red">*</font>课程名称：</label>
+					<div class="col-sm-10">
+						<form:input path="name" htmlEscape="false"    class="form-control  required"/>
 					</div>
 				</div>
 				<div class="form-group">
-					<label class="col-sm-2 control-label"><font color="red">*</font>资料：</label>
+					<label class="col-sm-2 control-label"><font color="red">*</font>课程内容：</label>
 					<div class="col-sm-10" >
 						<div class="input-group input-append" style="width:100%">
 							<input type="text" id="data" name="data"  class="form-control required" readonly="readonly" aria-invalid="false" value="${courseData.data}">
@@ -106,7 +90,16 @@
 					</div>
 				</div>
 				<div class="form-group">
-					<label class="col-sm-2 control-label">简述说明：</label>
+					<label class="col-sm-2 control-label"><font color="red">*</font>课程类型：</label>
+					<div class="col-sm-10">
+						<form:select path="type" class="form-control required">
+							<form:option value="" label=""/>
+							<form:options items="${fns:getDictList('bas_public_course_type')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+						</form:select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-2 control-label">备注信息：</label>
 					<div class="col-sm-10">
 						<form:textarea path="remarks" htmlEscape="false" rows="4"    class="form-control "/>
 					</div>

@@ -11,8 +11,10 @@ import com.jeeplus.common.utils.excel.ExportExcel;
 import com.jeeplus.common.utils.excel.ImportExcel;
 import com.jeeplus.core.persistence.Page;
 import com.jeeplus.core.web.BaseController;
+import com.jeeplus.modules.sys.entity.User;
 import com.jeeplus.modules.sys.entity.UserHomework;
 import com.jeeplus.modules.sys.service.UserHomeworkService;
+import com.jeeplus.modules.sys.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -84,6 +86,38 @@ public class UserHomeworkController extends BaseController {
 	@ResponseBody
 	@RequestMapping(value = "save")
 	public AjaxJson save(UserHomework userHomework, Model model) throws Exception{
+		AjaxJson j = new AjaxJson();
+		/**
+		 * 后台hibernate-validation插件校验
+		 */
+		String errMsg = beanValidator(userHomework);
+		if (StringUtils.isNotBlank(errMsg)){
+			j.setSuccess(false);
+			j.setMsg(errMsg);
+			return j;
+		}
+		//新增或编辑表单保存
+		userHomeworkService.save(userHomework);//保存
+		j.setSuccess(true);
+		j.setMsg("保存信息成功");
+		return j;
+	}
+
+	/**
+	 * 查看，增加，编辑信息表单页面
+	 */
+	@RequestMapping(value = "gradingForm")
+	public String gradingForm(@PathVariable String mode, UserHomework userHomework, Model model) {
+		model.addAttribute("userHomework", userHomework);
+		return "modules/homework/userHomeworkForm";
+	}
+
+	/**
+	 * 保存信息
+	 */
+	@ResponseBody
+	@RequestMapping(value = "gradingSave")
+	public AjaxJson gradingSave(UserHomework userHomework, Model model) throws Exception{
 		AjaxJson j = new AjaxJson();
 		/**
 		 * 后台hibernate-validation插件校验
@@ -209,7 +243,7 @@ public class UserHomeworkController extends BaseController {
     @RequestMapping(value ="homeworkGradingList")
     public String homeworkGradingList(UserHomework userHomework, Model model) {
         model.addAttribute("userHomework", userHomework);
-        return "modules/userhomework/homeworkGradingList";
+        return "modules/homework/homeworkGradingList";
     }
 
     /**
@@ -218,7 +252,12 @@ public class UserHomeworkController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "homeworkGradingListData")
     public Map<String, Object> homeworkGradingListData(UserHomework userHomework, HttpServletRequest request, HttpServletResponse response, Model model) {
-        Page<UserHomework> page = userHomeworkService.findPage(new Page<UserHomework>(request, response), userHomework);
+		User user=UserUtils.getUser();
+    	if("2".equals(user.getUserType())){
+
+		}
+
+    	Page<UserHomework> page = userHomeworkService.findPage(new Page<UserHomework>(request, response), userHomework);
         return getBootstrapData(page);
     }
 }
