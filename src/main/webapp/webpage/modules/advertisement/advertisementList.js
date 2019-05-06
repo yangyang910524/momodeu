@@ -84,27 +84,7 @@ $(document).ready(function() {
 		        checkbox: true
 		       
 		    }
-			,{
-		        field: 'remarks',
-		        title: '备注信息',
-		        sortable: true,
-		        sortName: 'remarks'
-		        ,formatter:function(value, row , index){
-		        	value = jp.unescapeHTML(value);
-				   <c:choose>
-					   <c:when test="${fns:hasPermission('advertisement:advertisement:edit')}">
-					      return "<a href='javascript:edit(\""+row.id+"\")'>"+value+"</a>";
-				      </c:when>
-					  <c:when test="${fns:hasPermission('advertisement:advertisement:view')}">
-					      return "<a href='javascript:view(\""+row.id+"\")'>"+value+"</a>";
-				      </c:when>
-					  <c:otherwise>
-					      return value;
-				      </c:otherwise>
-				   </c:choose>
-		         }
-		       
-		    }
+
 		    ,{
 		        field: 'picture',
 		        title: '图片',
@@ -141,7 +121,27 @@ $(document).ready(function() {
 		        sortable: true,
 		        sortName: 'issueTime'
 		       
-		    }
+		    },{
+               field: 'remarks',
+               title: '备注信息',
+               sortable: true,
+               sortName: 'remarks'
+            },{
+               field: 'id',
+               title: '操作',
+               sortable: true,
+               sortName: 'remarks',
+               formatter:function(value, row , index){
+                   if(row.state=='0'){
+                       return "<a onclick='updateState(\""+value+"\",\"0\")'>发布</a>";
+                   }else if(row.state=='1'){
+                       return "<a onclick='updateState(\""+value+"\",\"1\")'>停用</a>";
+                   }else if(row.state=='2'){
+                       return "<a onclick='updateState(\""+value+"\",\"2\")'>启用</a>";
+                   }
+                   return "";
+               }
+           }
 		     ]
 		
 		});
@@ -270,5 +270,16 @@ $(document).ready(function() {
       }
       jp.go("${ctx}/advertisement/advertisement/form/view?id=" + id);
   }
-  
+
+    function updateState(id,state) {
+        jp.loading();
+        jp.get("${ctx}/advertisement/advertisement/updateState?id=" +id+"&state="+state, function(data){
+            if(data.success){
+                $('#advertisementTable').bootstrapTable('refresh');
+                jp.success(data.msg);
+            }else{
+                jp.error(data.msg);
+            }
+        })
+    }
 </script>

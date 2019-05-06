@@ -59,9 +59,12 @@
 		<where>
 			a.del_flag = #{DEL_FLAG_NORMAL}
 			${dataScope}
-			<if test="state != null and state != ''">
+			<if test="state != null and state != '' and state != '1,2'">
 				AND a.state = #{state}
 			</if>
+            <if test="state == '1,2'">
+                AND a.state in ('1','2')
+            </if>
 			<if test="beginFinishDate != null and endFinishDate != null ">
 				AND a.finish_date BETWEEN #{beginFinishDate} AND #{endFinishDate}
 			</if>

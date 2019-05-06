@@ -25,6 +25,15 @@ public class Statistics extends DataEntity<Statistics> {
     private String endTime;
     private String homeworkFinishToal;
     private String homeworkNotFinishToal;
+    private String homeworkType;//作业类型
+
+    public String getHomeworkType() {
+        return homeworkType;
+    }
+
+    public void setHomeworkType(String homeworkType) {
+        this.homeworkType = homeworkType;
+    }
 
     public Office getOffice() {
 		return office;

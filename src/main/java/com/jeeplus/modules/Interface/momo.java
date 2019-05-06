@@ -702,7 +702,7 @@ public class momo {
      **/
     @ResponseBody
     @RequestMapping(value= "/momo/publicCourse" , method = RequestMethod.POST)
-    public AjaxJson advertisement(@RequestBody Map<String,String> params)  {
+    public AjaxJson publicCourse(@RequestBody Map<String,String> params)  {
         AjaxJson j = new AjaxJson();
         try {
             if(params.get("type")==null||"".equals(params.get("type"))
@@ -757,52 +757,220 @@ public class momo {
         return j;
     }
 
-//    /**
-//     * @Description 广告图
-//     **/
-//    @ResponseBody
-//    @RequestMapping(value= "/momo/advertisement" , method = RequestMethod.POST)
-//    public AjaxJson advertisement(@RequestBody Map<String,String> params)  {
-//        AjaxJson j = new AjaxJson();
-//        try {
-//            if(params.get("isPage")==null||StringUtils.isEmpty(params.get("isPage").toString())){
-//                params.put("isPage","0");
-//            }
-//
-//            if("1".equals(params.get("isPage").toString())){
-//                Page<Advertisement> p=new Page<Advertisement>();
-//                if(params.get("pageNo")==null||StringUtils.isEmpty(params.get("pageNo").toString())){
-//                    p.setPageNo(1);
-//                }else{
-//                    p.setPageNo(Integer.valueOf(params.get("pageNo").toString()));
-//                }
-//                if(params.get("pageSize")==null||StringUtils.isEmpty(params.get("pageSize").toString())){
-//                    p.setPageSize(10);
-//                }else{
-//                    p.setPageSize(Integer.valueOf(params.get("pageSize").toString()));
-//                }
-//
-//                Page<Advertisement> pages = advertisementService.findPage(p,new Advertisement());
-//                j.put("count",pages.getCount());
-//                j.put("pageNo",pages.getPageNo());
-//                j.put("pageSize",pages.getPageSize());
-//                j.put("list",pages.getList());
-//            }else{
-//                List<Advertisement> list=advertisementService.findList(new Advertisement());
-//                j.put("count",list.size());
-//                j.put("list",list);
-//                j.put("pageNo","");
-//                j.put("pageSize","");
-//            }
-//            j.setSuccess(true);
-//            j.setErrorCode("-1");
-//            j.setMsg("查询成功!");
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            j.setSuccess(false);
-//            j.setErrorCode("10001");
-//            j.setMsg("数据异常!");
-//        }
-//        return j;
-//    }
+    /**
+     * @Description 作品排行
+     **/
+    @ResponseBody
+    @RequestMapping(value= "/momo/worksRanking" , method = RequestMethod.POST)
+    public AjaxJson worksRanking(@RequestBody Map<String,String> params)  {
+        AjaxJson j = new AjaxJson();
+        //组装参数
+        Statistics s=new Statistics();
+        try {
+
+            if(!(params.get("type")==null
+                    ||"".equals(params.get("type"))
+                    || "".equals(DictUtils.getDictLabel(params.get("type"),"bas_material_type","")))){
+                s.setHomeworkType(params.get("type"));
+            }
+
+            if(params.get("isPage")==null||StringUtils.isEmpty(params.get("isPage").toString())){
+                params.put("isPage","0");
+            }
+
+
+            if("1".equals(params.get("isPage").toString())){
+                Page<Statistics> p=new Page<Statistics>();
+                if(params.get("pageNo")==null||StringUtils.isEmpty(params.get("pageNo").toString())){
+                    p.setPageNo(1);
+                }else{
+                    p.setPageNo(Integer.valueOf(params.get("pageNo").toString()));
+                }
+                if(params.get("pageSize")==null||StringUtils.isEmpty(params.get("pageSize").toString())){
+                    p.setPageSize(10);
+                }else{
+                    p.setPageSize(Integer.valueOf(params.get("pageSize").toString()));
+                }
+
+                Page<Statistics> pages = statisticsService.scoreRankingByUser(p,s);
+                j.put("count",pages.getCount());
+                j.put("pageNo",pages.getPageNo());
+                j.put("pageSize",pages.getPageSize());
+                j.put("list",pages.getList());
+            }else{
+                List<Statistics> list=statisticsService.scoreRankingByUser(s);
+                j.put("count",list.size());
+                j.put("list",list);
+                j.put("pageNo","");
+                j.put("pageSize","");
+            }
+            j.setSuccess(true);
+            j.setErrorCode("-1");
+            j.setMsg("查询成功!");
+        } catch (Exception e) {
+            e.printStackTrace();
+            j.setSuccess(false);
+            j.setErrorCode("10001");
+            j.setMsg("数据异常!");
+        }
+        return j;
+    }
+
+    /**
+     * @Description 作品列表
+     **/
+    @ResponseBody
+    @RequestMapping(value= "/momo/worksList" , method = RequestMethod.POST)
+    public AjaxJson worksList(@RequestBody Map<String,String> params)  {
+        AjaxJson j = new AjaxJson();
+        try {
+            UserHomework uh=new UserHomework();
+            uh.setState("1,2");
+            if(params.get("userid")==null||"".equals(params.get("userid"))){
+                j.setSuccess(false);
+                j.setErrorCode("10002");
+                j.setMsg("未指定学生!");
+                return j;
+            }else{
+                uh.setStudent(userMapper.get(params.get("userid")));
+            }
+
+            if(!(params.get("type")==null
+                    ||"".equals(params.get("type"))
+                    || "".equals(DictUtils.getDictLabel(params.get("type"),"bas_material_type","")))){
+                Homework homework=new Homework();
+                homework.setType(params.get("type"));
+                uh.setHomework(homework);
+            }
+
+            if(params.get("isPage")==null||StringUtils.isEmpty(params.get("isPage").toString())){
+                params.put("isPage","0");
+            }
+
+
+            if("1".equals(params.get("isPage").toString())){
+                Page<UserHomework> p=new Page<UserHomework>();
+                if(params.get("pageNo")==null||StringUtils.isEmpty(params.get("pageNo").toString())){
+                    p.setPageNo(1);
+                }else{
+                    p.setPageNo(Integer.valueOf(params.get("pageNo").toString()));
+                }
+                if(params.get("pageSize")==null||StringUtils.isEmpty(params.get("pageSize").toString())){
+                    p.setPageSize(10);
+                }else{
+                    p.setPageSize(Integer.valueOf(params.get("pageSize").toString()));
+                }
+
+                Page<UserHomework> pages = userHomeworkService.findPage(p,uh);
+                j.put("count",pages.getCount());
+                j.put("pageNo",pages.getPageNo());
+                j.put("pageSize",pages.getPageSize());
+                j.put("list",pages.getList());
+            }else{
+                List<UserHomework> list=userHomeworkService.findList(uh);
+                j.put("count",list.size());
+                j.put("list",list);
+                j.put("pageNo","");
+                j.put("pageSize","");
+            }
+            j.setSuccess(true);
+            j.setErrorCode("-1");
+            j.setMsg("查询成功!");
+        } catch (Exception e) {
+            e.printStackTrace();
+            j.setSuccess(false);
+            j.setErrorCode("10001");
+            j.setMsg("数据异常!");
+        }
+        return j;
+    }
+
+
+    /**
+     * @Description 广告管理
+     **/
+    @ResponseBody
+    @RequestMapping(value= "/momo/advertisement" , method = RequestMethod.POST)
+    public AjaxJson advertisement(@RequestBody Map<String,String> params)  {
+        AjaxJson j = new AjaxJson();
+        try {
+            if(params.get("isPage")==null||StringUtils.isEmpty(params.get("isPage").toString())){
+                params.put("isPage","0");
+            }
+            Advertisement advertisement= new Advertisement();
+            advertisement.setState("1");
+            if("1".equals(params.get("isPage").toString())){
+                Page<Advertisement> p=new Page<Advertisement>();
+                if(params.get("pageNo")==null||StringUtils.isEmpty(params.get("pageNo").toString())){
+                    p.setPageNo(1);
+                }else{
+                    p.setPageNo(Integer.valueOf(params.get("pageNo").toString()));
+                }
+                if(params.get("pageSize")==null||StringUtils.isEmpty(params.get("pageSize").toString())){
+                    p.setPageSize(10);
+                }else{
+                    p.setPageSize(Integer.valueOf(params.get("pageSize").toString()));
+                }
+
+                Page<Advertisement> pages = advertisementService.findPage(p,advertisement);
+                j.put("count",pages.getCount());
+                j.put("pageNo",pages.getPageNo());
+                j.put("pageSize",pages.getPageSize());
+                j.put("list",pages.getList());
+            }else{
+                List<Advertisement> list=advertisementService.findList(advertisement);
+                j.put("count",list.size());
+                j.put("list",list);
+                j.put("pageNo","");
+                j.put("pageSize","");
+            }
+            j.setSuccess(true);
+            j.setErrorCode("-1");
+            j.setMsg("查询成功!");
+        } catch (Exception e) {
+            e.printStackTrace();
+            j.setSuccess(false);
+            j.setErrorCode("10001");
+            j.setMsg("数据异常!");
+        }
+        return j;
+    }
+
+    /**
+     * @Description 修改密码
+     **/
+    @ResponseBody
+    @RequestMapping(value= "/momo/updatePassword" , method = RequestMethod.POST)
+    public AjaxJson updatePassword(@RequestBody Map<String,String> params)  {
+        AjaxJson j = new AjaxJson();
+        User user=UserUtils.getUser();
+        try {
+            if(user==null||user.getId()==null||StringUtils.isEmpty(user.getId())){
+                j.setSuccess(false);
+                j.setErrorCode("10002");
+                j.setMsg("未获取到用户信息!");
+                return j;
+            }
+
+            if(params.get("password")==null||"".equals(params.get("password"))){
+                j.setSuccess(false);
+                j.setErrorCode("10002");
+                j.setMsg("新密码无效!");
+                return j;
+            }
+
+            systemService.updatePasswordById(user.getId(),user.getLoginName(),params.get("password"));
+
+            j.setSuccess(true);
+            j.setErrorCode("-1");
+            j.setMsg("操作成功!");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            j.setSuccess(false);
+            j.setErrorCode("10001");
+            j.setMsg("数据异常!");
+        }
+        return j;
+    }
 }

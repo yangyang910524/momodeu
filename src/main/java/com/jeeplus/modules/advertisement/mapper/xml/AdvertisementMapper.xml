@@ -12,7 +12,7 @@
 		ifnull(a.del_flag,'') AS "delFlag",
 		ifnull(a.picture,'') AS "picture",
 		ifnull(a.state,'') AS "state",
-		ifnull(a.issue_time,'') AS "issueTime"
+		a.issue_time AS "issueTime"
 	</sql>
 	
 	<sql id="advertisementJoins">

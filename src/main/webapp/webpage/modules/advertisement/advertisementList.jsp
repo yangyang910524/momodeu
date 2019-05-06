@@ -81,15 +81,7 @@
 	            	<i class="glyphicon glyphicon-remove"></i> 删除
 	        	</button>
 			</shiro:hasPermission>
-			<shiro:hasPermission name="advertisement:advertisement:import">
-				<button id="btnImport" class="btn btn-info"><i class="fa fa-folder-open-o"></i> 导入</button>
-			</shiro:hasPermission>
-			<shiro:hasPermission name="advertisement:advertisement:export">
-	        		<button id="export" class="btn btn-warning">
-					<i class="fa fa-file-excel-o"></i> 导出
-				</button>
-			 </shiro:hasPermission>
-	                 <shiro:hasPermission name="advertisement:advertisement:view">
+             <shiro:hasPermission name="advertisement:advertisement:view">
 				<button id="view" class="btn btn-default" disabled onclick="view()">
 					<i class="fa fa-search-plus"></i> 查看
 				</button>

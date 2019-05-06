@@ -3,37 +3,30 @@
  */
 package com.jeeplus.modules.advertisement.web;
 
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.ConstraintViolationException;
-
+import com.google.common.collect.Lists;
+import com.jeeplus.common.json.AjaxJson;
+import com.jeeplus.common.utils.DateUtils;
+import com.jeeplus.common.utils.StringUtils;
+import com.jeeplus.common.utils.excel.ExportExcel;
+import com.jeeplus.common.utils.excel.ImportExcel;
+import com.jeeplus.core.persistence.Page;
+import com.jeeplus.core.web.BaseController;
+import com.jeeplus.modules.advertisement.entity.Advertisement;
+import com.jeeplus.modules.advertisement.service.AdvertisementService;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.google.common.collect.Lists;
-import com.jeeplus.common.utils.DateUtils;
-import com.jeeplus.common.config.Global;
-import com.jeeplus.common.json.AjaxJson;
-import com.jeeplus.core.persistence.Page;
-import com.jeeplus.core.web.BaseController;
-import com.jeeplus.common.utils.StringUtils;
-import com.jeeplus.common.utils.excel.ExportExcel;
-import com.jeeplus.common.utils.excel.ImportExcel;
-import com.jeeplus.modules.advertisement.entity.Advertisement;
-import com.jeeplus.modules.advertisement.service.AdvertisementService;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.ConstraintViolationException;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 广告信息Controller
@@ -114,7 +107,29 @@ public class AdvertisementController extends BaseController {
 		j.setMsg("保存广告信息成功");
 		return j;
 	}
-	
+
+    /**
+     * 保存广告信息
+     */
+    @ResponseBody
+    @RequestMapping(value = "updateState")
+    public AjaxJson updateState(Advertisement advertisement, Model model) throws Exception{
+        AjaxJson j = new AjaxJson();
+        if("0".equals(advertisement.getState())){
+            advertisement.setIssueTime(new Date());
+            advertisement.setState("1");
+        }else if("1".equals(advertisement.getState())){
+            advertisement.setState("2");
+        }else{
+            advertisement.setState("1");
+        }
+        //新增或编辑表单保存
+        advertisementService.save(advertisement);//保存
+        j.setSuccess(true);
+        j.setMsg("操作成功");
+        return j;
+    }
+
 	/**
 	 * 删除广告信息
 	 */
