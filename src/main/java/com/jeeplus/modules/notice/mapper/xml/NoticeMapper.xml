@@ -12,7 +12,8 @@
 		ifnull(a.del_flag,'') AS "delFlag",
 		ifnull(a.title,'') AS "title",
 		ifnull(a.content,'') AS "content",
-		ifnull(a.state,'') AS "state"
+		ifnull(a.state,'') AS "state",
+		a.issue_time AS "issueTime"
 	</sql>
 	
 	<sql id="noticeJoins">
@@ -51,6 +52,9 @@
 			<if test="state != null and state != ''">
 				AND a.state = #{state}
 			</if>
+            <if test="beginIssueTime != null and endIssueTime != null ">
+                AND a.issue_time BETWEEN #{beginIssueTime} AND #{endIssueTime}
+            </if>
 
 		</where>
 		<choose>
@@ -93,7 +97,8 @@
 			del_flag,
 			title,
 			content,
-			state
+			state,
+			issue_time
 		) VALUES (
 			#{id},
 			#{createBy.id},
@@ -104,7 +109,8 @@
 			#{delFlag},
 			#{title},
 			#{content},
-			#{state}
+			#{state},
+			#{issueTime}
 		)
 	</insert>
 	
@@ -115,7 +121,8 @@
 			remarks = #{remarks},
 			title = #{title},
 			content = #{content},
-			state = #{state}
+			state = #{state},
+			issue_time = #{issueTime}
 		WHERE id = #{id}
 	</update>
 	
