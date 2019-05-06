@@ -18,9 +18,12 @@
 
 		ifnull(student.id,'') as "student.id",
 		ifnull(student.name,'') as "student.name",
+		ifnull(student.english_name,'') as "student.englishName",
+		ifnull(student.score,'') as "student.score",
 
 		ifnull(teacher.id,'') as "teacher.id",
 		ifnull(teacher.name,'') as "teacher.name",
+		ifnull(teacher.english_name,'') as "teacher.englishName",
 
 		ifnull(a.id,'') as "office.id",
 		ifnull(so.name,'') as "office.name",
