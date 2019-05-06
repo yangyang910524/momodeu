@@ -91,55 +91,10 @@
                 },{
                     field: 'homework.type',
                     title: '作业类型',
-                    sortable: false
-                },{
-                    field: 'homework.data1',
-                    title: '原视频',
                     sortable: false,
-					formatter:function(value, row , index){
-						if(value==null||value==undefined||value==""||value=="undefined"){
-							return "-";
-						}else{
-							var valueArray = value.split("|");
-							var labelArray = [];
-							for(var i =0 ; i<valueArray.length; i++){
-								labelArray[i] = "<a href='${ctx}/sys/file/download?source="+valueArray[i]+"' >下载材料</a>"
-							}
-							return labelArray.join(" ");
-						}
-					}
-                },{
-                    field: 'homework.data2',
-                    title: '配音视频',
-                    sortable: false,
-					formatter:function(value, row , index){
-						if(value==null||value==undefined||value==""||value=="undefined"){
-							return "-";
-						}else{
-							var valueArray = value.split("|");
-							var labelArray = [];
-							for(var i =0 ; i<valueArray.length; i++){
-								labelArray[i] = "<a href='${ctx}/sys/file/download?source="+valueArray[i]+"' >下载材料</a>"
-							}
-							return labelArray.join(" ");
-						}
-					}
-                },{
-                    field: 'file',
-                    title: '学生配音',
-                    sortable: false,
-					formatter:function(value, row , index){
-						if(value==null||value==undefined||value==""||value=="undefined"){
-							return "-";
-						}else{
-							var valueArray = value.split("|");
-							var labelArray = [];
-							for(var i =0 ; i<valueArray.length; i++){
-								labelArray[i] = "<a href='${ctx}/sys/file/download?source="+valueArray[i]+"' >下载材料</a>"
-							}
-							return labelArray.join(" ");
-						}
-					}
+                    formatter:function(value, row , index){
+                        return jp.getDictLabel(${fns:toJson(fns:getDictList('bas_material_type'))}, value, "-");
+                    }
                 },{
                     field: 'state',
                     title: '作业状态',
@@ -152,7 +107,7 @@
                     title: '打分情况',
                     sortable: false,
 					formatter:function(value, row , index){
-                        if(row.state=='0'){
+                        if(row.state=='0'||row.state=='1'){
                             return '-';
 						}else{
                             return value;
@@ -161,13 +116,25 @@
                 },{
                     field: 'comment',
                     title: '老师评语',
-                    sortable: false
+                    sortable: false,
+                    formatter:function(value, row , index){
+                        if(row.state=='0'||row.state=='1'){
+                            return '-';
+                        }else{
+                            return value;
+                        }
+                    }
                 },{
                     field: 'id',
                     title: '操作',
                     sortable: false,
 					formatter:function(value, row , index){
-						return "<a href='${ctx}/useroffice/userOffice/gradingForm?id="+value+"'>打分</a>";
+                        if(row.state=='1'){
+                            return "<a href='${ctx}/userhomework/userHomework/gradingForm/edit?id="+value+"'>打分</a>";
+                        }else{
+                            return "<a href='${ctx}/userhomework/userHomework/gradingForm/view?id="+value+"'>查看</a>";
+                        }
+
 					}
                 }
 
@@ -236,7 +203,40 @@
 	<div id="search-collapse" class="collapse">
 		<div class="accordion-inner">
 			<form:form id="searchForm" modelAttribute="userHomework" class="form form-horizontal well clearfix">
-
+                <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label class="label-item single-overflow pull-left" title="名称：">班级名称：</label>
+                    <form:input path="office.name" htmlEscape="false" maxlength="64"  class=" form-control"/>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label class="label-item single-overflow pull-left" title="名称：">学生名称：</label>
+                    <form:input path="student.name" htmlEscape="false" maxlength="64"  class=" form-control"/>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label class="label-item single-overflow pull-left" title="名称：">作业名称：</label>
+                    <form:input path="homework.name" htmlEscape="false" maxlength="64"  class=" form-control"/>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label class="label-item single-overflow pull-left" title="名称：">作业类型：</label>
+                    <form:select path="homework.type"  class="form-control m-b">
+                        <form:option value="" label=""/>
+                        <form:options items="${fns:getDictList('bas_material_type')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+                    </form:select>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label class="label-item single-overflow pull-left" title="名称：">作业状态：</label>
+                    <form:select path="state"  class="form-control m-b">
+                        <form:option value="" label=""/>
+                        <form:options items="${fns:getDictList('bas_finish_state')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+                    </form:select>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label class="label-item single-overflow pull-left" title="名称：">打分情况：</label>
+                    <form:input path="score" htmlEscape="false" maxlength="64"  class=" form-control"/>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-4">
+                    <label class="label-item single-overflow pull-left" title="名称：">老师评语：</label>
+                    <form:input path="comment" htmlEscape="false" maxlength="64"  class=" form-control"/>
+                </div>
 		 <div class="col-xs-12 col-sm-6 col-md-4">
 			<div style="margin-top:26px">
 			  <a  id="search" class="btn btn-primary btn-rounded  btn-bordered btn-sm"><i class="fa fa-search"></i> 查询</a>
@@ -247,21 +247,9 @@
 	</div>
 	</div>
 
-	<!-- 工具栏 -->
-	<div id="toolbar">
-			    <button id="edit" class="btn btn-success" disabled onclick="edit()">
-	            	<i class="glyphicon glyphicon-edit"></i> 打分
-	        	</button>
-		    </div>
-
 	<!-- 表格 -->
 	<table id="homeworkTable"   data-toolbar="#toolbar"></table>
 
-    <!-- context menu -->
-    <ul id="context-menu" class="dropdown-menu">
-        <li data-item="edit"><a>打分</a></li>
-        <li data-item="action1"><a>取消</a></li>
-    </ul>  
 	</div>
 	</div>
 	</div>

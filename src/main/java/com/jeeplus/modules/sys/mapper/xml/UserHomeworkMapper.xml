@@ -82,6 +82,19 @@
 					select 1 from sys_user_office tsuo where tsuo.userid=#{teacher.id} and tsuo.officeid=a.officeid
 				)
 			</if>
+
+            <if test="office!=null and office.name != null and office.name != ''">
+                AND so.name LIKE concat('%',#{office.name},'%')
+            </if>
+            <if test="student!=null and student.name != null and student.name != ''">
+                AND student.name LIKE concat('%',#{student.name},'%')
+            </if>
+            <if test="homework!=null and homework.name != null and homework.name != ''">
+                AND h.name LIKE concat('%',#{homework.name},'%')
+            </if>
+            <if test="homework!=null and homework.type != null and homework.type != ''">
+                AND h.type =#{homework.type}
+            </if>
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
@@ -89,7 +102,7 @@
 			</when>
 			<otherwise>
 				ORDER BY
-				case when a.state='0' then 1 else 2 end asc
+				case when a.state='1' then 1 when a.state='2' then 2 else 3 end asc
 				,a.create_date desc
 			</otherwise>
 		</choose>

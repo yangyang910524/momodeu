@@ -13,6 +13,8 @@ import com.jeeplus.core.persistence.Page;
 import com.jeeplus.core.web.BaseController;
 import com.jeeplus.modules.sys.entity.User;
 import com.jeeplus.modules.sys.entity.UserHomework;
+import com.jeeplus.modules.sys.mapper.UserMapper;
+import com.jeeplus.modules.sys.service.SystemService;
 import com.jeeplus.modules.sys.service.UserHomeworkService;
 import com.jeeplus.modules.sys.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
@@ -38,6 +41,10 @@ public class UserHomeworkController extends BaseController {
 
 	@Autowired
 	private UserHomeworkService userHomeworkService;
+    @Resource
+    private UserMapper userMapper;
+    @Resource
+    private SystemService systemService;
 	
 	@ModelAttribute
 	public UserHomework get(@RequestParam(required=false) String id) {
@@ -106,9 +113,10 @@ public class UserHomeworkController extends BaseController {
 	/**
 	 * 查看，增加，编辑信息表单页面
 	 */
-	@RequestMapping(value = "gradingForm")
+	@RequestMapping(value = "gradingForm/{mode}")
 	public String gradingForm(@PathVariable String mode, UserHomework userHomework, Model model) {
 		model.addAttribute("userHomework", userHomework);
+        model.addAttribute("mode", mode);
 		return "modules/homework/userHomeworkForm";
 	}
 
@@ -129,9 +137,15 @@ public class UserHomeworkController extends BaseController {
 			return j;
 		}
 		//新增或编辑表单保存
+        userHomework.setState("2");
+        userHomework.setTeacher(UserUtils.getUser());
 		userHomeworkService.save(userHomework);//保存
+        //把分数给学生加上
+        User student=userMapper.get(userHomework.getStudent().getId());
+        student.setScore(Integer.valueOf(student.getScore())+Integer.valueOf(userHomework.getScore()));
+        systemService.saveUser(student);
 		j.setSuccess(true);
-		j.setMsg("保存信息成功");
+		j.setMsg("打分成功");
 		return j;
 	}
 	
@@ -254,9 +268,8 @@ public class UserHomeworkController extends BaseController {
     public Map<String, Object> homeworkGradingListData(UserHomework userHomework, HttpServletRequest request, HttpServletResponse response, Model model) {
 		User user=UserUtils.getUser();
     	if("2".equals(user.getUserType())){
-
+            userHomework.setTeacher(user);
 		}
-
     	Page<UserHomework> page = userHomeworkService.findPage(new Page<UserHomework>(request, response), userHomework);
         return getBootstrapData(page);
     }

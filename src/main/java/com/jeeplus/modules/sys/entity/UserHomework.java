@@ -21,7 +21,7 @@ public class UserHomework extends DataEntity<UserHomework> {
 	private String state;		// 状态
 	private Date finishDate;		// 完成时间
 	private String file;		// 文件
-	private Integer score;		// 老师打分
+	private String score;		// 老师打分
 	private String comment;		// 老师评语
 	private String beginFinishDate;		// 开始 完成时间
 	private String endFinishDate;		// 结束 完成时间
@@ -55,11 +55,11 @@ public class UserHomework extends DataEntity<UserHomework> {
         this.file = file;
     }
 
-    public Integer getScore() {
+    public String getScore() {
         return score;
     }
 
-    public void setScore(Integer score) {
+    public void setScore(String score) {
         this.score = score;
     }
 
