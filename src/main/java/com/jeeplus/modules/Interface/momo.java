@@ -525,7 +525,9 @@ public class momo {
             //老师列表
             j.put("teacher",systemService.findTeacherListByOffice(user.getOffice().getId()));
             //通知公告（仅显示最新一条标题、内容）
-            List<Notice> noticeList=noticeService.findList(new Notice());
+            Notice notice=new Notice();
+            notice.setState("1");
+            List<Notice> noticeList=noticeService.findList(notice);
             if(noticeList.size()>0){
                 j.put("notice",noticeList.get(0));
             }else{
