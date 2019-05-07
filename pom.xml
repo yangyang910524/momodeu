@@ -819,6 +819,14 @@
             <artifactId>aliyun-sdk-oss</artifactId>
             <version>2.8.3</version>
         </dependency>
+
+        <!--mp3播放 begin-->
+        <dependency>
+            <groupId>javazoom</groupId>
+            <artifactId>jlayer</artifactId>
+            <version>1.0.1</version>
+        </dependency>
+        <!--mp3播放 end-->
     </dependencies>
 
 </project>

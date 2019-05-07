@@ -29,7 +29,31 @@
 	   error:function(msg){
 		   return top.layer.msg(msg, {icon:2});
 	   },
-	   
+
+	   // //根据url选择显示形式
+        // getMediaResult:function (url) {
+        //     if(/\.(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(url)){
+        //         return "<img onclick="jp.showPic(\''+url+'\')"'+' height="50px" src="'+url+'" />";
+        //     }else if(/\.(mp3|mp4)$/.test(url){
+        //         return "<a onclick="jp.showMedia(\''+url+'\')"'+'/>在线播放</a>";
+        //     }else{
+        //         return "<a href='${ctx}/sys/file/download?source="+url+"' >下载材料</a>";
+        //     }
+        // },
+       //
+        // /**打开mp3、mp4播放**/
+        // showMedia:function(url){
+        //     layer.open({
+        //         type: 2,
+        //         title: false,
+        //         area: ['630px', '360px'],
+        //         shade: 0.8,
+        //         closeBtn: 0,
+        //         shadeClose: true,
+        //         content: url
+        //     });
+        // },
+
 	   //layer之外的另一个选择toast风格消息提示框,直接使用jp.toastr调用
 	   toastr:(function(){
 		   top.toastr.options = {
@@ -196,6 +220,7 @@
 			  });
 		   
 	   },
+
 	   
 	   /**用户选择框**/
         openUserSelectDialog:function(isMultiSelect, yesFuc){

@@ -1,8 +1,10 @@
 package com.jeeplus.modules.Interface;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.aliyun.oss.OSSClient;
 import com.jeeplus.common.config.Global;
-import com.jeeplus.common.json.AjaxUserJson;
+import com.jeeplus.common.json.AjaxJson;
 import com.jeeplus.common.utils.DateUtils;
 import com.jeeplus.common.utils.StringUtils;
 import com.jeeplus.core.persistence.Page;
@@ -28,6 +30,8 @@ import com.jeeplus.modules.sys.service.CouresOfficeService;
 import com.jeeplus.modules.sys.service.SystemService;
 import com.jeeplus.modules.sys.service.UserHomeworkService;
 import com.jeeplus.modules.sys.utils.DictUtils;
+import com.jeeplus.modules.sys.utils.UserUtils;
+import com.jeeplus.modules.tools.utils.HttpPostTest;
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -36,7 +40,11 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.io.BufferedReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +55,7 @@ import java.util.Map;
  * @create 2019-04-28 11:35
  **/
 @Controller
-public class momo {
+public class momoLogin {
 
     @Resource
     private ScoreExchangeService scoreExchangeService;
@@ -74,9 +82,9 @@ public class momo {
      * @Description 登录
      **/
     @ResponseBody
-    @RequestMapping(value= "/momo/login" , method = RequestMethod.POST)
-    public AjaxUserJson login(@RequestBody Map<String,String> params,HttpServletRequest request)  {
-        AjaxUserJson j = new AjaxUserJson();
+    @RequestMapping(value= "/momoLogin/login" , method = RequestMethod.POST)
+    public AjaxJson login(@RequestBody Map<String,String> params,HttpServletRequest request)  {
+        AjaxJson j = new AjaxJson();
         try {
             if(params.get("username")==null||StringUtils.isEmpty(params.get("username").toString())){
                 j.setSuccess(false);
@@ -90,30 +98,141 @@ public class momo {
                 j.setMsg("密码不能为空!");
                 return j;
             }
-
-            User user = userMapper.getByLoginName(new User(null, params.get("username")));
-            if(user==null){
+            String sessionid= (String) UserUtils.getSession().getId();
+            String url=request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+"/jeeplus/a/login;JSESSIONID="+sessionid+"?__ajax=true";
+            params.put("mobileLogin","true");
+            HttpPostTest test = new HttpPostTest(url,params);
+            String result=  test.post();
+            //多次登录登出前次登录
+            if(result==null||StringUtils.isEmpty(result)){
                 j.setSuccess(false);
-                j.setErrorCode("10003");
-                j.setMsg("用户不存在!");
+                j.setErrorCode("1003");
+                j.setMsg("该账号已登录，请注销后再次登录！");
+                j.put("JSESSIONID",sessionid);
                 return j;
             }
-            if(!SystemService.validatePassword(params.get("password"),user.getPassword())){
+            JSONObject json= JSON.parseObject(result);
+            if(!(Boolean) json.get("success")){
                 j.setSuccess(false);
                 j.setErrorCode("10003");
-                j.setMsg("密码错误!");
-                return j;
-            }
-            if(!"3".equals(user.getUserType())){
-                j.setSuccess(false);
-                j.setErrorCode("10003");
-                j.setMsg("无权限访问!");
+                j.setMsg(json.get("msg")==null?"":json.get("msg").toString());
                 return j;
             }
             j.setSuccess(true);
             j.setErrorCode("-1");
             j.setMsg("登录成功!");
-            j.put("user",user);
+            JSONObject body= JSON.parseObject(json.get("body").toString());
+            j.put("user",body.get("user")==null?new User():body.get("user"));
+            j.put("JSESSIONID",body.get("JSESSIONID")==null?"":body.get("JSESSIONID").toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+            j.setSuccess(false);
+            j.setErrorCode("10001");
+            j.setMsg("数据异常!");
+        }
+        return j;
+    }
+
+    /**
+     * @Description 登出
+     **/
+    @ResponseBody
+    @RequestMapping(value= "/momoLogin/logout" , method = RequestMethod.POST)
+    public AjaxJson logout(@RequestBody Map<String,String> params,HttpServletRequest request)  {
+        AjaxJson j = new AjaxJson();
+        try {
+            if(params.get("JSESSIONID")==null||StringUtils.isEmpty(params.get("JSESSIONID").toString())){
+                j.setSuccess(false);
+                j.setErrorCode("10002");
+                j.setMsg("JSESSIONID不能为空!");
+                return j;
+            }
+            URL url=new URL(request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+"/jeeplus/a/logout;JSESSIONID="+params.get("JSESSIONID").toString()+"?__ajax=true");
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream(),"UTF-8"));
+
+            //请求结束时间_毫秒
+            String temp = "";
+            String result = "";
+            while((temp = in.readLine()) != null){
+                result = result + temp;
+            }
+            JSONObject json= JSON.parseObject(result);
+            if(!("1".equals(json.get("success")))){
+                j.setSuccess(false);
+                j.setErrorCode("10003");
+                j.setMsg(json.get("msg")==null?"":json.get("msg").toString());
+                return j;
+            }
+            j.setSuccess(true);
+            j.setErrorCode("-1");
+            j.setMsg("退出成功!");
+        } catch (Exception e) {
+            e.printStackTrace();
+            j.setSuccess(false);
+            j.setErrorCode("10001");
+            j.setMsg("数据异常!");
+        }
+        return j;
+    }
+
+
+    /**
+     * @Description 用户作业文件上传
+     **/
+    @ResponseBody
+    @RequestMapping(value= "/momoLogin/upload" , method = RequestMethod.POST)
+    public AjaxJson logout(@RequestParam("file") MultipartFile file)  {
+        AjaxJson j = new AjaxJson();
+        try {
+            User user=UserUtils.getUser();
+            if(user==null||user.getId()==null||StringUtils.isEmpty(user.getId())){
+                j.setSuccess(false);
+                j.setErrorCode("10002");
+                j.setMsg("未获取到用户信息!");
+                return j;
+            }
+
+            if(file==null||file.isEmpty()){
+                j.setSuccess(false);
+                j.setErrorCode("10002");
+                j.setMsg("上传文件不能为空!");
+                return j;
+            }
+
+
+            CommonsMultipartFile cFile = (CommonsMultipartFile) file;
+            DiskFileItem fileItem = (DiskFileItem) cFile.getFileItem();
+            InputStream inputStream = fileItem.getInputStream();
+            String fileName=file.getOriginalFilename();
+            String suffix="";
+            int dot = fileName.lastIndexOf('.');
+            if ((dot >-1) && (dot < (fileName.length() - 1))) {
+                suffix= fileName.substring(dot).toLowerCase();
+            }
+            // Endpoint以杭州为例，其它Region请按实际情况填写。
+
+            // 阿里云主账号AccessKey拥有所有API的访问权限，风险很高。强烈建议您创建并使用RAM账号进行API访问或日常运维，请登录 https://ram.console.aliyun.com 创建RAM账号。
+
+            String newFileName=DateUtils.getDate("yyyyMMddHHmmssSSS")+suffix;
+            String objectName = "user_homework/"+UserUtils.getUser().getId()+"/"+ newFileName;
+
+            // 创建OSSClient实例。
+            OSSClient ossClient = new OSSClient(Global.getEndpoint(), Global.getAccessKeyId(), Global.getAccessKeySecret());
+
+            // 上传内容到指定的存储空间（bucketName）并保存为指定的文件名称（objectName）。
+            ossClient.putObject(Global.getBucketName(), objectName, inputStream);
+
+            // 关闭OSSClient。
+            ossClient.shutdown();
+
+            j.put("fileName", fileName);
+            j.put("newFileName", newFileName);
+            j.put("url", Global.getFilePath()+"/"+objectName);
+            j.setSuccess(true);
+            j.setErrorCode("-1");
+            j.setMsg("上传文件成功!");
         } catch (Exception e) {
             e.printStackTrace();
             j.setSuccess(false);
@@ -127,16 +246,10 @@ public class momo {
      * @Description 积分兑换列表
      **/
     @ResponseBody
-    @RequestMapping(value= "/momo/scoreExchange" , method = RequestMethod.POST)
-    public AjaxUserJson scoreExchange(@RequestBody Map<String,String> params)  {
-        AjaxUserJson j = new AjaxUserJson();
+    @RequestMapping(value= "/momoLogin/scoreExchange" , method = RequestMethod.POST)
+    public AjaxJson scoreExchange(@RequestBody Map<String,String> params)  {
+        AjaxJson j = new AjaxJson();
         try {
-            j=systemService.checkUser(params.get("userid"),j);
-            //校验用户信息
-            if(!j.isSuccess()){
-                return j;
-            }
-
             if(params.get("isPage")==null||StringUtils.isEmpty(params.get("isPage").toString())){
                 params.put("isPage","0");
             }
@@ -165,6 +278,7 @@ public class momo {
                 j.put("pageNo","");
                 j.put("pageSize","");
             }
+            j.put("user", UserUtils.getUser());
             j.setSuccess(true);
             j.setErrorCode("-1");
             j.setMsg("查询成功!");
@@ -181,18 +295,13 @@ public class momo {
      * @Description 班级积分排名
      **/
     @ResponseBody
-    @RequestMapping(value= "/momo/scoreRankingByOffice" , method = RequestMethod.POST)
-    public AjaxUserJson scoreRankingByOffice(@RequestBody Map<String,String> params)  {
-        AjaxUserJson j = new AjaxUserJson();
+    @RequestMapping(value= "/momoLogin/scoreRankingByOffice" , method = RequestMethod.POST)
+    public AjaxJson scoreRankingByOffice(@RequestBody Map<String,String> params)  {
+        AjaxJson j = new AjaxJson();
+        User user=UserUtils.getUser();
+        //组装参数
+        Statistics s=new Statistics();
         try {
-            j=systemService.checkUser(params.get("userid"),j);
-            //校验用户信息
-            if(!j.isSuccess()){
-                return j;
-            }
-            //组装参数
-            User user=j.getUser();
-            Statistics s=new Statistics();
             if(user==null||user.getOffice()==null||StringUtils.isEmpty(user.getOffice().getId())){
                 j.setSuccess(false);
                 j.setErrorCode("10002");
@@ -202,9 +311,11 @@ public class momo {
                 s.setOffice(user.getOffice());
             }
 
+
             if(params.get("isPage")==null||StringUtils.isEmpty(params.get("isPage").toString())){
                 params.put("isPage","0");
             }
+
 
             if("1".equals(params.get("isPage").toString())){
                 Page<Statistics> p=new Page<Statistics>();
@@ -247,18 +358,13 @@ public class momo {
      * @Description 本班级学生作业完成量排行榜
      **/
     @ResponseBody
-    @RequestMapping(value= "/momo/homeworkStatistics" , method = RequestMethod.POST)
-    public AjaxUserJson homeworkStatistics(@RequestBody Map<String,String> params)  {
-        AjaxUserJson j = new AjaxUserJson();
+    @RequestMapping(value= "/momoLogin/homeworkStatistics" , method = RequestMethod.POST)
+    public AjaxJson homeworkStatistics(@RequestBody Map<String,String> params)  {
+        AjaxJson j = new AjaxJson();
+        User user=UserUtils.getUser();
+        //组装参数
+        Statistics s=new Statistics();
         try {
-            j=systemService.checkUser(params.get("userid"),j);
-            //校验用户信息
-            if(!j.isSuccess()){
-                return j;
-            }
-            User user=j.getUser();
-            //组装参数
-            Statistics s=new Statistics();
             if(user==null||user.getOffice()==null||StringUtils.isEmpty(user.getOffice().getId())){
                 j.setSuccess(false);
                 j.setErrorCode("10002");
@@ -324,18 +430,14 @@ public class momo {
      * @Description 我的课程
      **/
     @ResponseBody
-    @RequestMapping(value= "/momo/myCourseInfo" , method = RequestMethod.POST)
-    public AjaxUserJson myCourseInfo(@RequestBody Map<String,String> params)  {
-        AjaxUserJson j = new AjaxUserJson();
+    @RequestMapping(value= "/momoLogin/myCourseInfo" , method = RequestMethod.POST)
+    public AjaxJson myCourseInfo(@RequestBody Map<String,String> params)  {
+        AjaxJson j = new AjaxJson();
+        User user=UserUtils.getUser();
+        //组装参数
+        CouresOffice co=new CouresOffice();
+
         try {
-            j=systemService.checkUser(params.get("userid"),j);
-            //校验用户信息
-            if(!j.isSuccess()){
-                return j;
-            }
-            User user=j.getUser();
-            //组装参数
-            CouresOffice co=new CouresOffice();
             if(user==null||user.getOffice()==null||StringUtils.isEmpty(user.getOffice().getId())){
                 j.setSuccess(false);
                 j.setErrorCode("10002");
@@ -403,18 +505,13 @@ public class momo {
      * @Description 我的班级
      **/
     @ResponseBody
-    @RequestMapping(value= "/momo/myClasses" , method = RequestMethod.POST)
-    public AjaxUserJson myClasses(@RequestBody Map<String,String> params)  {
-        AjaxUserJson j = new AjaxUserJson();
+    @RequestMapping(value= "/momoLogin/myClasses" , method = RequestMethod.POST)
+    public AjaxJson myClasses()  {
+        AjaxJson j = new AjaxJson();
+        User user=UserUtils.getUser();
+        //组装参数
+        Statistics s=new Statistics();
         try {
-            j=systemService.checkUser(params.get("userid"),j);
-            //校验用户信息
-            if(!j.isSuccess()){
-                return j;
-            }
-            User user=j.getUser();
-            //组装参数
-            Statistics s=new Statistics();
             if(user==null||user.getOffice()==null||StringUtils.isEmpty(user.getOffice().getId())){
                 j.setSuccess(false);
                 j.setErrorCode("10002");
@@ -457,18 +554,20 @@ public class momo {
      * @Description 我的作业
      **/
     @ResponseBody
-    @RequestMapping(value= "/momo/myHomework" , method = RequestMethod.POST)
-    public AjaxUserJson myHomework(@RequestBody Map<String,String> params)  {
-        AjaxUserJson j = new AjaxUserJson();
+    @RequestMapping(value= "/momoLogin/myHomework" , method = RequestMethod.POST)
+    public AjaxJson myHomework(@RequestBody Map<String,String> params)  {
+        AjaxJson j = new AjaxJson();
+        User user=UserUtils.getUser();
+        //组装参数
+        UserHomework userHomework=new UserHomework();
         try {
-            j=systemService.checkUser(params.get("userid"),j);
-            //校验用户信息
-            if(!j.isSuccess()){
+            if(user==null||user.getId()==null||StringUtils.isEmpty(user.getId())){
+                j.setSuccess(false);
+                j.setErrorCode("10002");
+                j.setMsg("未获取到用户信息!");
                 return j;
             }
-            User user=j.getUser();
-            //组装参数
-            UserHomework userHomework=new UserHomework();
+
 
             if(params.get("level")==null||"".equals(params.get("level"))
                     || "".equals(DictUtils.getDictLabel(params.get("level"),"bae_course_level",""))){
@@ -533,83 +632,21 @@ public class momo {
         return j;
     }
 
-
-    /**
-     * @Description 用户作业文件上传
-     **/
-    @ResponseBody
-    @RequestMapping(value= "/momo/upload" , method = RequestMethod.POST)
-    public AjaxUserJson logout(@RequestParam("file") MultipartFile file,@RequestParam("userid") String userid)  {
-        AjaxUserJson j = new AjaxUserJson();
-        try {
-            j=systemService.checkUser(userid,j);
-            //校验用户信息
-            if(!j.isSuccess()){
-                return j;
-            }
-            User user=j.getUser();
-            if(file==null||file.isEmpty()){
-                j.setSuccess(false);
-                j.setErrorCode("10002");
-                j.setMsg("上传文件不能为空!");
-                return j;
-            }
-
-
-            CommonsMultipartFile cFile = (CommonsMultipartFile) file;
-            DiskFileItem fileItem = (DiskFileItem) cFile.getFileItem();
-            InputStream inputStream = fileItem.getInputStream();
-            String fileName=file.getOriginalFilename();
-            String suffix="";
-            int dot = fileName.lastIndexOf('.');
-            if ((dot >-1) && (dot < (fileName.length() - 1))) {
-                suffix= fileName.substring(dot).toLowerCase();
-            }
-            // Endpoint以杭州为例，其它Region请按实际情况填写。
-
-            // 阿里云主账号AccessKey拥有所有API的访问权限，风险很高。强烈建议您创建并使用RAM账号进行API访问或日常运维，请登录 https://ram.console.aliyun.com 创建RAM账号。
-
-            String newFileName=DateUtils.getDate("yyyyMMddHHmmssSSS")+suffix;
-            String objectName = "user_homework/"+user.getId()+"/"+ newFileName;
-
-            // 创建OSSClient实例。
-            OSSClient ossClient = new OSSClient(Global.getEndpoint(), Global.getAccessKeyId(), Global.getAccessKeySecret());
-
-            // 上传内容到指定的存储空间（bucketName）并保存为指定的文件名称（objectName）。
-            ossClient.putObject(Global.getBucketName(), objectName, inputStream);
-
-            // 关闭OSSClient。
-            ossClient.shutdown();
-
-            j.put("fileName", fileName);
-            j.put("newFileName", newFileName);
-            j.put("url", Global.getFilePath()+"/"+objectName);
-            j.setSuccess(true);
-            j.setErrorCode("-1");
-            j.setMsg("上传文件成功!");
-        } catch (Exception e) {
-            e.printStackTrace();
-            j.setSuccess(false);
-            j.setErrorCode("10001");
-            j.setMsg("数据异常!");
-        }
-        return j;
-    }
-
     /**
      * @Description 提交作业
      **/
     @ResponseBody
-    @RequestMapping(value= "/momo/saveHomework" , method = RequestMethod.POST)
-    public AjaxUserJson saveHomework(@RequestBody Map<String,String> params)  {
-        AjaxUserJson j = new AjaxUserJson();
+    @RequestMapping(value= "/momoLogin/saveHomework" , method = RequestMethod.POST)
+    public AjaxJson saveHomework(@RequestBody Map<String,String> params)  {
+        AjaxJson j = new AjaxJson();
+        User user=UserUtils.getUser();
         try {
-            j=systemService.checkUser(params.get("userid"),j);
-            //校验用户信息
-            if(!j.isSuccess()){
+            if(user==null||user.getId()==null||StringUtils.isEmpty(user.getId())){
+                j.setSuccess(false);
+                j.setErrorCode("10002");
+                j.setMsg("未获取到用户信息!");
                 return j;
             }
-            User user=j.getUser();
 
             if(params.get("id")==null||"".equals(params.get("id"))){
                 j.setSuccess(false);
@@ -639,8 +676,9 @@ public class momo {
                 userHomework.setFinishDate(new Date());
                 userHomeworkService.save(userHomework);
                 //学生积分加1
-                user.setScore(user.getScore()+1);
-                systemService.saveUser(user);
+                User student=userMapper.get(user.getId());
+                student.setScore(student.getScore()+1);
+                systemService.saveUser(student);
             }else{
                 //再次修改作业
                 userHomework.setFile(params.get("fileUrl"));
@@ -665,11 +703,10 @@ public class momo {
      * @Description 公共课程
      **/
     @ResponseBody
-    @RequestMapping(value= "/momo/publicCourse" , method = RequestMethod.POST)
-    public AjaxUserJson publicCourse(@RequestBody Map<String,String> params)  {
-        AjaxUserJson j = new AjaxUserJson();
+    @RequestMapping(value= "/momoLogin/publicCourse" , method = RequestMethod.POST)
+    public AjaxJson publicCourse(@RequestBody Map<String,String> params)  {
+        AjaxJson j = new AjaxJson();
         try {
-            String a = DictUtils.getDictLabel(params.get("type"), "bas_public_course_type", "");
             if(params.get("type")==null||"".equals(params.get("type"))
                     || "".equals(DictUtils.getDictLabel(params.get("type"),"bas_public_course_type",""))){
                 j.setSuccess(false);
@@ -726,9 +763,9 @@ public class momo {
      * @Description 作品排行
      **/
     @ResponseBody
-    @RequestMapping(value= "/momo/worksRanking" , method = RequestMethod.POST)
-    public AjaxUserJson worksRanking(@RequestBody Map<String,String> params)  {
-        AjaxUserJson j = new AjaxUserJson();
+    @RequestMapping(value= "/momoLogin/worksRanking" , method = RequestMethod.POST)
+    public AjaxJson worksRanking(@RequestBody Map<String,String> params)  {
+        AjaxJson j = new AjaxJson();
         //组装参数
         Statistics s=new Statistics();
         try {
@@ -785,9 +822,9 @@ public class momo {
      * @Description 作品列表
      **/
     @ResponseBody
-    @RequestMapping(value= "/momo/worksList" , method = RequestMethod.POST)
-    public AjaxUserJson worksList(@RequestBody Map<String,String> params)  {
-        AjaxUserJson j = new AjaxUserJson();
+    @RequestMapping(value= "/momoLogin/worksList" , method = RequestMethod.POST)
+    public AjaxJson worksList(@RequestBody Map<String,String> params)  {
+        AjaxJson j = new AjaxJson();
         try {
             UserHomework uh=new UserHomework();
             uh.setState("1,2");
@@ -855,9 +892,9 @@ public class momo {
      * @Description 广告管理
      **/
     @ResponseBody
-    @RequestMapping(value= "/momo/advertisement" , method = RequestMethod.POST)
-    public AjaxUserJson advertisement(@RequestBody Map<String,String> params)  {
-        AjaxUserJson j = new AjaxUserJson();
+    @RequestMapping(value= "/momoLogin/advertisement" , method = RequestMethod.POST)
+    public AjaxJson advertisement(@RequestBody Map<String,String> params)  {
+        AjaxJson j = new AjaxJson();
         try {
             if(params.get("isPage")==null||StringUtils.isEmpty(params.get("isPage").toString())){
                 params.put("isPage","0");
@@ -905,16 +942,17 @@ public class momo {
      * @Description 修改密码
      **/
     @ResponseBody
-    @RequestMapping(value= "/momo/updatePassword" , method = RequestMethod.POST)
-    public AjaxUserJson updatePassword(@RequestBody Map<String,String> params)  {
-        AjaxUserJson j = new AjaxUserJson();
+    @RequestMapping(value= "/momoLogin/updatePassword" , method = RequestMethod.POST)
+    public AjaxJson updatePassword(@RequestBody Map<String,String> params)  {
+        AjaxJson j = new AjaxJson();
+        User user=UserUtils.getUser();
         try {
-            j=systemService.checkUser(params.get("userid"),j);
-            //校验用户信息
-            if(!j.isSuccess()){
+            if(user==null||user.getId()==null||StringUtils.isEmpty(user.getId())){
+                j.setSuccess(false);
+                j.setErrorCode("10002");
+                j.setMsg("未获取到用户信息!");
                 return j;
             }
-            User user=j.getUser();
 
             if(params.get("password")==null||"".equals(params.get("password"))){
                 j.setSuccess(false);
@@ -937,6 +975,4 @@ public class momo {
         }
         return j;
     }
-
-
 }

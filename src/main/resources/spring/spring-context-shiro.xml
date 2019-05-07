@@ -35,9 +35,10 @@
 				/act/rest/service/model/** = perms[act:model:edit]
 				/act/rest/service/** = user
 				/ReportServer/** = user
-                /momo/login = anon
-                /momo/logout = anon
-                /momo/** = authc
+                /momoLogin/login = anon
+                /momoLogin/logout = anon
+                /momoLogin/** = authc
+                /momo/** = anon
 
 
             </value>

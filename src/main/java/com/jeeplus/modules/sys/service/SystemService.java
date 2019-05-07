@@ -4,6 +4,7 @@
 package com.jeeplus.modules.sys.service;
 
 import com.jeeplus.common.config.Global;
+import com.jeeplus.common.json.AjaxUserJson;
 import com.jeeplus.common.utils.CacheUtils;
 import com.jeeplus.common.utils.Encodes;
 import com.jeeplus.common.utils.StringUtils;
@@ -571,5 +572,28 @@ public class SystemService extends BaseService implements InitializingBean {
     }
 
     ///////////////// Synchronized to the Activiti end //////////////////
-	
+
+    public AjaxUserJson checkUser(Object userid, AjaxUserJson j){
+        if(userid==null||StringUtils.isEmpty(userid.toString())){
+            j.setSuccess(false);
+            j.setErrorCode("10002");
+            j.setMsg("无法获取用户信息!");
+            return j;
+        }
+        User user=userMapper.get(userid.toString());
+        if(user==null){
+            j.setSuccess(false);
+            j.setErrorCode("10002");
+            j.setMsg("无法获取用户信息!");
+            return j;
+        }
+        if(!"3".equals(user.getUserType())){
+            j.setSuccess(false);
+            j.setErrorCode("10003");
+            j.setMsg("无权限访问!");
+            return j;
+        }
+        j.setUser(user);
+        return j;
+    }
 }
