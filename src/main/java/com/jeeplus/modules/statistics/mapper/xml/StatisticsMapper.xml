@@ -47,10 +47,60 @@
 					ORDER BY ${page.orderBy}
 				</when>
 				<otherwise>
-					ORDER BY  cast( ifnull(uh.total,'0')   as   SIGNED   INTEGER)   desc
+					ORDER BY  cast( ifnull(a.score,'0')   as   SIGNED   INTEGER)   desc
 				</otherwise>
 			</choose>
 	</select>
+
+    <select id="worksRanking" resultType="Statistics" >
+        SELECT
+        ifnull(a.id,'') as "user.id",
+        ifnull(a.name,'') as "user.name",
+        ifnull(a.english_name,'') AS "user.englishName",
+        ifnull(a.score,'') AS "user.score",
+        ifnull(a.phone,'') AS "user.phone",
+        ifnull(a.mobile,'') AS "user.mobile",
+        ifnull(a.photo,'') AS "user.photo",
+        ifnull(so.id,'') as "office.id",
+        ifnull(so.name,'') as "office.name",
+        ifnull(uh.total,'0') as "homeworkFinishToal"
+        FROM
+        sys_user a
+        left join sys_user_office suo on a.id=suo.userid
+        left join sys_office so on suo.officeid=so.id
+        left join (
+        select
+        count(*) total
+        ,suh.userid
+        from sys_user_homework suh
+        left join homework h on suh.homeworkid=h.id
+        where suh.state in ('1','2')
+        <if test="homeworkType !=null and homeworkType != ''">
+            AND h.type =#{homeworkType}
+        </if>
+        group by suh.userid
+        ) uh on uh.userid=a.id
+        where a.user_type='3'
+        <if test="teacher !=null and teacher.id != null and teacher.id != ''">
+            and exists (
+            select 1 from sys_user_office tsuo where tsuo.userid=#{teacher.id} and tsuo.officeid=suo.officeid
+            )
+        </if>
+        <if test="office !=null and office.id != null and office.id != ''">
+            and suo.officeid=#{office.id}
+        </if>
+        <if test="office !=null and office.name != null and office.name != ''">
+            AND so.name like CONCAT('%', #{office.name}, '%')
+        </if>
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+                ORDER BY  cast( ifnull(uh.total,'0')   as   SIGNED   INTEGER)   desc
+            </otherwise>
+        </choose>
+    </select>
 
     <select id="homeworkStatistics" resultType="Statistics" >
         SELECT

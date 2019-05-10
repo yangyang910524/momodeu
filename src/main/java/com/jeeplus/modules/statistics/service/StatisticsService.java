@@ -34,6 +34,17 @@ public class StatisticsService extends CrudService<StatisticsMapper, Statistics>
         return statisticsMapper.scoreRankingByUser(entity);
     }
 
+    public Page<Statistics> worksRanking(Page<Statistics> page, Statistics entity) {
+        dataRuleFilter(entity);
+        entity.setPage(page);
+        page.setList(statisticsMapper.worksRanking(entity));
+        return page;
+    }
+
+    public List<Statistics> worksRanking(Statistics entity) {
+        return statisticsMapper.worksRanking(entity);
+    }
+
     public Page<Statistics> homeworkStatistics(Page<Statistics> page, Statistics entity) {
         dataRuleFilter(entity);
         entity.setPage(page);

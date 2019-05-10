@@ -757,13 +757,13 @@ public class momo {
                     p.setPageSize(Integer.valueOf(params.get("pageSize").toString()));
                 }
 
-                Page<Statistics> pages = statisticsService.scoreRankingByUser(p,s);
+                Page<Statistics> pages = statisticsService.worksRanking(p,s);
                 j.put("count",pages.getCount());
                 j.put("pageNo",pages.getPageNo());
                 j.put("pageSize",pages.getPageSize());
                 j.put("list",pages.getList());
             }else{
-                List<Statistics> list=statisticsService.scoreRankingByUser(s);
+                List<Statistics> list=statisticsService.worksRanking(s);
                 j.put("count",list.size());
                 j.put("list",list);
                 j.put("pageNo","");
