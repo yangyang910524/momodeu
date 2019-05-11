@@ -36,6 +36,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
@@ -539,8 +540,12 @@ public class momo {
      **/
     @ResponseBody
     @RequestMapping(value= "/momo/upload" , method = RequestMethod.POST)
-    public AjaxUserJson logout(@RequestParam("file") MultipartFile file,@RequestParam("userid") String userid)  {
+    public AjaxUserJson upload(@RequestParam("file") MultipartFile file,@RequestParam("userid") String userid)  {
         AjaxUserJson j = new AjaxUserJson();
+        CommonsMultipartFile cFile=null;
+        DiskFileItem fileItem=null;
+        InputStream inputStream =null;
+        OSSClient ossClient=null;
         try {
             j=systemService.checkUser(userid,j);
             //校验用户信息
@@ -556,9 +561,9 @@ public class momo {
             }
 
 
-            CommonsMultipartFile cFile = (CommonsMultipartFile) file;
-            DiskFileItem fileItem = (DiskFileItem) cFile.getFileItem();
-            InputStream inputStream = fileItem.getInputStream();
+            cFile = (CommonsMultipartFile) file;
+            fileItem = (DiskFileItem) cFile.getFileItem();
+            inputStream = fileItem.getInputStream();
             String fileName=file.getOriginalFilename();
             String suffix="";
             int dot = fileName.lastIndexOf('.');
@@ -573,13 +578,12 @@ public class momo {
             String objectName = "user_homework/"+user.getId()+"/"+ newFileName;
 
             // 创建OSSClient实例。
-            OSSClient ossClient = new OSSClient(Global.getEndpoint(), Global.getAccessKeyId(), Global.getAccessKeySecret());
+            ossClient = new OSSClient(Global.getEndpoint(), Global.getAccessKeyId(), Global.getAccessKeySecret());
 
             // 上传内容到指定的存储空间（bucketName）并保存为指定的文件名称（objectName）。
             ossClient.putObject(Global.getBucketName(), objectName, inputStream);
 
-            // 关闭OSSClient。
-            ossClient.shutdown();
+
 
             j.put("fileName", fileName);
             j.put("newFileName", newFileName);
@@ -592,6 +596,24 @@ public class momo {
             j.setSuccess(false);
             j.setErrorCode("10001");
             j.setMsg("数据异常!");
+        } finally {
+            try {
+            if(cFile!=null){
+                cFile=null;
+            }
+            if(fileItem!=null){
+                fileItem=null;
+            }
+            if(inputStream!=null){
+                inputStream.close();
+            }
+            if(ossClient!=null){
+                // 关闭OSSClient。
+                ossClient.shutdown();
+            }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         return j;
     }
