@@ -122,7 +122,7 @@ $(document).ready(function() {
                                var valueArray = value.split("|");
                                var labelArray = [];
                                for(var i =0 ; i<valueArray.length; i++){
-                                   labelArray[i] = "<a href='${ctx}/sys/file/download?source="+valueArray[i]+"' >下载材料</a>"
+                                   labelArray[i] = "<a href=\""+valueArray[i]+"\" url=\""+valueArray[i]+"\" target=\"_blank\">"+decodeURIComponent(valueArray[i].substring(valueArray[i].lastIndexOf("/")+1))+"</a>"
                                }
                                return labelArray.join(" ");
                            }

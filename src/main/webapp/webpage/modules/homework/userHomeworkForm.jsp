@@ -76,14 +76,14 @@
                 <div class="form-group">
                     <label class="col-sm-2 control-label">原视频：</label>
                     <div class="col-sm-10">
-                        <a href='${ctx}/sys/file/download?source=${userHomework.homework.data1}' >下载材料</a>
+                        <a href="${userHomework.homework.data1}" url="${userHomework.homework.data1}" target="_blank">播放视频</a>
                     </div>
                 </div>
-                <c:if test="${homework.type ne '1'}">
+                <c:if test="${homework.type eq '1'}">
                     <div class="form-group">
                         <label class="col-sm-2 control-label">配音视频：</label>
                         <div class="col-sm-10">
-                            <a href='${ctx}/sys/file/download?source=${userHomework.homework.data2}' >下载材料</a>
+                            <a href="${userHomework.homework.data2}" url="${userHomework.homework.data2}" target="_blank">播放视频</a>
                         </div>
                     </div>
                 </c:if>

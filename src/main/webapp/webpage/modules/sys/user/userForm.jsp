@@ -4,6 +4,7 @@
 <head>
 	<title>用户管理</title>
 	<meta name="decorator" content="ani"/>
+    <script src="${ctxStatic}/plugin/oss/aliyun-oss-sdk-4.4.4.min.js"></script>
 	<script type="text/javascript">
 	function save() {
 		//判断头像是否上传

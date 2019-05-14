@@ -742,7 +742,15 @@
          */
         getParent: function () {
             return top.getActiveTab()[0].contentWindow;
-        }
+        },
+        // ossFileUpload(){
+        //     var client = new OSS.Wrapper({
+        //         region:'oss-cn-beijing.aliyuncs.com',//你的oss地址 ，具体位置见下图
+        //         accessKeyId:'LTAIy1DroxAA5lYY',//你的ak
+        //         accessKeySecret:'KAB9PK1jk9s4NxJ3Q5bkhemy6DHSvf',//你的secret
+        //         bucket:'webmomofile'//你的oss名字
+        //     });
+        // }
 	}
 
 
