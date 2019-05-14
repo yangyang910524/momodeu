@@ -74,7 +74,7 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-2 control-label">原视频：</label>
+                    <label class="col-sm-2 control-label">原音视频：</label>
                     <div class="col-sm-10">
                         <a href="${userHomework.homework.data1}" url="${userHomework.homework.data1}" target="_blank">播放视频</a>
                     </div>
@@ -88,6 +88,12 @@
                     </div>
                 </c:if>
             <c:if test="${userHomework.state ne '0'or mode == 'edit'}">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">学生音频：</label>
+                    <div class="col-sm-10">
+                        <a href="${userHomework.file}" url="${userHomework.file}" target="_blank">播放音频</a>
+                    </div>
+                </div>
 				<div class="form-group">
 					<label class="col-sm-2 control-label">老师打分：</label>
 					<div class="col-sm-10">
