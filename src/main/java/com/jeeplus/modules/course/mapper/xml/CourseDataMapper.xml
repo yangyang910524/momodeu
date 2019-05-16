@@ -49,12 +49,12 @@
 			<if test="data != null and data != ''">
 				AND a.data = #{data}
 			</if>
-                    <if test="courseInfo != null  and courseInfo.id != null and courseInfo.id != ''">
-                        AND (b.id = #{courseInfo.id} OR b.parent_ids LIKE
-                        <if test="dbName == 'oracle'">'%,'||#{courseInfo.id}||',%')</if>
-                        <if test="dbName == 'mysql'">CONCAT('%,', #{courseInfo.id}, ',%'))</if>
-                        <if test="dbName == 'mssql'">'%'+#{courseInfo.id}+'%')</if>
-                    </if>
+            <if test="courseInfo != null  and courseInfo.id != null and courseInfo.id != ''">
+                AND (b.id = #{courseInfo.id} OR b.parent_ids LIKE
+                <if test="dbName == 'oracle'">'%,'||#{courseInfo.id}||',%')</if>
+                <if test="dbName == 'mysql'">CONCAT('%,', #{courseInfo.id}, ',%'))</if>
+                <if test="dbName == 'mssql'">'%'+#{courseInfo.id}+'%')</if>
+            </if>
 
             <if test="father != null  and father.name != null and father.name != ''">
                 AND p.name LIKE CONCAT('%', #{father.name}, '%')

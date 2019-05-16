@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jeeplus.modules.coursedataplayrecord.mapper.CourseDataPlayRecordMapper">
+    
+	<sql id="courseDataPlayRecordColumns">
+		ifnull(a.id,'') AS "id",
+		ifnull(a.create_by,'') AS "createBy.id",
+		ifnull(su.name,'') AS "createBy.name",
+		ifnull(su.english_name,'') AS "createBy.englishName",
+		ifnull(su.phone,'') AS "createBy.phone",
+		a.create_date AS "createDate",
+		ifnull(a.update_by,'') AS "updateBy.id",
+		a.update_date AS "updateDate",
+		ifnull(a.remarks,'') AS "remarks",
+		ifnull(a.del_flag,'') AS "delFlag",
+
+		ifnull(cd.id,'') AS "courseData.id",
+		ifnull(cd.create_by,'') AS "courseData.createBy.id",
+		cd.create_date AS "courseData.createDate",
+		ifnull(cd.update_by,'') AS "courseData.updateBy.id",
+		cd.update_date AS "courseData.updateDate",
+		ifnull(cd.remarks,'') AS "courseData.remarks",
+		ifnull(cd.del_flag,'') AS "courseData.delFlag",
+		ifnull(cd.data,'') AS "courseData.data",
+		ifnull(b.id,'') AS "courseData.courseInfo.id",
+		ifnull(b.name,'') AS "courseData.courseInfo.name",
+		ifnull(b.title_type,'') AS "courseData.courseInfo.titleType",
+
+		ifnull(p.id,'') AS "courseData.father.id",
+		ifnull(p.name,'') AS "courseData.father.name",
+		ifnull(p.cover,'') AS "courseData.father.cover",
+		ifnull(p.level,'') AS "courseData.father.level",
+		ifnull(p.state,'') AS "courseData.father.state",
+		ifnull(p.title_type,'') AS "fcourseData.ather.titleType",
+		ifnull(p.sort,'') AS "courseData.father.sort"
+	</sql>
+	
+	<sql id="courseDataPlayRecordJoins">
+		left join course_data cd on cd.id=a.course_data_id
+		LEFT JOIN course_info b ON b.id = cd.courseid
+		LEFT JOIN course_info p ON b.parent_id = p.id
+		left join sys_user su on su.id=a.create_by
+	</sql>
+	
+    
+	<select id="get" resultType="CourseDataPlayRecord" >
+		SELECT 
+			<include refid="courseDataPlayRecordColumns"/>
+		FROM course_data_play_record a
+		<include refid="courseDataPlayRecordJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CourseDataPlayRecord" >
+		SELECT 
+			<include refid="courseDataPlayRecordColumns"/>
+		FROM course_data_play_record a
+		<include refid="courseDataPlayRecordJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			${dataScope}
+			<if test="courseData!=null and courseData.id != null and courseData.id != ''">
+				AND a.course_data_id = #{courseData.id}
+			</if>
+
+            <if test="createBy!=null and createBy.id != null and createBy.id != ''">
+                AND a.create_by = #{createBy.id}
+            </if>
+            <if test="createBy!=null and createBy.name != null and createBy.name != ''">
+                AND su.name like CONCAT('%', #{createBy.name}, '%')
+            </if>
+
+            <if test="courseData!=null and courseData.father != null  and courseData.father.name != null and courseData.father.name != ''">
+                AND p.name LIKE CONCAT('%', #{courseData.father.name}, '%')
+            </if>
+
+            <if test="courseData!=null and courseData.courseInfo != null  and courseData.courseInfo.name != null and courseData.courseInfo.name != ''">
+                AND b.name LIKE CONCAT('%', #{courseData.courseInfo.name}, '%')
+            </if>
+
+            <if test="courseData!=null and courseData.father != null  and courseData.father.level != null and courseData.father.level != ''">
+                AND p.level = #{courseData.father.level}
+            </if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CourseDataPlayRecord" >
+		SELECT 
+			<include refid="courseDataPlayRecordColumns"/>
+		FROM course_data_play_record a
+		<include refid="courseDataPlayRecordJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			${dataScope}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO course_data_play_record(
+			id,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,
+			course_data_id
+		) VALUES (
+			#{id},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag},
+			#{courseData.id}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE course_data_play_record SET 	
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			course_data_id = #{courseData.id}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!--物理删除-->
+	<update id="delete">
+		DELETE FROM course_data_play_record
+		WHERE id = #{id}
+	</update>
+	
+	<!--逻辑删除-->
+	<update id="deleteByLogic">
+		UPDATE course_data_play_record SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!-- 根据实体名称和字段名称和字段值获取唯一记录 -->
+	<select id="findUniqueByProperty" resultType="CourseDataPlayRecord" statementType="STATEMENT">
+		select * FROM course_data_play_record  where ${propertyName} = '${value}'
+	</select>
+	
+</mapper>

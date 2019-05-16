@@ -8,7 +8,11 @@ import com.jeeplus.common.utils.StringUtils;
 import com.jeeplus.core.persistence.Page;
 import com.jeeplus.modules.advertisement.entity.Advertisement;
 import com.jeeplus.modules.advertisement.service.AdvertisementService;
+import com.jeeplus.modules.course.entity.CourseData;
 import com.jeeplus.modules.course.entity.CourseInfo;
+import com.jeeplus.modules.course.service.CourseDataService;
+import com.jeeplus.modules.coursedataplayrecord.entity.CourseDataPlayRecord;
+import com.jeeplus.modules.coursedataplayrecord.service.CourseDataPlayRecordService;
 import com.jeeplus.modules.homework.entity.Homework;
 import com.jeeplus.modules.notice.entity.Notice;
 import com.jeeplus.modules.notice.service.NoticeService;
@@ -78,6 +82,10 @@ public class momo {
     private ScoreRecordService scoreRecordService;
     @Resource
     private SignUpOnLineService signUpOnLineService;
+    @Resource
+    private CourseDataPlayRecordService courseDataPlayRecordService;
+    @Resource
+    private CourseDataService courseDataService;
 
     /**
      * @Description 登录
@@ -1071,6 +1079,108 @@ public class momo {
             j.setErrorCode("-1");
             j.setMsg("查询成功!");
             j.setUser(user);
+        } catch (Exception e) {
+            e.printStackTrace();
+            j.setSuccess(false);
+            j.setErrorCode("10001");
+            j.setMsg("数据异常!");
+        }
+        return j;
+    }
+
+    /**
+     * @Description 提交课程内容播放记录
+     **/
+    @ResponseBody
+    @RequestMapping(value= "/momo/saveCourseDataPlayRecord" , method = RequestMethod.POST)
+    public AjaxUserJson saveCourseDataPlayRecord(@RequestBody Map<String,String> params)  {
+        AjaxUserJson j = new AjaxUserJson();
+        try {
+            j=systemService.checkUser(params.get("userid"),j);
+            //校验用户信息
+            if(!j.isSuccess()){
+                return j;
+            }
+            User user=j.getUser();
+
+            if(params.get("courseDataId")==null||"".equals(params.get("courseDataId"))){
+                j.setSuccess(false);
+                j.setErrorCode("10002");
+                j.setMsg("无法获取课程内容!");
+                return j;
+            }
+            CourseDataPlayRecord courseDataPlayRecord=new CourseDataPlayRecord();
+            CourseData courseData = courseDataService.get(params.get("courseDataId"));
+            if(courseData==null){
+                j.setSuccess(false);
+                j.setErrorCode("10002");
+                j.setMsg("无法获取课程内容!");
+                return j;
+            }
+            courseDataPlayRecord.setCourseData(courseData);
+            courseDataPlayRecord.setCreateBy(user);
+            courseDataPlayRecord.setUpdateBy(user);
+            courseDataPlayRecordService.save(courseDataPlayRecord);
+            j.setSuccess(true);
+            j.setErrorCode("-1");
+            j.setMsg("操作成功!");
+            j.setUser(user);
+        } catch (Exception e) {
+            e.printStackTrace();
+            j.setSuccess(false);
+            j.setErrorCode("10001");
+            j.setMsg("数据异常!");
+        }
+        return j;
+    }
+
+    /**
+     * @Description 积分兑换列表
+     **/
+    @ResponseBody
+    @RequestMapping(value= "/momo/courseDataPlayRecordList" , method = RequestMethod.POST)
+    public AjaxUserJson courseDataPlayRecordList(@RequestBody Map<String,String> params)  {
+        AjaxUserJson j = new AjaxUserJson();
+        try {
+            j=systemService.checkUser(params.get("userid"),j);
+            //校验用户信息
+            if(!j.isSuccess()){
+                return j;
+            }
+            User user=j.getUser();
+            if(params.get("isPage")==null||StringUtils.isEmpty(params.get("isPage").toString())){
+                params.put("isPage","0");
+            }
+
+            CourseDataPlayRecord courseDataPlayRecord=new CourseDataPlayRecord();
+            courseDataPlayRecord.setCreateBy(user);
+            if("1".equals(params.get("isPage").toString())){
+                Page<CourseDataPlayRecord> p=new Page<CourseDataPlayRecord>();
+                if(params.get("pageNo")==null||StringUtils.isEmpty(params.get("pageNo").toString())){
+                    p.setPageNo(1);
+                }else{
+                    p.setPageNo(Integer.valueOf(params.get("pageNo").toString()));
+                }
+                if(params.get("pageSize")==null||StringUtils.isEmpty(params.get("pageSize").toString())){
+                    p.setPageSize(10);
+                }else{
+                    p.setPageSize(Integer.valueOf(params.get("pageSize").toString()));
+                }
+                Page<CourseDataPlayRecord> pages = courseDataPlayRecordService.findPage(p,courseDataPlayRecord);
+                j.put("count",pages.getCount());
+                j.put("pageNo",pages.getPageNo());
+                j.put("pageSize",pages.getPageSize());
+                j.put("list",pages.getList());
+            }else{
+                List<CourseDataPlayRecord> list=courseDataPlayRecordService.findList(courseDataPlayRecord);
+                j.put("count",list.size());
+                j.put("list",list);
+                j.put("pageNo","");
+                j.put("pageSize","");
+            }
+            j.setSuccess(true);
+            j.setErrorCode("-1");
+            j.setMsg("查询成功!");
         } catch (Exception e) {
             e.printStackTrace();
             j.setSuccess(false);

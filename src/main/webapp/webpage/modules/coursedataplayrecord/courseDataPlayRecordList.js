@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <script>
 $(document).ready(function() {
-	$('#signUpOnLineTable').bootstrapTable({
+	$('#courseDataPlayRecordTable').bootstrapTable({
 		 
 		  //请求方法
                method: 'post',
@@ -37,7 +37,7 @@ $(document).ready(function() {
                //可供选择的每页的行数（*）    
                pageList: [10, 25, 50, 100],
                //这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据  
-               url: "${ctx}/signuponline/signUpOnLine/data",
+               url: "${ctx}/coursedataplayrecord/courseDataPlayRecord/data",
                //默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
                //queryParamsType:'',   
                ////查询参数,每次调用是会带上这个参数，可自定义                         
@@ -61,9 +61,9 @@ $(document).ready(function() {
                    } else if($el.data("item") == "delete"){
                         jp.confirm('确认要删除该信息记录吗？', function(){
                        	jp.loading();
-                       	jp.get("${ctx}/signuponline/signUpOnLine/delete?id="+row.id, function(data){
+                       	jp.get("${ctx}/coursedataplayrecord/courseDataPlayRecord/delete?id="+row.id, function(data){
                    	  		if(data.success){
-                   	  			$('#signUpOnLineTable').bootstrapTable('refresh');
+                   	  			$('#courseDataPlayRecordTable').bootstrapTable('refresh');
                    	  			jp.success(data.msg);
                    	  		}else{
                    	  			jp.error(data.msg);
@@ -81,65 +81,52 @@ $(document).ready(function() {
 			$("#search-collapse").slideToggle();
 		},
                columns: [{
-		        checkbox: true
-		       
-		    }
+                       field: 'courseData.father.name',
+                       title: '课程名称',
+                       sortable: false
 
-			,{
-		        field: 'name',
-		        title: '姓名',
-		        sortable: true,
-		        sortName: 'name'
-               ,formatter:function(value, row , index){
-                   value = jp.unescapeHTML(value);
-                   <c:choose>
-                   <c:when test="${fns:hasPermission('signuponline:signUpOnLine:edit')}">
-                   return "<a href='javascript:edit(\""+row.id+"\")'>"+value+"</a>";
-                   </c:when>
-                   <c:when test="${fns:hasPermission('signuponline:signUpOnLine:view')}">
-                   return "<a href='javascript:view(\""+row.id+"\")'>"+value+"</a>";
-                   </c:when>
-                   <c:otherwise>
-                   return value;
-                   </c:otherwise>
-                   </c:choose>
-               }
-		    }
-			,{
-		        field: 'old',
-		        title: '年龄',
-		        sortable: true,
-		        sortName: 'old'
-		       
-		    }
-			,{
-		        field: 'sex',
-		        title: '性别',
-		        sortable: true,
-		        sortName: 'sex',
-		        formatter:function(value, row , index){
-		        	return jp.getDictLabel(${fns:toJson(fns:getDictList('sex'))}, value, "-");
-		        }
-		       
-		    }
-			,{
-		        field: 'phone',
-		        title: '联系电话',
-		        sortable: true,
-		        sortName: 'phone'
-		       
-		    }
-			,{
-		        field: 'address',
-		        title: '地址',
-		        sortable: true,
-		        sortName: 'address'
-		       
-		    },{
-                       field: 'remarks',
-                       title: '备注信息',
-                       sortable: true,
-                       sortName: 'remarks'
+                   },{
+                       field: 'courseData.courseInfo.name',
+                       title: '章节名称',
+                       sortable: false
+                   },{
+                       field: 'courseData.father.level',
+                       title: '课程级别',
+                       sortable: false,
+                       formatter:function(value, row , index){
+                           return jp.getDictLabel(${fns:toJson(fns:getDictList('bae_course_level'))}, value, "-");
+                       }
+
+                   }
+                   ,{
+                       field: 'courseData.data',
+                       title: '资料',
+                       sortable: false,
+                       formatter:function(value, row , index){
+                           if(value==null||value==undefined||value==""||value=="undefined"){
+                               return "-";
+                           }else{
+                               var valueArray = value.split("|");
+                               var labelArray = [];
+                               for(var i =0 ; i<valueArray.length; i++){
+                                   labelArray[i] = "<a href=\""+valueArray[i]+"\" url=\""+valueArray[i]+"\" target=\"_blank\">"+decodeURIComponent(valueArray[i].substring(valueArray[i].lastIndexOf("/")+1))+"</a>"
+                               }
+                               return labelArray.join(" ");
+                           }
+                       }
+
+                   },{
+                       field: 'createBy.name',
+                       title: '学生姓名',
+                       sortable: false
+                   },{
+                       field: 'createBy.englishName',
+                       title: '学生英文名',
+                       sortable: false
+                   },{
+                       field: 'createDate',
+                       title: '播放时间',
+                       sortable: false
                    }
 		     ]
 		
@@ -149,13 +136,13 @@ $(document).ready(function() {
 	  if(navigator.userAgent.match(/(iPhone|iPod|Android|ios)/i)){//如果是移动端
 
 		 
-		  $('#signUpOnLineTable').bootstrapTable("toggleView");
+		  $('#courseDataPlayRecordTable').bootstrapTable("toggleView");
 		}
 	  
-	  $('#signUpOnLineTable').on('check.bs.table uncheck.bs.table load-success.bs.table ' +
+	  $('#courseDataPlayRecordTable').on('check.bs.table uncheck.bs.table load-success.bs.table ' +
                 'check-all.bs.table uncheck-all.bs.table', function () {
-            $('#remove').prop('disabled', ! $('#signUpOnLineTable').bootstrapTable('getSelections').length);
-            $('#view,#edit').prop('disabled', $('#signUpOnLineTable').bootstrapTable('getSelections').length!=1);
+            $('#remove').prop('disabled', ! $('#courseDataPlayRecordTable').bootstrapTable('getSelections').length);
+            $('#view,#edit').prop('disabled', $('#courseDataPlayRecordTable').bootstrapTable('getSelections').length!=1);
         });
 		  
 		$("#btnImport").click(function(){
@@ -167,11 +154,11 @@ $(document).ready(function() {
 			    content: "${ctx}/tag/importExcel" ,
 			    btn: ['下载模板','确定', '关闭'],
 				    btn1: function(index, layero){
-					 jp.downloadFile('${ctx}/signuponline/signUpOnLine/import/template');
+					 jp.downloadFile('${ctx}/coursedataplayrecord/courseDataPlayRecord/import/template');
 				  },
 			    btn2: function(index, layero){
 				        var iframeWin = layero.find('iframe')[0]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
-						iframeWin.contentWindow.importExcel('${ctx}/signuponline/signUpOnLine/import', function (data) {
+						iframeWin.contentWindow.importExcel('${ctx}/coursedataplayrecord/courseDataPlayRecord/import', function (data) {
 							if(data.success){
 								jp.success(data.msg);
 								refresh();
@@ -194,8 +181,8 @@ $(document).ready(function() {
 	        var searchParam = $("#searchForm").serializeJSON();
 	        searchParam.pageNo = 1;
 	        searchParam.pageSize = -1;
-            var sortName = $('#signUpOnLineTable').bootstrapTable("getOptions", "none").sortName;
-            var sortOrder = $('#signUpOnLineTable').bootstrapTable("getOptions", "none").sortOrder;
+            var sortName = $('#courseDataPlayRecordTable').bootstrapTable("getOptions", "none").sortName;
+            var sortOrder = $('#courseDataPlayRecordTable').bootstrapTable("getOptions", "none").sortOrder;
             var values = "";
             for(var key in searchParam){
                 values = values + key + "=" + searchParam[key] + "&";
@@ -204,26 +191,26 @@ $(document).ready(function() {
                 values = values + "orderBy=" + sortName + " "+sortOrder;
             }
 
-			jp.downloadFile('${ctx}/signuponline/signUpOnLine/export?'+values);
+			jp.downloadFile('${ctx}/coursedataplayrecord/courseDataPlayRecord/export?'+values);
 	  })
 
 		    
 	  $("#search").click("click", function() {// 绑定查询按扭
-		  $('#signUpOnLineTable').bootstrapTable('refresh');
+		  $('#courseDataPlayRecordTable').bootstrapTable('refresh');
 		});
 	 
 	 $("#reset").click("click", function() {// 绑定查询按扭
 		  $("#searchForm  input").val("");
 		  $("#searchForm  select").val("");
 		  $("#searchForm  .select-item").html("");
-		  $('#signUpOnLineTable').bootstrapTable('refresh');
+		  $('#courseDataPlayRecordTable').bootstrapTable('refresh');
 		});
 		
 		
 	});
 		
   function getIdSelections() {
-        return $.map($("#signUpOnLineTable").bootstrapTable('getSelections'), function (row) {
+        return $.map($("#courseDataPlayRecordTable").bootstrapTable('getSelections'), function (row) {
             return row.id
         });
     }
@@ -232,9 +219,9 @@ $(document).ready(function() {
 
 		jp.confirm('确认要删除该信息记录吗？', function(){
 			jp.loading();  	
-			jp.get("${ctx}/signuponline/signUpOnLine/deleteAll?ids=" + getIdSelections(), function(data){
+			jp.get("${ctx}/coursedataplayrecord/courseDataPlayRecord/deleteAll?ids=" + getIdSelections(), function(data){
          	  		if(data.success){
-         	  			$('#signUpOnLineTable').bootstrapTable('refresh');
+         	  			$('#courseDataPlayRecordTable').bootstrapTable('refresh');
          	  			jp.success(data.msg);
          	  		}else{
          	  			jp.error(data.msg);
@@ -244,24 +231,24 @@ $(document).ready(function() {
 		})
   }
   function refresh(){
-  	$('#signUpOnLineTable').bootstrapTable('refresh');
+  	$('#courseDataPlayRecordTable').bootstrapTable('refresh');
   }
   function add(){
-		jp.go("${ctx}/signuponline/signUpOnLine/form/add");
+		jp.go("${ctx}/coursedataplayrecord/courseDataPlayRecord/form/add");
 	}
 
   function edit(id){
 	  if(id == undefined){
 		  id = getIdSelections();
 	  }
-	  jp.go("${ctx}/signuponline/signUpOnLine/form/edit?id=" + id);
+	  jp.go("${ctx}/coursedataplayrecord/courseDataPlayRecord/form/edit?id=" + id);
   }
 
   function view(id) {
       if(id == undefined){
           id = getIdSelections();
       }
-      jp.go("${ctx}/signuponline/signUpOnLine/form/view?id=" + id);
+      jp.go("${ctx}/coursedataplayrecord/courseDataPlayRecord/form/view?id=" + id);
   }
   
 </script>

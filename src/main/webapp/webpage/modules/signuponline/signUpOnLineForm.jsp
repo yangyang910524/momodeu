@@ -2,7 +2,7 @@
 <%@ include file="/webpage/include/taglib.jsp"%>
 <html>
 <head>
-	<title>操作信息管理</title>
+	<title>在线注册管理</title>
 	<meta name="decorator" content="ani"/>
 	<script type="text/javascript">
 
