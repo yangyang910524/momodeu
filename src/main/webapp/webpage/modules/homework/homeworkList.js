@@ -141,6 +141,7 @@ $(document).ready(function() {
                         }
                         return labelArray.join(" ");
 					}
+                    //return "<a onclick='playVideo(\""+value+"\")'>播放（音频）视频</a>";
 		        }
 		       
 		    }
@@ -309,5 +310,5 @@ $(document).ready(function() {
       }
       jp.go("${ctx}/homework/homework/form/view?id=" + id);
   }
-  
+
 </script>
