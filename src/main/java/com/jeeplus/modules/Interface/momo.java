@@ -16,6 +16,10 @@ import com.jeeplus.modules.publiccours.entity.PublicCourse;
 import com.jeeplus.modules.publiccours.service.PublicCourseService;
 import com.jeeplus.modules.scoreexchange.entity.ScoreExchange;
 import com.jeeplus.modules.scoreexchange.service.ScoreExchangeService;
+import com.jeeplus.modules.scorerecord.entity.ScoreRecord;
+import com.jeeplus.modules.scorerecord.service.ScoreRecordService;
+import com.jeeplus.modules.signuponline.entity.SignUpOnLine;
+import com.jeeplus.modules.signuponline.service.SignUpOnLineService;
 import com.jeeplus.modules.statistics.entity.Statistics;
 import com.jeeplus.modules.statistics.service.StatisticsService;
 import com.jeeplus.modules.sys.entity.Classes;
@@ -70,6 +74,10 @@ public class momo {
     private UserMapper userMapper;
     @Resource
     private PublicCourseService publicCourseService;
+    @Resource
+    private ScoreRecordService scoreRecordService;
+    @Resource
+    private SignUpOnLineService signUpOnLineService;
 
     /**
      * @Description 登录
@@ -661,8 +669,20 @@ public class momo {
                 userHomework.setFinishDate(new Date());
                 userHomeworkService.save(userHomework);
                 //学生积分加1
-                user.setScore(user.getScore()+1);
+                int oldScore=user.getScore();
+                user.setScore(oldScore+1);
                 systemService.saveUser(user);
+
+                //保存积分修改记录
+                ScoreRecord scoreRecord=new ScoreRecord();
+                scoreRecord.setUser(user);
+                scoreRecord.setOldScore(String.valueOf(oldScore));
+                scoreRecord.setNewScore(String.valueOf(user.getScore()));
+                User operator=userMapper.get("1");
+                scoreRecord.setCreateBy(operator);
+                scoreRecord.setUpdateBy(operator);
+                scoreRecord.setUser(operator);
+                scoreRecordService.save(scoreRecord);
             }else{
                 //再次修改作业
                 userHomework.setFile(params.get("fileUrl"));
@@ -960,5 +980,103 @@ public class momo {
         return j;
     }
 
+    /**
+     * @Description 报名接口
+     **/
+    @ResponseBody
+    @RequestMapping(value= "/momo/signUpOnLine" , method = RequestMethod.POST)
+    public AjaxUserJson signUpOnLine(@RequestBody Map<String,String> params)  {
+        AjaxUserJson j = new AjaxUserJson();
+        try {
+            SignUpOnLine signUpOnLine=new SignUpOnLine();
+            signUpOnLine.setName(params.get("name"));
+            signUpOnLine.setOld(params.get("old"));
+            signUpOnLine.setSex(params.get("sex"));
+            signUpOnLine.setPhone(params.get("phone"));
+            signUpOnLine.setAddress(params.get("address"));
+            signUpOnLineService.save(signUpOnLine);
+            j.setSuccess(true);
+            j.setErrorCode("-1");
+            j.setMsg("操作成功!");
+        } catch (Exception e) {
+            e.printStackTrace();
+            j.setSuccess(false);
+            j.setErrorCode("10001");
+            j.setMsg("数据异常!");
+        }
+        return j;
+    }
 
+    /**
+     * @Description 修改头像
+     **/
+    @ResponseBody
+    @RequestMapping(value= "/momo/updatePhoto" , method = RequestMethod.POST)
+    public AjaxUserJson updatePhoto(@RequestBody Map<String,String> params)  {
+        AjaxUserJson j = new AjaxUserJson();
+        try {
+            j=systemService.checkUser(params.get("userid"),j);
+            //校验用户信息
+            if(!j.isSuccess()){
+                return j;
+            }
+            User user=j.getUser();
+
+            if(params.get("photo")==null||"".equals(params.get("photo"))){
+                j.setSuccess(false);
+                j.setErrorCode("10002");
+                j.setMsg("照片不能为空!");
+                return j;
+            }
+
+            user.setPhoto(params.get("photo"));
+            systemService.saveUser(user);
+            user=userMapper.get(params.get("userid"));
+            j.setSuccess(true);
+            j.setErrorCode("-1");
+            j.setMsg("操作成功!");
+            j.setUser(user);
+        } catch (Exception e) {
+            e.printStackTrace();
+            j.setSuccess(false);
+            j.setErrorCode("10001");
+            j.setMsg("数据异常!");
+        }
+        return j;
+    }
+
+    /**
+     * @Description 根据id获取用户信息
+     **/
+    @ResponseBody
+    @RequestMapping(value= "/momo/getUserByid" , method = RequestMethod.POST)
+    public AjaxUserJson getUserByid(@RequestBody Map<String,String> params)  {
+        AjaxUserJson j = new AjaxUserJson();
+        try {
+            if(params.get("userid")==null||StringUtils.isEmpty(params.get("userid").toString())){
+                j.setSuccess(false);
+                j.setErrorCode("10002");
+                j.setMsg("无法获取用户信息!");
+                return j;
+            }
+
+            User user = userMapper.get(params.get("userid"));
+            if(user==null){
+                j.setSuccess(false);
+                j.setErrorCode("10003");
+                j.setMsg("用户不存在!");
+                return j;
+            }
+            j.setSuccess(true);
+            j.setErrorCode("-1");
+            j.setMsg("查询成功!");
+            j.setUser(user);
+        } catch (Exception e) {
+            e.printStackTrace();
+            j.setSuccess(false);
+            j.setErrorCode("10001");
+            j.setMsg("数据异常!");
+        }
+        return j;
+    }
 }
