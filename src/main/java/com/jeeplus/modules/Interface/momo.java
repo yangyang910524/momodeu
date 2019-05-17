@@ -373,6 +373,7 @@ public class momo {
             CourseInfo ci=new CourseInfo();
             ci.setState("1");
             ci.setLevel(params.get("level"));
+            ci.setId(params.get("couresid"));
             co.setFather(ci);
 
             if(params.get("isPage")==null||StringUtils.isEmpty(params.get("isPage").toString())){

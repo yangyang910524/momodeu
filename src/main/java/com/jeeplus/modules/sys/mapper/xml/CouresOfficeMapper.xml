@@ -14,10 +14,13 @@
         ifnull(nr.data,'') AS "courseData.data",
         ifnull(nr.remarks,'') AS "courseData.remarks",
 
+        ifnull(zj.id,'') AS "courseInfo.id",
 		ifnull(zj.name,'') AS "courseInfo.name",
 		ifnull(zj.sort,'') AS "courseInfo.sort",
 		ifnull(zj.title_type,'') AS "courseInfo.titleType",
 		ifnull(zj.remarks,'') AS "courseInfo.remarks",
+
+		ifnull(kc.id,'') AS "father.id",
 		ifnull(kc.name,'') AS "father.name",
 		ifnull(kc.cover,'') AS "father.cover",
 		ifnull(kc.level,'') AS "father.level",
@@ -73,6 +76,9 @@
                 AND kc.state =#{father.state}
             </if>
 
+            <if test="father != null  and father.id != null and father.id != ''">
+                AND kc.id = #{father.id}
+            </if>
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
