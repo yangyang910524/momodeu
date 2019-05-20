@@ -180,6 +180,9 @@
             <if test="courseLevel != null and courseLevel != ''">
                 AND a.course_level = #{courseLevel}
             </if>
+            <if test="state != null and state != ''">
+                AND a.state = #{state}
+            </if>
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">

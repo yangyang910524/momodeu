@@ -76,14 +76,14 @@
                 <div class="form-group">
                     <label class="col-sm-2 control-label">原音视频：</label>
                     <div class="col-sm-10">
-                        <a onclick="jp.playVideo(${userHomework.homework.data1})" >播放视频</a>
+                        <a onclick="jp.playVideo('${userHomework.homework.data1}')" >播放视频</a>
                     </div>
                 </div>
-                <c:if test="${homework.type eq '1'}">
+                <c:if test="${userHomework.homework.type eq '1'}">
                     <div class="form-group">
                         <label class="col-sm-2 control-label">配音视频：</label>
                         <div class="col-sm-10">
-                            <a onclick="jp.playVideo(${userHomework.homework.data2})">播放视频</a>
+                            <a onclick="jp.playVideo('${userHomework.homework.data2}')">播放视频</a>
                         </div>
                     </div>
                 </c:if>
@@ -91,7 +91,7 @@
                 <div class="form-group">
                     <label class="col-sm-2 control-label">学生音频：</label>
                     <div class="col-sm-10">
-                        <a onclick="jp.playVideo(${userHomework.file})">播放音频</a>
+                        <a onclick="jp.playVideo('${userHomework.file}')">播放音频</a>
                     </div>
                 </div>
 				<div class="form-group">

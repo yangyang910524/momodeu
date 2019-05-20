@@ -146,6 +146,7 @@ public class HomeworkController extends BaseController {
                 homeworkService.delete(homeworkService.get(id));
             }
 		}
+        j.setSuccess(true);
 		j.setMsg("删除作业信息成功");
 		return j;
 	}
@@ -244,6 +245,7 @@ public class HomeworkController extends BaseController {
 	@ResponseBody
 	@RequestMapping(value = "homeworkList")
 	public Map<String, Object> homeworkList(Homework homework, HttpServletRequest request, HttpServletResponse response, Model model) {
+        homework.setState("1");
 		Page<Homework> page = homeworkService.findHomework(new Page<Homework>(request, response), homework);
 		return getBootstrapData(page);
 	}

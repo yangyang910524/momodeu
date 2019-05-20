@@ -105,7 +105,12 @@
                     $("#search-collapse").slideToggle();
                 },
                 columns: [{
-                    checkbox: true
+                    field: 'id',
+                    title: '序号',
+                    sortable: false
+                    ,formatter:function(value, row , index){
+                        return index+1;
+                    }
 
                 },{
                     field: 'office.name',

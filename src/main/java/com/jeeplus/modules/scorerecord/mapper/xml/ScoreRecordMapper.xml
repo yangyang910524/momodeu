@@ -18,8 +18,8 @@
 	</sql>
 	
 	<sql id="scoreRecordJoins">
-        left join sys_user stu on stu.id=a.a.user
-		left join sys_user opt on opt.id=a.a.create_by
+        left join sys_user stu on stu.id=a.user
+		left join sys_user opt on opt.id=a.create_by
 	</sql>
 	
     
