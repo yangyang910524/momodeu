@@ -115,8 +115,15 @@ public class CourseDataController extends BaseController {
 	@RequestMapping(value = "delete")
 	public AjaxJson delete(CourseData courseData) {
 		AjaxJson j = new AjaxJson();
-		courseDataService.delete(courseData);
-		j.setMsg("删除课程内容成功");
+		if("0".equals(courseData.getFather().getState())){
+            courseDataService.delete(courseData);
+            j.setSuccess(true);
+            j.setMsg("删除课程内容成功");
+        }else{
+		    j.setSuccess(false);
+            j.setMsg("已发布课程不容许删除课程内容");
+        }
+
 		return j;
 	}
 	
@@ -129,8 +136,12 @@ public class CourseDataController extends BaseController {
 	public AjaxJson deleteAll(String ids) {
 		AjaxJson j = new AjaxJson();
 		String idArray[] =ids.split(",");
+        CourseData temp=null;
 		for(String id : idArray){
-			courseDataService.delete(courseDataService.get(id));
+            temp = courseDataService.get(id);
+            if("0".equals(temp.getFather().getState())){
+                courseDataService.delete(temp);
+            }
 		}
 		j.setMsg("删除课程内容成功");
 		return j;

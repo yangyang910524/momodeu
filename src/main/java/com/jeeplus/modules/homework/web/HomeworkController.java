@@ -118,7 +118,14 @@ public class HomeworkController extends BaseController {
 	@RequestMapping(value = "delete")
 	public AjaxJson delete(Homework homework) {
 		AjaxJson j = new AjaxJson();
-		homeworkService.delete(homework);
+        if("0".equals(homework.getState())){
+            homeworkService.delete(homework);
+            j.setSuccess(true);
+            j.setMsg("删除课程内容成功");
+        }else{
+            j.setSuccess(false);
+            j.setMsg("已发布作业不容许删除");
+        }
 		j.setMsg("删除作业信息成功");
 		return j;
 	}
@@ -132,8 +139,12 @@ public class HomeworkController extends BaseController {
 	public AjaxJson deleteAll(String ids) {
 		AjaxJson j = new AjaxJson();
 		String idArray[] =ids.split(",");
+		Homework temp=null;
 		for(String id : idArray){
-			homeworkService.delete(homeworkService.get(id));
+            temp=homeworkService.get(id);
+            if("0".equals(temp.getState())){
+                homeworkService.delete(homeworkService.get(id));
+            }
 		}
 		j.setMsg("删除作业信息成功");
 		return j;
@@ -237,4 +248,24 @@ public class HomeworkController extends BaseController {
 		return getBootstrapData(page);
 	}
 
+    /**
+     * 修改状态
+     */
+    @ResponseBody
+    @RequestMapping(value = "updateState")
+    public AjaxJson updateState(Homework homework, Model model) throws Exception{
+        AjaxJson j = new AjaxJson();
+        if("0".equals(homework.getState())){
+            homework.setState("1");
+        }else if("1".equals(homework.getState())){
+            homework.setState("2");
+        }else{
+            homework.setState("1");
+        }
+        //新增或编辑表单保存
+        homeworkService.save(homework);//保存
+        j.setSuccess(true);
+        j.setMsg("操作成功");
+        return j;
+    }
 }

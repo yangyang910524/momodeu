@@ -142,7 +142,7 @@
 		   				<li><a href="${ctx}/course/courseInfo/form/edit?id={{d.row.id}}"><i class="fa fa-edit"></i> 修改</a></li>
 		   			</shiro:hasPermission>
 		   			<shiro:hasPermission name="course:courseInfo:del">
-		   				<li><a  onclick="return del(this, '{{d.row.id}}')"><i class="fa fa-trash"></i> 删除</a></li>
+		   				<li style="{{d.row.state==='0'?"":"display:none;"}}"><a  onclick="return del(this, '{{d.row.id}}')"><i class="fa fa-trash"></i> 删除</a></li>
 					</shiro:hasPermission>
 					<shiro:hasPermission name="course:courseInfo:add">
 						{{d.row.titleType==='1'?'<li><a href="${ctx}/course/courseInfo/form/add?parent.id='+d.row.id+'"><i class="fa fa-plus"></i> 添加章节</a></li>':''}}

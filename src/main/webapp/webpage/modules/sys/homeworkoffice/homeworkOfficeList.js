@@ -114,16 +114,18 @@ $(document).ready(function() {
                        title: '材料1',
                        sortable: false,
                        formatter:function(value, row , index){
-                           if(value==null||value==undefined||value==""||value=="undefined"){
-                               return "-";
+                           var result="";
+                           if(/\.(gif|jpg|jpeg|png|GIF|JPG|JPEG|PNG)$/.test(value)){
+                               result = '<img   onclick="jp.showPic(\''+value+'\')"'+' height="50px" src="'+value+'">';
+                           }else if(/\.(mp3|mp4|MP3|MP4)$/.test(value)){
+                               url="${ctx}/sys/file/playVideo?url=" +value;
+                               result = '<a onclick="jp.playVideo(\''+url+'\')">播放视频</a>';
+                           }else if(value==null||value==""||value==undefined){
+                               result="-"
                            }else{
-                               var valueArray = value.split("|");
-                               var labelArray = [];
-                               for(var i =0 ; i<valueArray.length; i++){
-                                   labelArray[i] = "<a href='${ctx}/sys/file/download?source="+valueArray[i]+"' >下载材料</a>"
-                               }
-                               return labelArray.join(" ");
+                               result = "<a href=\""+value+"\" url=\""+value+"\" target=\"_blank\">查看资料</a>";
                            }
+                           return result;
                        }
 
                    }
@@ -132,16 +134,18 @@ $(document).ready(function() {
                        title: '材料2',
                        sortable: false,
                        formatter:function(value, row , index){
-                           if(value==null||value==undefined||value==""||value=="undefined"){
-                               return "-";
+                           var result="";
+                           if(/\.(gif|jpg|jpeg|png|GIF|JPG|JPEG|PNG)$/.test(value)){
+                               result = '<img   onclick="jp.showPic(\''+value+'\')"'+' height="50px" src="'+value+'">';
+                           }else if(/\.(mp3|mp4|MP3|MP4)$/.test(value)){
+                               url="${ctx}/sys/file/playVideo?url=" +value;
+                               result = '<a onclick="jp.playVideo(\''+url+'\')">播放视频</a>';
+                           }else if(value==null||value==""||value==undefined){
+                               result="-"
                            }else{
-                               var valueArray = value.split("|");
-                               var labelArray = [];
-                               for(var i =0 ; i<valueArray.length; i++){
-                                   labelArray[i] = "<a href='${ctx}/sys/file/download?source="+valueArray[i]+"' >下载材料</a>"
-                               }
-                               return labelArray.join(" ");
+                               result = "<a href=\""+value+"\" url=\""+value+"\" target=\"_blank\">查看资料</a>";
                            }
+                           return result;
                        }
 
                    }
@@ -150,17 +154,18 @@ $(document).ready(function() {
                        title: '封面',
                        sortable: false,
                        formatter:function(value, row , index){
-                           var valueArray = value.split("|");
-                           var labelArray = [];
-                           for(var i =0 ; i<valueArray.length; i++){
-                               if(!/\.(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(valueArray[i]))
-                               {
-                                   labelArray[i] = "<a href=\""+valueArray[i]+"\" url=\""+valueArray[i]+"\" target=\"_blank\">"+decodeURIComponent(valueArray[i].substring(valueArray[i].lastIndexOf("/")+1))+"</a>"
-                               }else{
-                                   labelArray[i] = '<img   onclick="jp.showPic(\''+valueArray[i]+'\')"'+' height="50px" src="'+valueArray[i]+'">';
-                               }
+                           var result="";
+                           if(/\.(gif|jpg|jpeg|png|GIF|JPG|JPEG|PNG)$/.test(value)){
+                               result = '<img   onclick="jp.showPic(\''+value+'\')"'+' height="50px" src="'+value+'">';
+                           }else if(/\.(mp3|mp4|MP3|MP4)$/.test(value)){
+                               url="${ctx}/sys/file/playVideo?url=" +value;
+                               result = '<a onclick="jp.playVideo(\''+url+'\')">播放视频</a>';
+                           }else if(value==null||value==""||value==undefined){
+                               result="-"
+                           }else{
+                               result = "<a href=\""+value+"\" url=\""+value+"\" target=\"_blank\">查看资料</a>";
                            }
-                           return labelArray.join(" ");
+                           return result;
                        }
 
                    },{

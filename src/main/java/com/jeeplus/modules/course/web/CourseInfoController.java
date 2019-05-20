@@ -9,11 +9,9 @@ import com.jeeplus.common.json.AjaxJson;
 import com.jeeplus.common.utils.StringUtils;
 import com.jeeplus.core.persistence.Page;
 import com.jeeplus.core.web.BaseController;
-import com.jeeplus.modules.course.entity.CourseData;
 import com.jeeplus.modules.course.entity.CourseInfo;
 import com.jeeplus.modules.course.service.CourseInfoService;
 import com.jeeplus.modules.sys.utils.DictUtils;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -120,7 +118,8 @@ public class CourseInfoController extends BaseController {
 		if("-1".equals(parentId)){//如果是-1，没指定任何父节点，就从根节点开始查找
 			parentId = "0";
 		}
-		return courseInfoService.getChildren(parentId);
+        List<CourseInfo> list = courseInfoService.getChildren(parentId);
+		return list;
 	}
 	
 	/**

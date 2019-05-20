@@ -39,6 +39,13 @@
                         <form:options items="${fns:getDictList('bas_material_type')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
                     </form:select>
                 </div>
+                <div class="col-sm-2">
+                    <label class="label-item single-overflow pull-left" title="状态：">状态：</label>
+                    <form:select path="state"  class="form-control m-b">
+                        <form:option value="" label=""/>
+                        <form:options items="${fns:getDictList('bas_release_type')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+                    </form:select>
+                </div>
 		 <div class="col-xs-12 col-sm-6 col-md-4">
 			<div style="margin-top:26px">
 			  <a  id="search" class="btn btn-primary btn-rounded  btn-bordered btn-sm"><i class="fa fa-search"></i> 查询</a>

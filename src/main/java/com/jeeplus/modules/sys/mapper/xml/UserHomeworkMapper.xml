@@ -35,7 +35,8 @@
 		ifnull(h.data2,'') AS "homework.data2",
 		ifnull(h.cover,'') AS "homework.cover",
 		ifnull(h.course_level,'') AS "homework.courseLevel",
-        ifnull(h.remarks,'') AS "homework.remarks"
+        ifnull(h.remarks,'') AS "homework.remarks",
+        ifnull(h.state,'') AS "homework.state"
 	</sql>
 	
 	<sql id="userHomeworkJoins">

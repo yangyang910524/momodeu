@@ -85,49 +85,44 @@ $(document).ready(function() {
 		       
 		    }
 			,{
-		        field: 'remarks',
-		        title: '备注信息',
-		        sortable: true,
-		        sortName: 'remarks'
-		        ,formatter:function(value, row , index){
-		        	value = jp.unescapeHTML(value);
-				   <c:choose>
-					   <c:when test="${fns:hasPermission('publiccours:publicCourse:edit')}">
-					      return "<a href='javascript:edit(\""+row.id+"\")'>"+value+"</a>";
-				      </c:when>
-					  <c:when test="${fns:hasPermission('publiccours:publicCourse:view')}">
-					      return "<a href='javascript:view(\""+row.id+"\")'>"+value+"</a>";
-				      </c:when>
-					  <c:otherwise>
-					      return value;
-				      </c:otherwise>
-				   </c:choose>
-		         }
-		       
-		    }
-			,{
 		        field: 'name',
 		        title: '课程名称',
 		        sortable: true,
-		        sortName: 'name'
+		        sortName: 'name',
+               formatter:function(value, row , index){
+                   value = jp.unescapeHTML(value);
+                   <c:choose>
+                   <c:when test="${fns:hasPermission('publiccours:publicCourse:edit')}">
+                   return "<a href='javascript:edit(\""+row.id+"\")'>"+value+"</a>";
+                   </c:when>
+                   <c:when test="${fns:hasPermission('publiccours:publicCourse:view')}">
+                   return "<a href='javascript:view(\""+row.id+"\")'>"+value+"</a>";
+                   </c:when>
+                   <c:otherwise>
+                   return value;
+                   </c:otherwise>
+                   </c:choose>
+               }
 		       
 		    }
 		   ,{
 			   field: 'data',
 			   title: '课程内容',
 			   sortable: false,
-			   formatter:function(value, row , index){
-				   if(value==null||value==undefined||value==""||value=="undefined"){
-					   return "-";
-				   }else{
-					   var valueArray = value.split("|");
-					   var labelArray = [];
-					   for(var i =0 ; i<valueArray.length; i++){
-                           labelArray[i] = "<a href=\""+valueArray[i]+"\" url=\""+valueArray[i]+"\" target=\"_blank\">"+decodeURIComponent(valueArray[i].substring(valueArray[i].lastIndexOf("/")+1))+"</a>"
-					   }
-					   return labelArray.join(" ");
-				   }
-			   }
+               formatter:function(value, row , index){
+                   var result="";
+                   if(/\.(gif|jpg|jpeg|png|GIF|JPG|JPEG|PNG)$/.test(value)){
+                       result = '<img   onclick="jp.showPic(\''+value+'\')"'+' height="50px" src="'+value+'">';
+                   }else if(/\.(mp3|mp4|MP3|MP4)$/.test(value)){
+                       url="${ctx}/sys/file/playVideo?url=" +value;
+                       result = '<a onclick="jp.playVideo(\''+url+'\')">播放视频</a>';
+                   }else if(value==null||value==""||value==undefined){
+                       result="-"
+                   }else{
+                       result = "<a href=\""+value+"\" url=\""+value+"\" target=\"_blank\">查看资料</a>";
+                   }
+                   return result;
+               }
 
 		   }
 			,{
@@ -140,6 +135,14 @@ $(document).ready(function() {
 		        }
 		       
 		    }
+           ,{
+               field: 'remarks',
+               title: '备注信息',
+               sortable: true,
+               sortName: 'remarks'
+
+
+           }
 		     ]
 		
 		});

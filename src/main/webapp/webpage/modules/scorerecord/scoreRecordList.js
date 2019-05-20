@@ -84,34 +84,19 @@ $(document).ready(function() {
 		        checkbox: true
 		       
 		    }
-			,{
-		        field: 'remarks',
-		        title: '备注信息',
-		        sortable: true,
-		        sortName: 'remarks'
-		        ,formatter:function(value, row , index){
-		        	value = jp.unescapeHTML(value);
-				   <c:choose>
-					   <c:when test="${fns:hasPermission('scorerecord:scoreRecord:edit')}">
-					      return "<a href='javascript:edit(\""+row.id+"\")'>"+value+"</a>";
-				      </c:when>
-					  <c:when test="${fns:hasPermission('scorerecord:scoreRecord:view')}">
-					      return "<a href='javascript:view(\""+row.id+"\")'>"+value+"</a>";
-				      </c:when>
-					  <c:otherwise>
-					      return value;
-				      </c:otherwise>
-				   </c:choose>
-		         }
-		       
-		    }
-			,{
-		        field: 'user.id',
-		        title: '学生',
-		        sortable: true,
-		        sortName: 'user.id'
-		       
-		    }
+           ,{
+               field: 'user.name',
+               title: '学生',
+               sortable: true,
+               sortName: 'user.name'
+
+           },{
+               field: 'createBy.name',
+               title: '操作人',
+               sortable: true,
+               sortName: 'createBy.name'
+
+           }
 			,{
 		        field: 'oldScore',
 		        title: '原始积分',
@@ -125,7 +110,12 @@ $(document).ready(function() {
 		        sortable: true,
 		        sortName: 'newScore'
 		       
-		    }
+		    },{
+                       field: 'remarks',
+                       title: '备注信息',
+                       sortable: true,
+                       sortName: 'remarks'
+                   }
 		     ]
 		
 		});

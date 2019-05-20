@@ -217,6 +217,19 @@
 						</div>
 					</div>
 				</div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label"><font color="red">*</font>课程状态：</label>
+                    <div class="col-sm-10">
+                        <c:if test="${empty id}">
+                            草稿
+                            <input type="hidden" value="0" name="state"/>
+                        </c:if>
+                        <c:if test="${not empty id}">
+                            ${ fns:getDictLabel (state, 'bas_release_type', '')}
+                            <input type="hidden" value="${state}" name="state"/>
+                        </c:if>
+                    </div>
+                </div>
 				<div class="form-group">
 					<label class="col-sm-2 control-label">简述说明：</label>
 					<div class="col-sm-10">

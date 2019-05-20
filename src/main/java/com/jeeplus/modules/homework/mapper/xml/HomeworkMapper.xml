@@ -15,7 +15,8 @@
 		ifnull(a.data1,'') AS "data1",
 		ifnull(a.data2,'') AS "data2",
 		ifnull(a.cover,'') AS "cover",
-		ifnull(a.course_level,'') AS "courseLevel"
+		ifnull(a.course_level,'') AS "courseLevel",
+		ifnull(a.state,'') AS "state"
 	</sql>
 	
 	<sql id="homeworkJoins">
@@ -50,6 +51,9 @@
 			</if>
             <if test="courseLevel != null and courseLevel != ''">
                 AND a.course_level = #{courseLevel}
+            </if>
+            <if test="state != null and state != ''">
+                AND a.state = #{state}
             </if>
 		</where>
 		<choose>
@@ -95,7 +99,8 @@
 			data1,
 			data2,
 			cover,
-			course_level
+			course_level,
+			state
 		) VALUES (
 			#{id},
 			#{createBy.id},
@@ -109,7 +114,8 @@
 			#{data1},
 			#{data2},
 			#{cover},
-			#{courseLevel}
+			#{courseLevel},
+			#{state}
 		)
 	</insert>
 	
@@ -123,7 +129,8 @@
 			data1 = #{data1},
 			data2 = #{data2},
 			cover = #{cover},
-			course_level = #{courseLevel}
+			course_level = #{courseLevel},
+			state = #{state}
 		WHERE id = #{id}
 	</update>
 	

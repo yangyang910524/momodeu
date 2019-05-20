@@ -640,8 +640,28 @@
             });
 
         },
-        //打开子对话框(仅仅用作 父子layer弹窗之间交互数据使用)
+        //播放视频
+        playVideo :function(url){
+            var width="600px";
+            var height="500px";
+            var auto = true;//是否使用响应式，使用百分比时，应设置为false
+            if(width.indexOf("%")>=0 || height.indexOf("%")>=0 ){
+                auto =false;
+            }
+            top.layer.open({
+                type: 2,
+                area: [width, height],
+                title: '视频资料',
+                auto:auto,
+                maxmin: true, //开启最大化最小化按钮
+                content: url ,
+                btn: ['关闭'],
+                cancel: function(index){
+                }
+            });
 
+        },
+        //打开子对话框(仅仅用作 父子layer弹窗之间交互数据使用)
          openChildDialog: function(title,url,width,height, parentObj){
         var auto = true;//是否使用响应式，使用百分比时，应设置为false
         if(width.indexOf("%")>=0 || height.indexOf("%")>=0 ){

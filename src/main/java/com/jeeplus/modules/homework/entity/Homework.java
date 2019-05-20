@@ -23,8 +23,17 @@ public class Homework extends DataEntity<Homework> {
 	private Office office;//班级
     private String courseLevel;		// 课程级别
     private String type;		// 作业类型
-	
-	public Homework() {
+    private String state;//发布状态
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public Homework() {
 		super();
 	}
 

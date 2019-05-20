@@ -5,18 +5,21 @@
 	<sql id="scoreRecordColumns">
 		ifnull(a.id,'') AS "id",
 		ifnull(a.create_by,'') AS "createBy.id",
+		ifnull(opt.name,'') AS "createBy.name",
 		a.create_date AS "createDate",
 		ifnull(a.update_by,'') AS "updateBy.id",
 		a.update_date AS "updateDate",
 		ifnull(a.remarks,'') AS "remarks",
 		ifnull(a.del_flag,'') AS "delFlag",
 		ifnull(a.user,'') AS "user.id",
+		ifnull(stu.name,'') AS "user.name",
 		ifnull(a.old_score,'') AS "oldScore",
 		ifnull(a.new_score,'') AS "newScore"
 	</sql>
 	
 	<sql id="scoreRecordJoins">
-		
+        left join sys_user stu on stu.id=a.a.user
+		left join sys_user opt on opt.id=a.a.create_by
 	</sql>
 	
     

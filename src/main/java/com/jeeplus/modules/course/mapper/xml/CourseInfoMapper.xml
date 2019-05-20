@@ -7,6 +7,7 @@
 		<result property="name" column="name" />
 		<result property="sort" column="sort" />
 		<result property="parentIds" column="parentIds" />
+        <result property="state" column="state" />
 		<association property="hasChildren" column="id" select="hasChildren" />
     </resultMap>
     
@@ -25,18 +26,16 @@
 		ifnull(a.cover,'') AS "cover",
 		ifnull(a.title_type,'') AS "titleType",
 		ifnull(a.level,'') AS "level",
-		ifnull(a.state,'') AS "state"
+		case when a.title_type='1' then ifnull(a.state,'') else ifnull(p.state,'') end  AS "state"
 	</sql>
 	
 
 	
 
 	<sql id="courseInfoJoins">
-		
+		left join course_info p on a.parent_id=p.id
 	</sql>
-	
 
-    
 	<select id="get" resultType="CourseInfo">
 		SELECT 
 			<include refid="courseInfoColumns"/>
@@ -85,7 +84,11 @@
 	</select>
 	
 	<select id="getChildren" parameterType="String" resultMap="courseInfoResult">  
-        select * from course_info where parent_id = #{id}  ORDER BY cast( sort   as   SIGNED   INTEGER) ASC
+        select
+          <include refid="courseInfoColumns"/>
+        from course_info a
+        <include refid="courseInfoJoins"/>
+        where a.parent_id = #{id}  ORDER BY cast( a.sort   as   SIGNED   INTEGER) ASC
     </select> 
      
     <select id="hasChildren" parameterType="String" resultType="Boolean">  
@@ -205,7 +208,6 @@
 			p.title_type AS "father.titleType",
 			p.sort AS "father.sort"
 		FROM course_info a
-		left join course_info p on a.parent_id=p.id
 		<include refid="courseInfoJoins"/>
 		<where>
 			AND a.title_type='2'
