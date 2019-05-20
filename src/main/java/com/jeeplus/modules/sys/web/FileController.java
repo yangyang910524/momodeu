@@ -391,4 +391,12 @@ public class FileController extends BaseController {
 		return j;
 	}
 
+    /**
+     * 信息列表页面
+     */
+    @RequestMapping(value = {"playVideo"})
+    public String playVideo(String url, Model model) {
+        model.addAttribute("url", url);
+        return "modules/common/playVideoFile";
+    }
 }
