@@ -771,6 +771,16 @@
         //         bucket:'webmomofile'//你的oss名字
         //     });
         // }
+        getClient:function () {
+            var client = new OSS.Wrapper({
+                region : 'oss-cn-beijing',
+                accessKeyId : 'LTAIy1DroxAA5lYY',
+                accessKeySecret : 'KAB9PK1jk9s4NxJ3Q5bkhemy6DHSvf',
+                bucket : 'webmomofile',
+                secure:true
+            });
+            return client;
+        },
 	}
 
 

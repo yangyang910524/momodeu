@@ -1,12 +1,6 @@
 <script src="${ctxStatic}/plugin/oss/aliyun-oss-sdk-4.4.4.min.js" type="text/javascript"></script>
 <script type="text/javascript">
-    var client = new OSS.Wrapper({
-        region : 'oss-cn-beijing',
-        accessKeyId : 'LTAIy1DroxAA5lYY',
-        accessKeySecret : 'KAB9PK1jk9s4NxJ3Q5bkhemy6DHSvf',
-        bucket : 'webmomofile',
-        secure:true
-    });
+    var client =jp.getClient();
     function fileUpload(file,path,succFuc,failFuc) {
         client.multipartUpload(path, file).then(function (result) {
             succFuc("https://webmomofile.oss-cn-beijing.aliyuncs.com/"+path);
