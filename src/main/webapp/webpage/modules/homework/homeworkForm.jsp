@@ -4,6 +4,7 @@
 <head>
 	<title>作业信息管理</title>
 	<meta name="decorator" content="ani"/>
+    <%@ include file="/webpage/include/fileUpload.jsp"%>
 	<script type="text/javascript">
 
 		$(document).ready(function() {
@@ -49,90 +50,60 @@
 
         }
 
-        function fileSelected1(){
-            var index =jp.loading("文件上传中……");
-            var filename = $("#file1").val();
-            var suffix=(filename.substr(filename.lastIndexOf("."))).toLowerCase();
-            if(suffix!=".mp3"&&suffix!=".mp4") {
-                jp.info("您上传视频、音频的类型不符合(.mp3|.mp4)！");
-                return false;
-            }
-            var formData = new FormData($("#uploadForm1")[0]);
-            formData.append("filePath","homework_original_video")
-            $.ajax({
-                url:"${ctx}/sys/file/fileUpload",
-                type: 'POST',
-                data:formData,
-                async: false,
-                cache: false,
-                contentType: false,
-                processData: false,
-                success:function(data) {
-                    $("#data1").val(data.body.url);
-                    $("#data1	").blur();
-                    jp.close(index);
-                },
-                error:function(data) {
-                    jp.info("上传失败");
-                }
-            });
-        }
-
-        function fileSelected2(){
+        function fileSelected1(obj){
             var index =jp.loading("文件上传中……")
-            var filename = $("#file2").val();
+            var file=obj.files[0];//获取文件流
+            var filename= obj.value;
             var suffix=(filename.substr(filename.lastIndexOf("."))).toLowerCase();
             if(suffix!=".mp3"&&suffix!=".mp4") {
                 jp.info("您上传视频、音频的类型不符合(.mp3|.mp4)！");
                 return false;
             }
-            var formData = new FormData($("#uploadForm2")[0]);
-            formData.append("filePath","homework_dubbing_video")
-            $.ajax({
-                url:"${ctx}/sys/file/fileUpload",
-                type: 'POST',
-                data:formData,
-                async: false,
-                cache: false,
-                contentType: false,
-                processData: false,
-                success:function(data) {
-                    $("#data2").val(data.body.url);
-                    $("#data2").blur();
-                    jp.close(index);
-                },
-                error:function(data) {
-                    jp.info("上传失败");
-                }
+            var path = "homework_original_video/${fns:getUser()}/"+timestamp()+suffix;
+            fileUpload(file,path,function (data) {
+                $("#data1").val(data);
+                $("#data1").blur();
+                jp.close(index);
+            },function (err) {
+                jp.info("上传失败");
             });
         }
 
-        function fileSelected3(){
-            var index =jp.loading();
-            var filename = $("#file3").val();
+        function fileSelected2(obj){
+            var index =jp.loading("文件上传中……")
+            var file=obj.files[0];//获取文件流
+            var filename= obj.value;
+            var suffix=(filename.substr(filename.lastIndexOf("."))).toLowerCase();
+            if(suffix!=".mp3"&&suffix!=".mp4") {
+                jp.info("您上传视频、音频的类型不符合(.mp3|.mp4)！");
+                return false;
+            }
+            var path = "homework_dubbing_video/${fns:getUser()}/"+timestamp()+suffix;
+            fileUpload(file,path,function (data) {
+                $("#data2").val(data);
+                $("#data2").blur();
+                jp.close(index);
+            },function () {
+                jp.info("上传失败");
+            });
+        }
+
+        function fileSelected3(obj){
+            var index =jp.loading("文件上传中……")
+            var file=obj.files[0];//获取文件流
+            var filename= obj.value;
             var suffix=(filename.substr(filename.lastIndexOf("."))).toLowerCase();
             if(suffix!=".jpg"&&suffix!=".gif"&&suffix!=".jpeg"&& suffix!=".png") {
                 jp.info("您上传图片的类型不符合(.jpg|.jpeg|.gif|.png)！");
                 return false;
             }
-            var formData = new FormData($("#uploadForm3")[0]);
-            formData.append("filePath","homework_cover")
-            $.ajax({
-                url:"${ctx}/sys/file/fileUpload",
-                type: 'POST',
-                data:formData,
-                async: false,
-                cache: false,
-                contentType: false,
-                processData: false,
-                success:function(data) {
-                    $("#cover").val(data.body.url);
-                    $("#cover").blur();
-                    jp.close(index);
-                },
-                error:function(data) {
-                    jp.info("上传失败");
-                }
+            var path = "homework_cover/${fns:getUser()}/"+timestamp()+suffix;
+            fileUpload(file,path,function (data) {
+                $("#cover").val(data);
+                $("#cover").blur();
+                jp.close(index);
+            },function () {
+                jp.info("上传失败");
             });
         }
 
@@ -141,13 +112,13 @@
 <body>
 <!-- 文件上传form beigin-->
 <form id= "uploadForm1" action= "" method= "post" enctype ="multipart/form-data">
-	<input type="file" id="file1" name="file" style="display: none;"  onchange="fileSelected1()">
+	<input type="file" id="file1" name="file" style="display: none;"  onchange="fileSelected1(this)">
 </form>
 <form id= "uploadForm2" action= "" method= "post" enctype ="multipart/form-data">
-	<input type="file" id="file2" name="file" style="display: none;"  onchange="fileSelected2()">
+	<input type="file" id="file2" name="file" style="display: none;"  onchange="fileSelected2(this)">
 </form>
 <form id= "uploadForm3" action= "" method= "post" enctype ="multipart/form-data">
-	<input type="file" id="file3" name="file" style="display: none;"  onchange="fileSelected3()">
+	<input type="file" id="file3" name="file" style="display: none;"  onchange="fileSelected3(this)">
 </form>
 <!-- 文件上传form end-->
 <div class="wrapper wrapper-content">				

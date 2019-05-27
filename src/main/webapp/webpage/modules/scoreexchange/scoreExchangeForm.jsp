@@ -4,6 +4,7 @@
 <head>
 	<title>积分兑换信息管理</title>
 	<meta name="decorator" content="ani"/>
+    <%@ include file="/webpage/include/fileUpload.jsp"%>
 	<script type="text/javascript">
 
 		$(document).ready(function() {
@@ -24,32 +25,22 @@
             $("#file").click();
         }
 
-        function fileSelected(){
+        function fileSelected(obj){
             var index =jp.loading("文件上传中……")
-            var filename = $("#file").val();
+            var file=obj.files[0];//获取文件流
+            var filename= obj.value;
             var suffix=(filename.substr(filename.lastIndexOf("."))).toLowerCase();
             if(suffix!=".jpg"&&suffix!=".gif"&&suffix!=".jpeg"&& suffix!=".png") {
                 jp.info("您上传图片的类型不符合(.jpg|.jpeg|.gif|.png)！");
                 return false;
             }
-            var formData = new FormData($("#uploadForm")[0]);
-            formData.append("filePath","score_exchange_photo")
-            $.ajax({
-                url:"${ctx}/sys/file/fileUpload",
-                type: 'POST',
-                data:formData,
-                async: false,
-                cache: false,
-                contentType: false,
-                processData: false,
-                success:function(data) {
-                    $("#photo").val(data.body.url);
-                    $("#photo").blur();
-                    jp.close(index);
-                },
-                error:function(data) {
-                    jp.info("上传失败");
-                },
+            var path = "score_exchange_photo/${fns:getUser()}/"+timestamp()+suffix;
+            fileUpload(file,path,function (data) {
+                $("#photo").val(data);
+                $("#photo").blur();
+                jp.close(index);
+            },function () {
+                jp.info("上传失败");
             });
         }
 	</script>
@@ -57,7 +48,7 @@
 <body>
 <!-- 文件上传form beigin-->
 <form id= "uploadForm" action= "" method= "post" enctype ="multipart/form-data">
-    <input type="file" id="file" name="file" style="display: none;"  onchange='fileSelected()'>
+    <input type="file" id="file" name="file" style="display: none;"  onchange='fileSelected(this)'>
 </form>
 <!-- 文件上传form end-->
 <div class="wrapper wrapper-content">				

@@ -4,7 +4,7 @@
 <head>
 	<title>用户管理</title>
 	<meta name="decorator" content="ani"/>
-    <script src="${ctxStatic}/plugin/oss/aliyun-oss-sdk-4.4.4.min.js"></script>
+    <%@ include file="/webpage/include/fileUpload.jsp"%>
 	<script type="text/javascript">
 	function save() {
 		//判断头像是否上传
@@ -50,31 +50,22 @@
         $("#file").click();
     }
 
-    function fileSelected(){
+    function fileSelected(obj){
         var index =jp.loading("文件上传中……")
-        var filename = $("#file").val();
+        var file=obj.files[0];//获取文件流
+        var filename= obj.value;
         var suffix=(filename.substr(filename.lastIndexOf("."))).toLowerCase();
         if(suffix!=".jpg"&&suffix!=".gif"&&suffix!=".jpeg"&& suffix!=".png") {
             jp.info("您上传图片的类型不符合(.jpg|.jpeg|.gif|.png)！");
             return false;
         }
-        var formData = new FormData($("#uploadForm")[0]);
-        formData.append("filePath","avatar")
-        $.ajax({
-            url:"${ctx}/sys/file/fileUpload",
-            type: 'POST',
-            data:formData,
-            async: false,
-            cache: false,
-            contentType: false,
-            processData: false,
-            success:function(data) {
-                $("#photo").val(data.body.url);
-                jp.close(index);
-            },
-            error:function(data) {
-                jp.info("上传失败");
-            }
+        var path = "avatar/${fns:getUser()}/"+timestamp()+suffix;
+        fileUpload(file,path,function (data) {
+            $("#photo").val(data);
+            $("#photo").blur();
+            jp.close(index);
+        },function () {
+            jp.info("上传失败");
         });
     }
 	</script>
@@ -82,7 +73,7 @@
 <body class="bg-white">
 <!-- 文件上传form beigin-->
 <form id= "uploadForm" action= "" method= "post" enctype ="multipart/form-data">
-	<input type="file" id="file" name="file" style="display: none;"  onchange='fileSelected()'>
+	<input type="file" id="file" name="file" style="display: none;"  onchange='fileSelected(this)'>
 </form>
 <!-- 文件上传form end-->
 	<form:form id="inputForm" modelAttribute="user"  method="post" class="form-horizontal">
