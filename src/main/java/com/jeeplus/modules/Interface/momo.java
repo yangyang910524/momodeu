@@ -1136,7 +1136,7 @@ public class momo {
     }
 
     /**
-     * @Description 积分兑换列表
+     * @Description 课程播放记录
      **/
     @ResponseBody
     @RequestMapping(value= "/momo/courseDataPlayRecordList" , method = RequestMethod.POST)
@@ -1155,6 +1155,20 @@ public class momo {
 
             CourseDataPlayRecord courseDataPlayRecord=new CourseDataPlayRecord();
             courseDataPlayRecord.setCreateBy(user);
+
+            CourseData courseData=new CourseData();
+            //课程id
+            CourseInfo fatherId=new CourseInfo();
+            fatherId.setId(params.get("fatherId"));
+            courseData.setFather(fatherId);
+            //章节id
+            CourseInfo courseInfo=new CourseInfo();
+            courseInfo.setId(params.get("courseInfoId"));
+            courseData.setCourseInfo(courseInfo);
+            //内容id
+            courseData.setId(params.get("courseDataId"));
+            courseDataPlayRecord.setCourseData(courseData);
+
             if("1".equals(params.get("isPage").toString())){
                 Page<CourseDataPlayRecord> p=new Page<CourseDataPlayRecord>();
                 if(params.get("pageNo")==null||StringUtils.isEmpty(params.get("pageNo").toString())){
@@ -1182,6 +1196,74 @@ public class momo {
             j.setSuccess(true);
             j.setErrorCode("-1");
             j.setMsg("查询成功!");
+        } catch (Exception e) {
+            e.printStackTrace();
+            j.setSuccess(false);
+            j.setErrorCode("10001");
+            j.setMsg("数据异常!");
+        }
+        return j;
+    }
+
+    /**
+     * @Description 增加/减少积分
+     **/
+    @ResponseBody
+    @RequestMapping(value= "/momo/addScore" , method = RequestMethod.POST)
+    public AjaxUserJson addScore(@RequestBody Map<String,String> params)  {
+        AjaxUserJson j = new AjaxUserJson();
+        try {
+            j=systemService.checkUser(params.get("userid"),j);
+            //校验用户信息
+            if(!j.isSuccess()){
+                return j;
+            }
+            User user=j.getUser();
+
+            //保存积分修改记录
+            ScoreRecord scoreRecord=new ScoreRecord();
+            scoreRecord.setUser(user);
+
+            if(params.get("addScore")==null||"".equals(params.get("addScore"))){
+                j.setSuccess(false);
+                j.setErrorCode("10002");
+                j.setMsg("积分数值无效!");
+                return j;
+            }
+
+            User operator=null;
+            if(params.get("operatorid")==null||"".equals(params.get("operatorid"))){
+                operator=userMapper.get("1");
+            }else{
+                operator=userMapper.get(params.get("operatorid"));
+            }
+            if(operator==null||operator.getId()==null||"".equals(operator.getId())){
+                j.setSuccess(false);
+                j.setErrorCode("10002");
+                j.setMsg("无效操作人!");
+                return j;
+            }
+            scoreRecord.setCreateBy(operator);
+            scoreRecord.setUpdateBy(operator);
+
+            Integer oldScore=user.getScore();
+            Integer newScore=user.getScore()+Integer.valueOf(params.get("addScore"));
+
+            user.setScore(newScore);
+            systemService.saveUser(user);
+
+            scoreRecord.setOldScore(String.valueOf(oldScore));
+            scoreRecord.setNewScore(String.valueOf(newScore));
+            scoreRecord.setRemarks(params.get("remark"));
+            scoreRecordService.save(scoreRecord);
+
+            j.setSuccess(true);
+            j.setErrorCode("-1");
+            j.setMsg("操作成功!");
+            j.setUser(user);
+            j.put("oldScore",String.valueOf(oldScore));
+            j.put("addScore",String.valueOf(params.get("addScore")));
+            j.put("newScore",String.valueOf(newScore));
         } catch (Exception e) {
             e.printStackTrace();
             j.setSuccess(false);

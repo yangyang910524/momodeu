@@ -59,10 +59,6 @@
 		<where>
 			a.del_flag = #{DEL_FLAG_NORMAL}
 			${dataScope}
-			<if test="courseData!=null and courseData.id != null and courseData.id != ''">
-				AND a.course_data_id = #{courseData.id}
-			</if>
-
             <if test="createBy!=null and createBy.id != null and createBy.id != ''">
                 AND a.create_by = #{createBy.id}
             </if>
@@ -80,6 +76,16 @@
 
             <if test="courseData!=null and courseData.father != null  and courseData.father.level != null and courseData.father.level != ''">
                 AND p.level = #{courseData.father.level}
+            </if>
+
+            <if test="courseData!=null and courseData.father != null and courseData.father.id != null and courseData.father.id != ''">
+                AND p.id = #{courseData.father.id}
+            </if>
+            <if test="courseData!=null and courseData.courseInfo != null and courseData.courseInfo.id != null and courseData.courseInfo.id != ''">
+                AND b.id = #{courseData.courseInfo.id}
+            </if>
+            <if test="courseData!=null and courseData.id != null and courseData.id != ''">
+                AND a.course_data_id = #{courseData.id}
             </if>
 		</where>
 		<choose>
