@@ -23,6 +23,7 @@
 
 		ifnull(teacher.id,'') as "teacher.id",
 		ifnull(teacher.name,'') as "teacher.name",
+		ifnull(teacher.photo,'') as "teacher.photo",
 		ifnull(teacher.english_name,'') as "teacher.englishName",
 
 		ifnull(a.id,'') as "office.id",

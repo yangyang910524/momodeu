@@ -504,7 +504,11 @@ public class momo {
                 return j;
             }
             userHomework.setStudent(user);
-            userHomework.setState(params.get("state"));
+            if("1".equals(params.get("state"))){
+                userHomework.setState("1,2");
+            }else{
+                userHomework.setState(params.get("state"));
+            }
             Homework homework=new Homework();
             homework.setCourseLevel(params.get("level"));
             userHomework.setHomework(homework);
@@ -901,6 +905,33 @@ public class momo {
         return j;
     }
 
+    /**
+     * @Description 作品详情
+     **/
+    @ResponseBody
+    @RequestMapping(value= "/momo/worksDetails" , method = RequestMethod.POST)
+    public AjaxUserJson worksDetails(@RequestBody Map<String,String> params)  {
+        AjaxUserJson j = new AjaxUserJson();
+        try {
+            if(params.get("userHomeworkId")==null||"".equals(params.get("userHomeworkId"))){
+                j.setSuccess(false);
+                j.setErrorCode("10002");
+                j.setMsg("未获取到学生作业信息!");
+                return j;
+            }
+            UserHomework userHomework=userHomeworkService.get(params.get("userHomeworkId"));
+            j.put("userHomework",userHomework);
+            j.setSuccess(true);
+            j.setErrorCode("-1");
+            j.setMsg("查询成功!");
+        } catch (Exception e) {
+            e.printStackTrace();
+            j.setSuccess(false);
+            j.setErrorCode("10001");
+            j.setMsg("数据异常!");
+        }
+        return j;
+    }
 
     /**
      * @Description 广告管理
