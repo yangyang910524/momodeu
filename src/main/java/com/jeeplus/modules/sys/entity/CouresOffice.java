@@ -21,6 +21,24 @@ public class CouresOffice extends DataEntity<CouresOffice> {
     private CourseData courseData;//课程-内容
     private CourseInfo courseInfo;//课程-章节
     private CourseInfo father;//课程
+    private String playCount;//学生播放课程次数（学生不存在-1，未播放过0，其他显示播放次数）
+    private String userid;//学生id
+
+    public String getUserid() {
+        return userid;
+    }
+
+    public void setUserid(String userid) {
+        this.userid = userid;
+    }
+
+    public String getPlayCount() {
+        return playCount;
+    }
+
+    public void setPlayCount(String playCount) {
+        this.playCount = playCount;
+    }
 
     public String getState() {
         return state;

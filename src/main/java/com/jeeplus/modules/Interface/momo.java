@@ -360,6 +360,7 @@ public class momo {
                 return j;
             }else{
                 co.setOffice(user.getOffice());
+                co.setUserid(user.getId());
             }
 
             if(params.get("level")==null||"".equals(params.get("level"))

@@ -27,6 +27,14 @@
 		ifnull(kc.state,'') AS "father.state",
 		ifnull(kc.sort,'') AS "father.sort",
 		ifnull(kc.title_type,'') AS "father.titleType",
+		<choose>
+            <when test="userid != null and userid != ''">
+                (select count(*) from course_data_play_record cdpr where cdpr.course_data_id=nr.id and cdpr.create_by=#{userid} ) as "playCount",
+            </when>
+            <otherwise>
+                -1 as "playCount",
+            </otherwise>
+        </choose>
 		ifnull(kc.remarks,'') AS "father.remarks"
 	</sql>
 	
