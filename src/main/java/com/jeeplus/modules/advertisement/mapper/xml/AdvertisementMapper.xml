@@ -11,6 +11,8 @@
 		ifnull(a.remarks,'') AS "remarks",
 		ifnull(a.del_flag,'') AS "delFlag",
 		ifnull(a.picture,'') AS "picture",
+		ifnull(a.content,'') AS "content",
+		ifnull(a.type,'') AS "type",
 		ifnull(a.state,'') AS "state",
 		a.issue_time AS "issueTime"
 	</sql>
@@ -36,9 +38,12 @@
 		<where>
 			a.del_flag = #{DEL_FLAG_NORMAL}
 			${dataScope}
-			<if test="state != null and state != ''">
-				AND a.state = #{state}
-			</if>
+            <if test="state != null and state != ''">
+                AND a.state = #{state}
+            </if>
+            <if test="type != null and type != ''">
+                AND a.type = #{type}
+            </if>
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
@@ -79,6 +84,8 @@
 			remarks,
 			del_flag,
 			picture,
+			type,
+			content,
 			state,
 			issue_time
 		) VALUES (
@@ -90,6 +97,8 @@
 			#{remarks},
 			#{delFlag},
 			#{picture},
+			#{type},
+			#{content},
 			#{state},
 			#{issueTime}
 		)
@@ -101,6 +110,8 @@
 			update_date = #{updateDate},
 			remarks = #{remarks},
 			picture = #{picture},
+			content = #{content},
+			type = #{type},
 			state = #{state},
 			issue_time = #{issueTime}
 		WHERE id = #{id}

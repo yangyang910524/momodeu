@@ -85,27 +85,56 @@ $(document).ready(function() {
 		       
 		    }
 
-		    ,{
-		        field: 'picture',
-		        title: '图片',
-		        sortable: true,
-		        sortName: 'picture',
-               formatter:function(value, row , index){
-                   var result="";
-                   if(/\.(gif|jpg|jpeg|png|GIF|JPG|JPEG|PNG)$/.test(value)){
-                       result = '<img   onclick="jp.showPic(\''+value+'\')"'+' height="50px" src="'+value+'">';
-                   }else if(/\.(mp3|mp4|MP3|MP4)$/.test(value)){
-                       url="${ctx}/sys/file/playVideo?url=" +value;
-                       result = '<a onclick="jp.playVideo(\''+url+'\')">播放视频</a>';
-                   }else if(value==null||value==""||value==undefined){
-                       result="-"
-                   }else{
-                       result = "<a href=\""+value+"\" url=\""+value+"\" target=\"_blank\">查看资料</a>";
+                   ,{
+                       field: 'picture',
+                       title: '图片',
+                       sortable: true,
+                       sortName: 'picture',
+                       formatter:function(value, row , index){
+                           var result="";
+                           if(/\.(gif|jpg|jpeg|png|GIF|JPG|JPEG|PNG)$/.test(value)){
+                               result = '<img   onclick="jp.showPic(\''+value+'\')"'+' height="50px" src="'+value+'">';
+                           }else if(/\.(mp3|mp4|MP3|MP4)$/.test(value)){
+                               url="${ctx}/sys/file/playVideo?url=" +value;
+                               result = '<a onclick="jp.playVideo(\''+url+'\')">播放视频</a>';
+                           }else if(value==null||value==""||value==undefined){
+                               result="-"
+                           }else{
+                               result = "<a href=\""+value+"\" url=\""+value+"\" target=\"_blank\">查看资料</a>";
+                           }
+                           return result;
+                       }
+
+                   },{
+                       field: 'content',
+                       title: '内容',
+                       sortable: true,
+                       sortName: 'content',
+                       formatter:function(value, row , index){
+                           var result="";
+                           if(/\.(gif|jpg|jpeg|png|GIF|JPG|JPEG|PNG)$/.test(value)){
+                               result = '<img   onclick="jp.showPic(\''+value+'\')"'+' height="50px" src="'+value+'">';
+                           }else if(/\.(mp3|mp4|MP3|MP4)$/.test(value)){
+                               url="${ctx}/sys/file/playVideo?url=" +value;
+                               result = '<a onclick="jp.playVideo(\''+url+'\')">播放视频</a>';
+                           }else if(value==null||value==""||value==undefined){
+                               result="-"
+                           }else{
+                               result = "<a href=\""+value+"\" url=\""+value+"\" target=\"_blank\">查看资料</a>";
+                           }
+                           return result;
+                       }
+
                    }
-                   return result;
+           ,{
+               field: 'type',
+               title: '类型',
+               sortable: true,
+               sortName: 'type',
+               formatter:function(value, row , index){
+                   return jp.getDictLabel(${fns:toJson(fns:getDictList('bas_advertisement_type'))}, value, "-");
                }
-		       
-		    }
+           }
 			,{
 		        field: 'state',
 		        title: '状态',

@@ -29,6 +29,15 @@ public class UserHomework extends DataEntity<UserHomework> {
     private User student;//学生信息
     private User teacher;//老师信息
 	private Homework homework;//作业信息
+    private String startRecordingTime;//开始录音时间
+
+    public String getStartRecordingTime() {
+        return startRecordingTime;
+    }
+
+    public void setStartRecordingTime(String startRecordingTime) {
+        this.startRecordingTime = startRecordingTime;
+    }
 
     public String getState() {
         return state;

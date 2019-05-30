@@ -4,6 +4,7 @@
 <head>
 	<title>消息公告管理</title>
 	<meta name="decorator" content="ani"/>
+    <%@ include file="/webpage/include/fileUpload.jsp"%>
 	<script type="text/javascript">
 
 		$(document).ready(function() {
@@ -18,9 +19,37 @@
 			});
 
 		});
+
+        function openFileDialog()
+        {
+            $("#file").click();
+        }
+
+        function fileSelected(obj){
+            var index =jp.loading("文件上传中……")
+            var file=obj.files[0];//获取文件流
+            var filename= obj.value;
+            var suffix=(filename.substr(filename.lastIndexOf("."))).toLowerCase();
+            if(suffix!=".jpg"&&suffix!=".gif"&&suffix!=".jpeg"&& suffix!=".png") {
+                jp.info("您上传图片的类型不符合(.jpg|.jpeg|.gif|.png)！");
+                return false;
+            }
+            var path = "notice_picture/${fns:getUser()}/"+timestamp()+suffix;
+            fileUpload(file,path,function (data) {
+                $("#picture").val(data);
+                $("#picture").blur();
+                jp.close(index);
+            },function () {
+                jp.info("上传失败");
+            });
+        }
 	</script>
 </head>
 <body>
+<!-- 文件上传form beigin-->
+<form id= "uploadForm" action= "" method= "post" enctype ="multipart/form-data">
+    <input type="file" id="file" name="file" style="display: none;"  onchange='fileSelected(this)'>
+</form>
 <div class="wrapper wrapper-content">				
 <div class="row">
 	<div class="col-md-12">
@@ -45,6 +74,17 @@
 						<form:textarea path="content" htmlEscape="false" rows="4"    class="form-control required"/>
 					</div>
 				</div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label"><font color="red">*</font>图片：</label>
+                    <div class="col-sm-10">
+                        <div class="input-group input-append" style="width:100%">
+                            <input type="text" id="picture" name="picture"  class="form-control required" readonly="readonly" aria-invalid="false" value="${notice.picture}">
+                            <span class="input-group-btn">
+                                        <button type="button"  onclick="openFileDialog()" class="btn btn-primary "><i class="fa fa-cloud-upload"></i></button>
+                                    </span>
+                        </div>
+                    </div>
+                </div>
 				<div class="form-group">
 					<label class="col-sm-2 control-label"><font color="red">*</font>状态：</label>
                     <div class="col-sm-10">
@@ -53,8 +93,8 @@
                             <input type="text" class="form-control "  value="${ fns:getDictLabel ('0', 'bas_release_type', '')}" readonly="readonly"/>
                         </c:if>
                         <c:if test="${mode ne 'add'}">
-                            <input type="hidden" name="state" value="${advertisement.state}"/>
-                            <input type="text" class="form-control "  value="${ fns:getDictLabel (advertisement.state, 'bas_release_type', '')}"  readonly="readonly"/>
+                            <input type="hidden" name="state" value="${notice.state}"/>
+                            <input type="text" class="form-control "  value="${ fns:getDictLabel (notice.state, 'bas_release_type', '')}"  readonly="readonly"/>
                         </c:if>
                     </div>
 				</div>

@@ -15,6 +15,7 @@
 		ifnull(a.file,'') AS "file",
 		ifnull(a.score,'') AS "score",
 		ifnull(a.comment,'') AS "comment",
+		ifnull(a.start_recording_time,'') AS "startRecordingTime",
 
 		ifnull(student.id,'') as "student.id",
 		ifnull(student.name,'') as "student.name",
@@ -154,7 +155,8 @@
 			score,
 			userid,
 			teacherid,
-			comment
+			comment,
+			start_recording_time
 		) VALUES (
 			#{id},
 			#{createBy.id},
@@ -169,7 +171,8 @@
 			#{score},
 			#{student.id},
 			#{teacher.id},
-			#{comment}
+			#{comment},
+			#{startRecordingTime}
 		)
 	</insert>
 	
@@ -183,6 +186,7 @@
 			file = #{file},
 			score = #{score},
 			comment = #{comment},
+			start_recording_time = #{startRecordingTime},
 			teacherid = #{teacher.id}
 		WHERE id = #{id}
 	</update>

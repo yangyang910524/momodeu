@@ -11,6 +11,7 @@
 		ifnull(a.remarks,'') AS "remarks",
 		ifnull(a.del_flag,'') AS "delFlag",
 		ifnull(a.title,'') AS "title",
+		ifnull(a.picture,'') AS "picture",
 		ifnull(a.content,'') AS "content",
 		ifnull(a.state,'') AS "state",
 		a.issue_time AS "issueTime"
@@ -94,6 +95,7 @@
 			del_flag,
 			title,
 			content,
+			picture,
 			state,
 			issue_time
 		) VALUES (
@@ -106,6 +108,7 @@
 			#{delFlag},
 			#{title},
 			#{content},
+			#{picture},
 			#{state},
 			#{issueTime}
 		)
@@ -118,6 +121,7 @@
 			remarks = #{remarks},
 			title = #{title},
 			content = #{content},
+			picture = #{picture},
 			state = #{state},
 			issue_time = #{issueTime}
 		WHERE id = #{id}

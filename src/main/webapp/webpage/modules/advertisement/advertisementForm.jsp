@@ -28,6 +28,11 @@
             $("#file").click();
         }
 
+        function openFileDialog2()
+        {
+            $("#file2").click();
+        }
+
         function fileSelected(obj){
             var index =jp.loading("文件上传中……")
             var file=obj.files[0];//获取文件流
@@ -37,10 +42,29 @@
                 jp.info("您上传图片的类型不符合(.jpg|.jpeg|.gif|.png)！");
                 return false;
             }
-            var path = "advertisement/${fns:getUser()}/"+timestamp()+suffix;
+            var path = "advertisement_picture/${fns:getUser()}/"+timestamp()+suffix;
             fileUpload(file,path,function (data) {
                 $("#picture").val(data);
                 $("#picture").blur();
+                jp.close(index);
+            },function () {
+                jp.info("上传失败");
+            });
+        }
+
+        function fileSelected2(obj){
+            var index =jp.loading("文件上传中……")
+            var file=obj.files[0];//获取文件流
+            var filename= obj.value;
+            var suffix=(filename.substr(filename.lastIndexOf("."))).toLowerCase();
+            if(suffix!=".jpg"&&suffix!=".gif"&&suffix!=".jpeg"&& suffix!=".png") {
+                jp.info("您上传图片的类型不符合(.jpg|.jpeg|.gif|.png)！");
+                return false;
+            }
+            var path = "advertisement_content/${fns:getUser()}/"+timestamp()+suffix;
+            fileUpload(file,path,function (data) {
+                $("#content").val(data);
+                $("#content").blur();
                 jp.close(index);
             },function () {
                 jp.info("上传失败");
@@ -52,6 +76,7 @@
 <!-- 文件上传form beigin-->
 <form id= "uploadForm" action= "" method= "post" enctype ="multipart/form-data">
     <input type="file" id="file" name="file" style="display: none;"  onchange='fileSelected(this)'>
+    <input type="file" id="file2" name="file2" style="display: none;"  onchange='fileSelected2(this)'>
 </form>
 <!-- 文件上传form end-->
 <div class="wrapper wrapper-content">				
@@ -73,11 +98,31 @@
                         <div class="input-group input-append" style="width:100%">
                             <input type="text" id="picture" name="picture"  class="form-control required" readonly="readonly" aria-invalid="false" value="${advertisement.picture}">
                             <span class="input-group-btn">
-									<button type="button" id="photoButton" onclick="openFileDialog()" class="btn btn-primary "><i class="fa fa-cloud-upload"></i></button>
+									<button type="button"  onclick="openFileDialog()" class="btn btn-primary "><i class="fa fa-cloud-upload"></i></button>
 								</span>
                         </div>
                     </div>
 				</div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label"><font color="red">*</font>内容：</label>
+                    <div class="col-sm-10">
+                        <div class="input-group input-append" style="width:100%">
+                            <input type="text" id="content" name="content"  class="form-control required" readonly="readonly" aria-invalid="false" value="${advertisement.content}">
+                            <span class="input-group-btn">
+                                        <button type="button"  onclick="openFileDialog2()" class="btn btn-primary "><i class="fa fa-cloud-upload"></i></button>
+                                    </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label"><font color="red">*</font>类型：</label>
+                    <div class="col-sm-10">
+                        <form:select path="type" class="form-control required">
+                            <form:option value="" label=""/>
+                            <form:options items="${fns:getDictList('bas_advertisement_type')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+                        </form:select>
+                    </div>
+                </div>
 				<div class="form-group">
 					<label class="col-sm-2 control-label">状态：</label>
 					<div class="col-sm-10">

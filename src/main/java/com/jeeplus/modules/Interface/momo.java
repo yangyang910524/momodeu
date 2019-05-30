@@ -20,21 +20,17 @@ import com.jeeplus.modules.publiccours.entity.PublicCourse;
 import com.jeeplus.modules.publiccours.service.PublicCourseService;
 import com.jeeplus.modules.scoreexchange.entity.ScoreExchange;
 import com.jeeplus.modules.scoreexchange.service.ScoreExchangeService;
+import com.jeeplus.modules.scoreexchangerecord.entity.ScoreExchangeRecord;
+import com.jeeplus.modules.scoreexchangerecord.service.ScoreExchangeRecordService;
 import com.jeeplus.modules.scorerecord.entity.ScoreRecord;
 import com.jeeplus.modules.scorerecord.service.ScoreRecordService;
 import com.jeeplus.modules.signuponline.entity.SignUpOnLine;
 import com.jeeplus.modules.signuponline.service.SignUpOnLineService;
 import com.jeeplus.modules.statistics.entity.Statistics;
 import com.jeeplus.modules.statistics.service.StatisticsService;
-import com.jeeplus.modules.sys.entity.Classes;
-import com.jeeplus.modules.sys.entity.CouresOffice;
-import com.jeeplus.modules.sys.entity.User;
-import com.jeeplus.modules.sys.entity.UserHomework;
+import com.jeeplus.modules.sys.entity.*;
 import com.jeeplus.modules.sys.mapper.UserMapper;
-import com.jeeplus.modules.sys.service.ClassesService;
-import com.jeeplus.modules.sys.service.CouresOfficeService;
-import com.jeeplus.modules.sys.service.SystemService;
-import com.jeeplus.modules.sys.service.UserHomeworkService;
+import com.jeeplus.modules.sys.service.*;
 import com.jeeplus.modules.sys.utils.DictUtils;
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.springframework.stereotype.Controller;
@@ -46,6 +42,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -86,6 +83,10 @@ public class momo {
     private CourseDataPlayRecordService courseDataPlayRecordService;
     @Resource
     private CourseDataService courseDataService;
+    @Resource
+    private ScoreExchangeRecordService scoreExchangeRecordService;
+    @Resource
+    private DictTypeService dictTypeService;
 
     /**
      * @Description 登录
@@ -667,6 +668,12 @@ public class momo {
                 j.setMsg("未获取到文件地址!");
                 return j;
             }
+            if(params.get("startRecordingTime")==null||"".equals(params.get("startRecordingTime"))){
+                j.setSuccess(false);
+                j.setErrorCode("10002");
+                j.setMsg("未获取到开始录音时间!");
+                return j;
+            }
 
             UserHomework userHomework= userHomeworkService.get(params.get("id"));
             if(userHomework==null){
@@ -676,11 +683,14 @@ public class momo {
                 return j;
             }
 
+            userHomework.setFile(params.get("fileUrl"));
+            userHomework.setStartRecordingTime(params.get("startRecordingTime"));
             if("0".equals(userHomework.getState())){
                //首次完成作业
                 userHomework.setState("1");
-                userHomework.setFile(params.get("fileUrl"));
                 userHomework.setFinishDate(new Date());
+                userHomework.setCreateBy(user);
+                userHomework.setUpdateBy(user);
                 userHomeworkService.save(userHomework);
                 //学生积分加1
                 int oldScore=user.getScore();
@@ -698,8 +708,8 @@ public class momo {
                 scoreRecord.setUser(operator);
                 scoreRecordService.save(scoreRecord);
             }else{
+                userHomework.setUpdateBy(user);
                 //再次修改作业
-                userHomework.setFile(params.get("fileUrl"));
                 userHomeworkService.save(userHomework);
             }
 
@@ -1296,6 +1306,198 @@ public class momo {
             j.put("oldScore",String.valueOf(oldScore));
             j.put("addScore",String.valueOf(params.get("addScore")));
             j.put("newScore",String.valueOf(newScore));
+        } catch (Exception e) {
+            e.printStackTrace();
+            j.setSuccess(false);
+            j.setErrorCode("10001");
+            j.setMsg("数据异常!");
+        }
+        return j;
+    }
+
+    /**
+     * @Description 积分兑换
+     **/
+    @ResponseBody
+    @RequestMapping(value= "/momo/scoreExchangeSave" , method = RequestMethod.POST)
+    public AjaxUserJson scoreExchangeSave(@RequestBody Map<String,String> params)  {
+        AjaxUserJson j = new AjaxUserJson();
+        try {
+            j=systemService.checkUser(params.get("userid"),j);
+            //校验用户信息
+            if(!j.isSuccess()){
+                return j;
+            }
+            User user=j.getUser();
+
+            ScoreExchange scoreExchange=scoreExchangeService.get(params.get("scoreExchange"));
+            if(scoreExchange==null||scoreExchange.getId()==null||"".equals(scoreExchange.getId())){
+                j.setSuccess(false);
+                j.setErrorCode("10002");
+                j.setMsg("未获取到积分兑换物品!");
+                return j;
+            }
+
+            Integer oldScore=user.getScore();
+            Integer scoreExchangeScore=Integer.valueOf(scoreExchange.getScore());
+            Integer newScore=user.getScore()-scoreExchangeScore;
+
+            if(newScore<0){
+                j.setSuccess(false);
+                j.setErrorCode("10003");
+                j.setMsg("积分不足!");
+                return j;
+            }
+
+            //保存积分兑换记录
+            ScoreExchangeRecord scoreExchangeRecord=new ScoreExchangeRecord();
+            scoreExchangeRecord.setScoreExchange(scoreExchange);
+            scoreExchangeRecord.setUser(user);
+            scoreExchangeRecord.setCreateBy(user);
+            scoreExchangeRecord.setUpdateBy(user);
+            scoreExchangeRecordService.save(scoreExchangeRecord);
+
+            //保存积分修改记录
+            ScoreRecord scoreRecord=new ScoreRecord();
+            scoreRecord.setUser(user);
+            scoreRecord.setCreateBy(user);
+            scoreRecord.setUpdateBy(user);
+            user.setScore(newScore);
+            scoreRecord.setRemarks("兑换物品："+scoreExchange.getName());
+            systemService.saveUser(user);
+            scoreRecord.setOldScore(String.valueOf(oldScore));
+            scoreRecord.setNewScore(String.valueOf(newScore));
+            scoreRecordService.save(scoreRecord);
+
+            j.setSuccess(true);
+            j.setErrorCode("-1");
+            j.setMsg("操作成功!");
+            j.setUser(user);
+            j.put("oldScore",String.valueOf(oldScore));
+            j.put("scoreExchangeScore",String.valueOf(scoreExchangeScore));
+            j.put("newScore",String.valueOf(newScore));
+        } catch (Exception e) {
+            e.printStackTrace();
+            j.setSuccess(false);
+            j.setErrorCode("10001");
+            j.setMsg("数据异常!");
+        }
+        return j;
+    }
+
+    /**
+     * @Description 积分兑换记录列表
+     **/
+    @ResponseBody
+    @RequestMapping(value= "/momo/scoreExchangeRecordList" , method = RequestMethod.POST)
+    public AjaxUserJson scoreExchangeRecordList(@RequestBody Map<String,String> params)  {
+        AjaxUserJson j = new AjaxUserJson();
+        try {
+            j=systemService.checkUser(params.get("userid"),j);
+            //校验用户信息
+            if(!j.isSuccess()){
+                return j;
+            }
+            User user=j.getUser();
+            //组装参数
+            ScoreExchangeRecord scoreExchangeRecord=new ScoreExchangeRecord();
+            scoreExchangeRecord.setUser(user);
+
+            if(params.get("isPage")==null||StringUtils.isEmpty(params.get("isPage").toString())){
+                params.put("isPage","0");
+            }
+
+            if("1".equals(params.get("isPage").toString())){
+                Page<ScoreExchangeRecord> p=new Page<ScoreExchangeRecord>();
+                if(params.get("pageNo")==null||StringUtils.isEmpty(params.get("pageNo").toString())){
+                    p.setPageNo(1);
+                }else{
+                    p.setPageNo(Integer.valueOf(params.get("pageNo").toString()));
+                }
+                if(params.get("pageSize")==null||StringUtils.isEmpty(params.get("pageSize").toString())){
+                    p.setPageSize(10);
+                }else{
+                    p.setPageSize(Integer.valueOf(params.get("pageSize").toString()));
+                }
+
+                Page<ScoreExchangeRecord> pages = scoreExchangeRecordService.findPage(p,scoreExchangeRecord);
+                j.put("count",pages.getCount());
+                j.put("pageNo",pages.getPageNo());
+                j.put("pageSize",pages.getPageSize());
+                j.put("list",pages.getList());
+            }else{
+                List<ScoreExchangeRecord> list=scoreExchangeRecordService.findList(scoreExchangeRecord);
+                j.put("count",list.size());
+                j.put("list",list);
+                j.put("pageNo","");
+                j.put("pageSize","");
+            }
+            j.setSuccess(true);
+            j.setErrorCode("-1");
+            j.setMsg("查询成功!");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            j.setSuccess(false);
+            j.setErrorCode("10001");
+            j.setMsg("数据异常!");
+        }
+        return j;
+    }
+
+    /**
+     * @Description 增加接口-根据字典表类型获取列表
+     **/
+    @ResponseBody
+    @RequestMapping(value= "/momo/getDictList" , method = RequestMethod.POST)
+    public AjaxUserJson getDictLabels(@RequestBody Map<String,String> params)  {
+        AjaxUserJson j = new AjaxUserJson();
+        try {
+            if(params.get("type")==null||"".equals(params.get("type"))){
+                j.setSuccess(false);
+                j.setErrorCode("10002");
+                j.setMsg("无效字典表类型!");
+                return j;
+            }
+            List<DictValue> list = DictUtils.getDictList(params.get("type").toString());
+            j.put("list",list==null?new ArrayList<DictValue>():list);
+            j.setSuccess(true);
+            j.setErrorCode("-1");
+            j.setMsg("查询成功!");
+        } catch (Exception e) {
+            e.printStackTrace();
+            j.setSuccess(false);
+            j.setErrorCode("10001");
+            j.setMsg("数据异常!");
+        }
+        return j;
+    }
+
+    /**
+     * @Description 增加接口-根据字典表类型获取列表
+     **/
+    @ResponseBody
+    @RequestMapping(value= "/momo/getDictLabel" , method = RequestMethod.POST)
+    public AjaxUserJson getDictLabel(@RequestBody Map<String,String> params)  {
+        AjaxUserJson j = new AjaxUserJson();
+        try {
+            if(params.get("type")==null||"".equals(params.get("type"))){
+                j.setSuccess(false);
+                j.setErrorCode("10002");
+                j.setMsg("无效字典表类型!");
+                return j;
+            }
+            if(params.get("value")==null||"".equals(params.get("value"))){
+                j.setSuccess(false);
+                j.setErrorCode("10002");
+                j.setMsg("无效字典表值!");
+                return j;
+            }
+            String label = DictUtils.getDictLabel(params.get("value").toString(),params.get("type").toString(),"");
+            j.put("label",label);
+            j.setSuccess(true);
+            j.setErrorCode("-1");
+            j.setMsg("查询成功!");
         } catch (Exception e) {
             e.printStackTrace();
             j.setSuccess(false);

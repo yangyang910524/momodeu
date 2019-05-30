@@ -24,7 +24,15 @@ public class Notice extends DataEntity<Notice> {
     private Date issueTime;		// 发布时间
     private Date beginIssueTime;		// 开始 发布时间
     private Date endIssueTime;		// 结束 发布时间
+    private String picture;//内容图片
 
+    public String getPicture() {
+        return picture;
+    }
+
+    public void setPicture(String picture) {
+        this.picture = picture;
+    }
 
     public Date getBeginIssueTime() {
         return beginIssueTime;

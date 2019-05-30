@@ -3,11 +3,11 @@
  */
 package com.jeeplus.modules.advertisement.entity;
 
-import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
-
-import com.jeeplus.core.persistence.DataEntity;
 import com.jeeplus.common.utils.excel.annotation.ExcelField;
+import com.jeeplus.core.persistence.DataEntity;
+
+import java.util.Date;
 
 /**
  * 广告信息Entity
@@ -22,8 +22,26 @@ public class Advertisement extends DataEntity<Advertisement> {
 	private Date issueTime;		// 发布时间
 	private Date beginIssueTime;		// 开始 发布时间
 	private Date endIssueTime;		// 结束 发布时间
-	
-	public Advertisement() {
+    private String type;//广告类型
+    private String content;//内容图片
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public Advertisement() {
 		super();
 	}
 
