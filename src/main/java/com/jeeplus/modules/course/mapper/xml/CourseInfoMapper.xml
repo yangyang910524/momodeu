@@ -10,7 +10,7 @@
         <result property="state" column="state" />
 		<association property="hasChildren" column="id" select="hasChildren" />
     </resultMap>
-    
+
 	<sql id="courseInfoColumns">
 		ifnull(a.id,'') AS "id",
 		ifnull(a.create_by,'') AS "createBy.id",
@@ -28,24 +28,24 @@
 		ifnull(a.level,'') AS "level",
 		case when a.title_type='1' then ifnull(a.state,'') else ifnull(p.state,'') end  AS "state"
 	</sql>
-	
 
-	
+
+
 
 	<sql id="courseInfoJoins">
 		left join course_info p on a.parent_id=p.id
 	</sql>
 
 	<select id="get" resultType="CourseInfo">
-		SELECT 
+		SELECT
 			<include refid="courseInfoColumns"/>
 		FROM course_info a
 		<include refid="courseInfoJoins"/>
 		WHERE a.id = #{id}
 	</select>
-	
+
 	<select id="findList" resultType="CourseInfo">
-		SELECT 
+		SELECT
 			<include refid="courseInfoColumns"/>
 		FROM course_info a
 		<include refid="courseInfoJoins"/>
@@ -56,13 +56,13 @@
 				AND a.parent_id = #{parent.id}
 			</if>
 			<if test="parentIds != null and parentIds != ''">
-				AND a.parent_ids LIKE 
+				AND a.parent_ids LIKE
 					<if test="dbName == 'oracle'">'%'||#{parentIds}||'%'</if>
 					<if test="dbName == 'mssql'">'%'+#{parentIds}+'%'</if>
 					<if test="dbName == 'mysql'">concat('%',#{parentIds},'%')</if>
 			</if>
 			<if test="name != null and name != ''">
-				AND a.name LIKE 
+				AND a.name LIKE
 					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
 					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
 					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
@@ -70,9 +70,9 @@
 		</where>
 		ORDER BY cast( a.sort   as   SIGNED   INTEGER) ASC
 	</select>
-	
+
 	<select id="findAllList" resultType="CourseInfo">
-		SELECT 
+		SELECT
 			<include refid="courseInfoColumns"/>
 		FROM course_info a
 		<include refid="courseInfoJoins"/>
@@ -82,19 +82,19 @@
 		</where>
 		ORDER BY cast( a.sort   as   SIGNED   INTEGER) ASC
 	</select>
-	
-	<select id="getChildren" parameterType="String" resultMap="courseInfoResult">  
+
+	<select id="getChildren" parameterType="String" resultMap="courseInfoResult">
         select
           <include refid="courseInfoColumns"/>
         from course_info a
         <include refid="courseInfoJoins"/>
         where a.parent_id = #{id}  ORDER BY cast( a.sort   as   SIGNED   INTEGER) ASC
-    </select> 
-     
-    <select id="hasChildren" parameterType="String" resultType="Boolean">  
+    </select>
+
+    <select id="hasChildren" parameterType="String" resultType="Boolean">
          select case when exists(select 1 from course_info where parent_id = #{id}) then 1 else 0 end ${dual}
     </select>
-    
+
 	<select id="findByParentIdsLike" resultType="CourseInfo">
 		SELECT
 			a.id,
@@ -108,7 +108,7 @@
 		</where>
 		ORDER BY cast( a.sort   as   SIGNED   INTEGER) ASC
 	</select>
-	
+
 	<insert id="insert">
 		INSERT INTO course_info(
 			id,
@@ -144,9 +144,9 @@
 			#{state}
 		)
 	</insert>
-	
+
 	<update id="update">
-		UPDATE course_info SET 	
+		UPDATE course_info SET
 			update_by = #{updateBy.id},
 			update_date = #{updateDate},
 			remarks = #{remarks},
@@ -160,34 +160,34 @@
 			state = #{state}
 		WHERE id = #{id}
 	</update>
-	
+
 	<update id="updateParentIds">
-		UPDATE course_info SET 
-			parent_id = #{parent.id}, 
+		UPDATE course_info SET
+			parent_id = #{parent.id},
 			parent_ids = #{parentIds}
 		WHERE id = #{id}
 	</update>
-	
+
 	<!--物理删除-->
 	<update id="delete">
 		DELETE FROM course_info
-		WHERE id = #{id} OR parent_ids LIKE 
-		<if test="dbName == 'oracle'">'%,'||#{id}||',%'</if>
-		<if test="dbName == 'mssql'">'%,'+#{id}+',%'</if>
-        <if test="dbName == 'mysql'">CONCAT('%,', #{id}, ',%')</if>
-	</update>
-	
-	<!--逻辑删除-->
-	<update id="deleteByLogic">
-		UPDATE course_info SET 
-			del_flag = #{DEL_FLAG_DELETE}
-		WHERE id = #{id} OR parent_ids LIKE 
+		WHERE id = #{id} OR parent_ids LIKE
 		<if test="dbName == 'oracle'">'%,'||#{id}||',%'</if>
 		<if test="dbName == 'mssql'">'%,'+#{id}+',%'</if>
         <if test="dbName == 'mysql'">CONCAT('%,', #{id}, ',%')</if>
 	</update>
 
-	<select id="findChapterList" resultType="CourseInfo">
+	<!--逻辑删除-->
+	<update id="deleteByLogic">
+		UPDATE course_info SET
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id} OR parent_ids LIKE
+		<if test="dbName == 'oracle'">'%,'||#{id}||',%'</if>
+		<if test="dbName == 'mssql'">'%,'+#{id}+',%'</if>
+        <if test="dbName == 'mysql'">CONCAT('%,', #{id}, ',%')</if>
+	</update>
+
+	<select id="findChapterList" resultType="com.jeeplus.modules.course.entity.CourseInfo">
 		SELECT
 			a.id AS "id",
 			a.create_by AS "createBy.id",
@@ -213,7 +213,10 @@
 			AND a.title_type='2'
 			<if test="office!=null and office.id != null and office.id != ''">
 				AND EXISTS (
-					select 1 from sys_coures_office sco where sco.couresid=a.id
+					select 1 from sys_coures_office sco
+                    left join course_data cd on sco.couresid=cd.id
+                    where cd.courseid=a.id
+                    and sco.officeid=#{office.id}
 				)
 			</if>
 			<if test="state != null and state != ''">
@@ -230,11 +233,8 @@
 				<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
 			</if>
 
-			<if test="parent!=null and parent.name != null and parent.name != ''">
-				AND p.name LIKE
-				<if test="dbName == 'oracle'">'%'||#{parent.name}||'%'</if>
-				<if test="dbName == 'mssql'">'%'+#{parent.name}+'%'</if>
-				<if test="dbName == 'mysql'">concat('%',#{parent.name},'%')</if>
+			<if test="father!=null and father.name != null and father.name != ''">
+				AND p.name LIKE concat('%',#{father.name},'%')
 			</if>
 		</where>
 		ORDER BY cast( p.sort   as   SIGNED   INTEGER) ASC,cast( a.sort   as   SIGNED   INTEGER) ASC

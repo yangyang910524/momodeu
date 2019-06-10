@@ -75,6 +75,9 @@
             <if test="courseInfo != null  and courseInfo.name != null and courseInfo.name != ''">
                 AND zj.name LIKE CONCAT('%', #{courseInfo.name}, '%')
             </if>
+            <if test="courseInfo != null  and courseInfo.id != null and courseInfo.id != ''">
+                AND zj.id=#{courseInfo.id}
+            </if>
 
             <if test="father != null  and father.level != null and father.level != ''">
                 AND kc.level = #{father.level}

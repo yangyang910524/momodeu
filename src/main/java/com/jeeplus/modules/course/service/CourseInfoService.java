@@ -52,16 +52,22 @@ public class CourseInfoService extends TreeService<CourseInfoMapper, CourseInfo>
 
 
 	public Page<CourseInfo> findChapterList(Page<CourseInfo> page, CourseInfo courseInfo) {
-		dataRuleFilter(courseInfo);
-		// 设置分页参数
-		courseInfo.setPage(page);
-		// 执行分页查询
-		page.setList(courseInfoMapper.findChapterList(courseInfo));
-		return page;
-	}
+        dataRuleFilter(courseInfo);
+        // 设置分页参数
+        courseInfo.setPage(page);
+        // 执行分页查询
+        page.setList(courseInfoMapper.findChapterList(courseInfo));
+        return page;
+    }
+
+    public List<CourseInfo> findChapterList(CourseInfo courseInfo) {
+        return courseInfoMapper.findChapterList(courseInfo);
+    }
 
 	@Transactional(readOnly = false)
 	public void release(CourseInfo courseInfo) {
 		courseInfoMapper.release(courseInfo);
 	}
+
+
 }

@@ -11,6 +11,7 @@ import com.jeeplus.modules.advertisement.service.AdvertisementService;
 import com.jeeplus.modules.course.entity.CourseData;
 import com.jeeplus.modules.course.entity.CourseInfo;
 import com.jeeplus.modules.course.service.CourseDataService;
+import com.jeeplus.modules.course.service.CourseInfoService;
 import com.jeeplus.modules.coursedataplayrecord.entity.CourseDataPlayRecord;
 import com.jeeplus.modules.coursedataplayrecord.service.CourseDataPlayRecordService;
 import com.jeeplus.modules.homework.entity.Homework;
@@ -30,7 +31,10 @@ import com.jeeplus.modules.statistics.entity.Statistics;
 import com.jeeplus.modules.statistics.service.StatisticsService;
 import com.jeeplus.modules.sys.entity.*;
 import com.jeeplus.modules.sys.mapper.UserMapper;
-import com.jeeplus.modules.sys.service.*;
+import com.jeeplus.modules.sys.service.ClassesService;
+import com.jeeplus.modules.sys.service.CouresOfficeService;
+import com.jeeplus.modules.sys.service.SystemService;
+import com.jeeplus.modules.sys.service.UserHomeworkService;
 import com.jeeplus.modules.sys.utils.DictUtils;
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.springframework.stereotype.Controller;
@@ -86,7 +90,7 @@ public class momo {
     @Resource
     private ScoreExchangeRecordService scoreExchangeRecordService;
     @Resource
-    private DictTypeService dictTypeService;
+    private CourseInfoService courseInfoService;
 
     /**
      * @Description 登录
@@ -364,13 +368,9 @@ public class momo {
                 co.setUserid(user.getId());
             }
 
-            if(params.get("level")==null||"".equals(params.get("level"))
-                    || "".equals(DictUtils.getDictLabel(params.get("level"),"bae_course_level",""))){
-                j.setSuccess(false);
-                j.setErrorCode("10002");
-                j.setMsg("未指定课程级别!");
-                return j;
-            }
+            CourseInfo courseInfo=new CourseInfo();
+            courseInfo.setId(params.get("chapterid"));
+            co.setCourseInfo(courseInfo);
 
             CourseInfo ci=new CourseInfo();
             ci.setState("1");
@@ -1507,4 +1507,74 @@ public class momo {
         }
         return j;
     }
+
+    /**
+     * @Description 我的章节
+     **/
+    @ResponseBody
+    @RequestMapping(value= "/momo/findChapterList" , method = RequestMethod.POST)
+    public AjaxUserJson findChapterList(@RequestBody Map<String,String> params)  {
+        AjaxUserJson j = new AjaxUserJson();
+        try {
+            j=systemService.checkUser(params.get("userid"),j);
+            //校验用户信息
+            if(!j.isSuccess()){
+                return j;
+            }
+            User user=j.getUser();
+            //组装参数
+            CourseInfo ci=new CourseInfo();
+            if(user==null||user.getOffice()==null||StringUtils.isEmpty(user.getOffice().getId())){
+                j.setSuccess(false);
+                j.setErrorCode("10002");
+                j.setMsg("学生未指定班级!");
+                return j;
+            }else{
+                ci.setOffice(user.getOffice());
+            }
+
+            ci.setState("1");
+            ci.setLevel(params.get("level"));
+
+            if(params.get("isPage")==null||StringUtils.isEmpty(params.get("isPage").toString())){
+                params.put("isPage","0");
+            }
+
+            if("1".equals(params.get("isPage").toString())){
+                Page<CourseInfo> p=new Page<CourseInfo>();
+                if(params.get("pageNo")==null||StringUtils.isEmpty(params.get("pageNo").toString())){
+                    p.setPageNo(1);
+                }else{
+                    p.setPageNo(Integer.valueOf(params.get("pageNo").toString()));
+                }
+                if(params.get("pageSize")==null||StringUtils.isEmpty(params.get("pageSize").toString())){
+                    p.setPageSize(10);
+                }else{
+                    p.setPageSize(Integer.valueOf(params.get("pageSize").toString()));
+                }
+
+                Page<CourseInfo> pages = courseInfoService.findChapterList(p,ci);
+                j.put("count",pages.getCount());
+                j.put("pageNo",pages.getPageNo());
+                j.put("pageSize",pages.getPageSize());
+                j.put("list",pages.getList());
+            }else{
+                List<CourseInfo> list=courseInfoService.findChapterList(ci);
+                j.put("count",list.size());
+                j.put("list",list);
+                j.put("pageNo","");
+                j.put("pageSize","");
+            }
+            j.setSuccess(true);
+            j.setErrorCode("-1");
+            j.setMsg("查询成功!");
+        } catch (Exception e) {
+            e.printStackTrace();
+            j.setSuccess(false);
+            j.setErrorCode("10001");
+            j.setMsg("数据异常!");
+        }
+        return j;
+    }
 }
+
