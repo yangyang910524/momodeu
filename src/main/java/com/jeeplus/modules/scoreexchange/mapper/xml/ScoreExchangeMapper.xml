@@ -12,7 +12,15 @@
 		ifnull(a.del_flag,'') AS "delFlag",
 		ifnull(a.score,'') AS "score",
 		ifnull(a.photo,'') AS "photo",
-		ifnull(a.name,'') AS "name"
+		ifnull(a.name,'') AS "name",
+		<choose>
+            <when test="exchangeUser!=null and exchangeUser.id!=null and exchangeUser.id!=''">
+              (select count(*) from score_exchange_record ser where ser.score_exchange=a.id and ser.userid=#{exchangeUser.id}) as exchangeTimes
+            </when>
+            <otherwise>
+              0 as exchangeTimes
+            </otherwise>
+        </choose>
 	</sql>
 	
 	<sql id="scoreExchangeJoins">

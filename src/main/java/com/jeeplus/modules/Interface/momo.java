@@ -159,6 +159,9 @@ public class momo {
                 return j;
             }
 
+            ScoreExchange scoreExchange=new ScoreExchange();
+            scoreExchange.setExchangeUser(j.getUser());
+
             if(params.get("isPage")==null||StringUtils.isEmpty(params.get("isPage").toString())){
                 params.put("isPage","0");
             }
@@ -175,13 +178,13 @@ public class momo {
                 }else{
                     p.setPageSize(Integer.valueOf(params.get("pageSize").toString()));
                 }
-                Page<ScoreExchange> pages = scoreExchangeService.findPage(p, new ScoreExchange());
+                Page<ScoreExchange> pages = scoreExchangeService.findPage(p,scoreExchange );
                 j.put("count",pages.getCount());
                 j.put("pageNo",pages.getPageNo());
                 j.put("pageSize",pages.getPageSize());
                 j.put("list",pages.getList());
             }else{
-                List<ScoreExchange> list=scoreExchangeService.findList(new ScoreExchange());
+                List<ScoreExchange> list=scoreExchangeService.findList(scoreExchange);
                 j.put("count",list.size());
                 j.put("list",list);
                 j.put("pageNo","");
