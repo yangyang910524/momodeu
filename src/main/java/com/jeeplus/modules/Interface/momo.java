@@ -961,10 +961,7 @@ public class momo {
             Advertisement advertisement= new Advertisement();
             advertisement.setState("1");
             //广告类型，选填
-            if(!(params.get("type")==null||"".equals(params.get("type"))
-                    || "".equals(DictUtils.getDictLabel(params.get("type"),"bas_advertisement_type","")))){
-                advertisement.setType(params.get("type"));
-            }
+            advertisement.setType(params.get("type"));
 
             if("1".equals(params.get("isPage").toString())){
                 Page<Advertisement> p=new Page<Advertisement>();
