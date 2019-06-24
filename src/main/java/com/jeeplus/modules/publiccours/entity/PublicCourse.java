@@ -18,8 +18,17 @@ public class PublicCourse extends DataEntity<PublicCourse> {
 	private String name;		// 课程名称
 	private String data;		// 课程内容
 	private String type;		// 课程类型
-	
-	public PublicCourse() {
+    private String cover;     //封面
+
+    public String getCover() {
+        return cover;
+    }
+
+    public void setCover(String cover) {
+        this.cover = cover;
+    }
+
+    public PublicCourse() {
 		super();
 	}
 

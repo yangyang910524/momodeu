@@ -12,6 +12,7 @@
 		ifnull(a.del_flag,'') AS "delFlag",
 		ifnull(a.picture,'') AS "picture",
 		ifnull(a.content,'') AS "content",
+		ifnull(a.title,'') AS "title",
 		ifnull(a.type,'') AS "type",
 		ifnull(a.state,'') AS "state",
 		a.issue_time AS "issueTime"
@@ -40,6 +41,12 @@
 			${dataScope}
             <if test="state != null and state != ''">
                 AND a.state = #{state}
+            </if>
+            <if test="title != null and title != ''">
+                AND a.title LIKE
+                <if test="dbName == 'oracle'">'%'||#{title}||'%'</if>
+                <if test="dbName == 'mssql'">'%'+#{title}+'%'</if>
+                <if test="dbName == 'mysql'">concat('%',#{title},'%')</if>
             </if>
             <if test="type != null and type != ''">
                 AND a.type = #{type}
@@ -87,7 +94,8 @@
 			type,
 			content,
 			state,
-			issue_time
+			issue_time,
+			title
 		) VALUES (
 			#{id},
 			#{createBy.id},
@@ -100,7 +108,8 @@
 			#{type},
 			#{content},
 			#{state},
-			#{issueTime}
+			#{issueTime},
+			#{title}
 		)
 	</insert>
 	
@@ -113,7 +122,8 @@
 			content = #{content},
 			type = #{type},
 			state = #{state},
-			issue_time = #{issueTime}
+			issue_time = #{issueTime},
+			title = #{title}
 		WHERE id = #{id}
 	</update>
 	

@@ -91,7 +91,12 @@
 		<div class="panel-body">
 		<form:form id="inputForm" modelAttribute="advertisement" action="${ctx}/advertisement/advertisement/save" method="post" class="form-horizontal">
 		<form:hidden path="id"/>
-
+                <div class="form-group">
+                    <label class="col-sm-2 control-label"><font color="red">*</font>标题：</label>
+                    <div class="col-sm-10">
+                        <form:input path="title" htmlEscape="false"    class="form-control required"/>
+                    </div>
+                </div>
 				<div class="form-group">
 					<label class="col-sm-2 control-label"><font color="red">*</font>图片：</label>
 					<div class="col-sm-10">
@@ -109,8 +114,8 @@
                         <div class="input-group input-append" style="width:100%">
                             <input type="text" id="content" name="content"  class="form-control required" readonly="readonly" aria-invalid="false" value="${advertisement.content}">
                             <span class="input-group-btn">
-                                        <button type="button"  onclick="openFileDialog2()" class="btn btn-primary "><i class="fa fa-cloud-upload"></i></button>
-                                    </span>
+                                <button type="button"  onclick="openFileDialog2()" class="btn btn-primary "><i class="fa fa-cloud-upload"></i></button>
+                            </span>
                         </div>
                     </div>
                 </div>

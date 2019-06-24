@@ -17,6 +17,7 @@ import java.util.Date;
 public class Advertisement extends DataEntity<Advertisement> {
 	
 	private static final long serialVersionUID = 1L;
+	private String title;       //标题
 	private String picture;		// 图片
 	private String state;		// 状态
 	private Date issueTime;		// 发布时间
@@ -24,6 +25,14 @@ public class Advertisement extends DataEntity<Advertisement> {
 	private Date endIssueTime;		// 结束 发布时间
     private String type;//广告类型
     private String content;//内容图片
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
     public String getType() {
         return type;

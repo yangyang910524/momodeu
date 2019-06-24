@@ -83,7 +83,12 @@ $(document).ready(function() {
                columns: [{
 		        checkbox: true
 		       
-		    }
+		    },{
+                   field: 'title',
+                   title: '标题',
+                   sortable: true,
+                   sortName: 'title'
+               }
 
                    ,{
                        field: 'picture',

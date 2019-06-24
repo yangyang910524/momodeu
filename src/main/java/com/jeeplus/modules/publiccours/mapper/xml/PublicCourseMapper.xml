@@ -12,7 +12,8 @@
 		ifnull(a.del_flag,'') AS "delFlag",
 		ifnull(a.name,'') AS "name",
 		ifnull(a.data,'') AS "data",
-		ifnull(a.type,'') AS "type"
+		ifnull(a.type,'') AS "type",
+		ifnull(a.cover,'') AS "cover"
 	</sql>
 	
 	<sql id="publicCourseJoins">
@@ -86,7 +87,8 @@
 			del_flag,
 			name,
 			data,
-			type
+			type,
+			cover
 		) VALUES (
 			#{id},
 			#{createBy.id},
@@ -97,7 +99,8 @@
 			#{delFlag},
 			#{name},
 			#{data},
-			#{type}
+			#{type},
+			#{cover}
 		)
 	</insert>
 	
@@ -108,7 +111,8 @@
 			remarks = #{remarks},
 			name = #{name},
 			data = #{data},
-			type = #{type}
+			type = #{type},
+			cover = #{cover}
 		WHERE id = #{id}
 	</update>
 	

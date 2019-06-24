@@ -21,6 +21,10 @@
 	<div id="search-collapse" class="collapse">
 		<div class="accordion-inner">
 			<form:form id="searchForm" modelAttribute="advertisement" class="form form-horizontal well clearfix">
+            <div class="col-xs-12 col-sm-6 col-md-4">
+                <label class="label-item single-overflow pull-left" title="标题：">标题：</label>
+                <form:input path="title" htmlEscape="false" maxlength="500"  class=" form-control"/>
+            </div>
 			 <div class="col-xs-12 col-sm-6 col-md-4">
 				<label class="label-item single-overflow pull-left" title="状态：">状态：</label>
 				<form:select path="state"  class="form-control m-b">
