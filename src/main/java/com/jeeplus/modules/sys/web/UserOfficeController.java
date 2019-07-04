@@ -12,10 +12,8 @@ import com.jeeplus.common.utils.excel.ImportExcel;
 import com.jeeplus.core.persistence.Page;
 import com.jeeplus.core.web.BaseController;
 import com.jeeplus.modules.sys.entity.UserOffice;
-import com.jeeplus.modules.sys.service.SystemService;
+import com.jeeplus.modules.sys.service.UserHomeworkService;
 import com.jeeplus.modules.sys.service.UserOfficeService;
-import org.apache.shiro.authz.annotation.Logical;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -43,7 +41,7 @@ public class UserOfficeController extends BaseController {
     @Autowired
     private UserOfficeService userOfficeService;
     @Autowired
-    private SystemService systemService;
+    private UserHomeworkService userHomeworkService;
 
 	@ModelAttribute
 	public UserOffice get(@RequestParam(required=false) String id) {
@@ -116,6 +114,10 @@ public class UserOfficeController extends BaseController {
 	public AjaxJson delete(UserOffice userOffice) {
 		AjaxJson j = new AjaxJson();
 		userOfficeService.delete(userOffice);
+        if("3".equals(userOffice.getUserType())) {
+            userHomeworkService.deleteUserHomeworkByState(userOffice);
+            userHomeworkService.cleanUserHomeworkOfficeId(userOffice);
+        }
 		j.setMsg("删除信息成功");
 		return j;
 	}
@@ -128,8 +130,14 @@ public class UserOfficeController extends BaseController {
 	public AjaxJson deleteAll(String ids) {
 		AjaxJson j = new AjaxJson();
 		String idArray[] =ids.split(",");
+        UserOffice uo=null;
 		for(String id : idArray){
-			userOfficeService.delete(userOfficeService.get(id));
+		    uo=userOfficeService.get(id);
+			userOfficeService.delete(uo);
+			if("3".equals(uo.getUserType())){
+                userHomeworkService.deleteUserHomeworkByState(uo);
+                userHomeworkService.cleanUserHomeworkOfficeId(uo);
+            }
 		}
 		j.setMsg("删除信息成功");
 		return j;
@@ -169,6 +177,11 @@ public class UserOfficeController extends BaseController {
                 }
                 userOffice.setUserType(userType);
                 userOfficeService.save(userOffice);
+                //班级中添加学生时：将该学生原有作业与新班级进行绑定，将班级所有作业下发给该学生一份（如果存在则不再次添加）。
+                if("3".equals(userOffice.getUserType())) {
+                    userHomeworkService.addUserHomeworkByOffice(userOffice);
+                    userHomeworkService.updateUserHomeworkOffice(userOffice);
+                }
             }
         }
         j.setMsg("绑定成功");

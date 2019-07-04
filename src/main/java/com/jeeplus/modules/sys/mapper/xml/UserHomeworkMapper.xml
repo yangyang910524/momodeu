@@ -47,9 +47,9 @@
 		left join homework h on h.id=a.homeworkid
 		left join sys_office so on so.id=a.officeid
 	</sql>
-	
-    
-	<select id="get" resultType="UserHomework" >
+
+
+    <select id="get" resultType="UserHomework" >
 		SELECT 
 			<include refid="userHomeworkColumns"/>
 		FROM sys_user_homework a
@@ -175,8 +175,8 @@
 			#{startRecordingTime}
 		)
 	</insert>
-	
-	<update id="update">
+
+    <update id="update">
 		UPDATE sys_user_homework SET 	
 			update_by = #{updateBy.id},
 			update_date = #{updateDate},
@@ -204,11 +204,57 @@
 			del_flag = #{DEL_FLAG_DELETE}
 		WHERE id = #{id}
 	</update>
-	
-	
-	<!-- 根据实体名称和字段名称和字段值获取唯一记录 -->
+
+
+    <!-- 根据实体名称和字段名称和字段值获取唯一记录 -->
 	<select id="findUniqueByProperty" resultType="UserHomework" statementType="STATEMENT">
 		select * FROM sys_user_homework  where ${propertyName} = '${value}'
 	</select>
-	
+
+    <delete id="deleteUserHomeworkByState">
+        delete from sys_user_homework where userid=#{userid} and officeid=#{officeid} and state in ('0','1')
+    </delete>
+
+
+    <update id="cleanUserHomeworkOfficeId">
+        update sys_user_homework set officeid=null where userid=#{userid} and officeid=#{officeid}
+    </update>
+
+
+    <insert id="addUserHomeworkByOffice">
+        INSERT INTO sys_user_homework(
+                    id,
+                    create_by,
+                    create_date,
+                    update_by,
+                    update_date,
+                    del_flag,
+                    state,
+                    userid,
+                    homeworkid,
+                    officeid
+                )
+        SELECT
+            UUID(),
+            #{createBy.id},
+            SYSDATE(),
+            #{createBy.id},
+            SYSDATE(),
+            '0',
+            '0',
+            #{userid},
+            sho.homeworkid,
+            #{officeid}
+        FROM
+            sys_homework_office sho
+        WHERE
+            officeid = #{officeid}
+        and not exists(
+            select 1 from sys_user_homework suh where sho.homeworkid=suh.homeworkid and userid=#{userid}
+        )
+    </insert>
+
+    <update id="updateUserHomeworkOffice">
+        update sys_user_homework set officeid=#{officeid} where userid=#{userid}
+    </update>
 </mapper>

@@ -147,18 +147,22 @@
             SYSDATE(),
             '0',
             '0',
-            userid,
+            suo.userid,
             #{homeworkid},
-            officeid
-        from sys_user_office
+            suo.officeid
+        from sys_user_office suo
         where
         user_type='3'
+        and not exists
+        (
+          select 1 from sys_user_homework suh where suh.userid=suo.userid and suh.homeworkid=#{homeworkid}
+        )
         and officeid=#{officeid}
 
     </insert>
 
     <delete id="deleteStudentHomework">
-        delete from sys_user_homework where homeworkid=#{homeworkid}
+        delete from sys_user_homework where homeworkid=#{homeworkid} and officeid=#{officeid}
     </delete>
 
 </mapper>
