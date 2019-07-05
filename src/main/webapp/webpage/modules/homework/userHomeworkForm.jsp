@@ -108,7 +108,7 @@
 				<div class="form-group">
 					<label class="col-sm-2 control-label">老师评语：</label>
 					<div class="col-sm-10">
-						<form:textarea path="comment" htmlEscape="false"    class="form-control required"/>
+						<form:textarea path="comment" htmlEscape="false"    class="form-control"/>
 					</div>
 				</div>
                 </c:if>
