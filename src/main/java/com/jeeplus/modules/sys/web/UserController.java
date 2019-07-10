@@ -15,8 +15,6 @@ import com.jeeplus.common.utils.excel.ExportExcel;
 import com.jeeplus.common.utils.excel.ImportExcel;
 import com.jeeplus.core.persistence.Page;
 import com.jeeplus.core.web.BaseController;
-import com.jeeplus.modules.scoreexchange.entity.ScoreExchange;
-import com.jeeplus.modules.scoreexchange.service.ScoreExchangeService;
 import com.jeeplus.modules.scorerecord.entity.ScoreRecord;
 import com.jeeplus.modules.scorerecord.service.ScoreRecordService;
 import com.jeeplus.modules.sys.entity.Office;
@@ -131,16 +129,6 @@ public class UserController extends BaseController {
 	@RequestMapping(value = "save")
 	public AjaxJson save(User user, HttpServletRequest request, Model model) {
         AjaxJson j = new AjaxJson();
-        if("1".equals(user.getId())){
-            j.setSuccess(false);
-            j.setMsg("超级管理员不能修改!");
-            return j;
-        }
-        if(Global.isDemoMode()){
-            j.setSuccess(false);
-            j.setMsg("演示模式，不允许操作!");
-            return j;
-        }
         // 修正引用赋值问题，不知道为何，Company和Office引用的一个实例地址，修改了一个，另外一个跟着修改。
         user.setCompany(new Office(request.getParameter("company.id")));
         user.setOffice(new Office(request.getParameter("office.id")));
