@@ -87,7 +87,6 @@
 		INSERT INTO sys_office(
 			id,
 			name,
-			sort,
 			create_by,
 			create_date,
 			update_by,
@@ -99,7 +98,6 @@
 		) VALUES (
 			#{id},
 			#{name},
-			#{sort},
 			#{createBy.id},
 			#{createDate},
 			#{updateBy.id},
@@ -114,7 +112,6 @@
 	<update id="update">
 		UPDATE sys_office SET 	
 			name = #{name},
-			sort = #{sort},
 			update_by = #{updateBy.id},
 			update_date = #{updateDate},
 			remarks = #{remarks},
