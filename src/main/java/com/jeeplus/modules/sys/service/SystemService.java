@@ -596,4 +596,32 @@ public class SystemService extends BaseService implements InitializingBean {
         j.setUser(user);
         return j;
     }
+
+    /**
+     * @Description 查询当前用户登录绑定机器码
+     **/
+    public LoginMc getLoginMcByUserid(String userid){
+        List<LoginMc> list = userMapper.findLoginMcByUserid(userid);
+        if(list==null||list.size()<1){
+            return null;
+        }else{
+            return list.get(0);
+        }
+    }
+
+    /**
+     * @Description 删除当前用户登录绑定的机器码
+     **/
+    @Transactional(readOnly = false)
+    public Integer deleteLoginMcByUserid(String userid){
+        return userMapper.deleteLoginMcByUserid(userid);
+    }
+
+    /**
+     * @Description 新增当前用户绑定机器码
+     **/
+    @Transactional(readOnly = false)
+    public Integer insertLoginMc(LoginMc loginMc){
+        return userMapper.insertLoginMc(loginMc);
+    }
 }

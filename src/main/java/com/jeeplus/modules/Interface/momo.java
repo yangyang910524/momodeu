@@ -2,6 +2,7 @@ package com.jeeplus.modules.Interface;
 
 import com.aliyun.oss.OSSClient;
 import com.jeeplus.common.config.Global;
+import com.jeeplus.common.json.AjaxJson;
 import com.jeeplus.common.json.AjaxUserJson;
 import com.jeeplus.common.utils.DateUtils;
 import com.jeeplus.common.utils.StringUtils;
@@ -112,6 +113,12 @@ public class momo {
                 j.setMsg("密码不能为空!");
                 return j;
             }
+            if(params.get("mc")==null||StringUtils.isEmpty(params.get("mc").toString())){
+                j.setSuccess(false);
+                j.setErrorCode("10002");
+                j.setMsg("机器码不能为空!");
+                return j;
+            }
 
             User user = userMapper.getByLoginName(new User(null, params.get("username")));
             if(user==null){
@@ -132,10 +139,51 @@ public class momo {
                 j.setMsg("无权限访问!");
                 return j;
             }
+            //根据userid与机器码判断是否多次登录：该账号已在其他机器上登录，请先注销！
+            LoginMc loginMc=systemService.getLoginMcByUserid(user.getId());
+            if(loginMc==null){
+                loginMc=new LoginMc();
+                loginMc.setMc(params.get("mc").toString());
+                loginMc.setUserid(user.getId());
+                systemService.insertLoginMc(loginMc);
+            }else if(!params.get("mc").toString().equals(loginMc.getMc())){
+                j.setSuccess(false);
+                j.setErrorCode("10003");
+                j.setMsg("该账号已在其他机器上登录，请先注销！");
+                return j;
+            }
+
             j.setSuccess(true);
             j.setErrorCode("-1");
             j.setMsg("登录成功!");
             j.put("user",user);
+        } catch (Exception e) {
+            e.printStackTrace();
+            j.setSuccess(false);
+            j.setErrorCode("10001");
+            j.setMsg("数据异常!");
+        }
+        return j;
+    }
+
+    /**
+     * @Description 登出
+     **/
+    @ResponseBody
+    @RequestMapping(value= "/momo/logout" , method = RequestMethod.POST)
+    public AjaxJson logout(@RequestBody Map<String,String> params, HttpServletRequest request)  {
+        AjaxJson j = new AjaxJson();
+        try {
+            if(params.get("userid")==null||StringUtils.isEmpty(params.get("userid").toString())){
+                j.setSuccess(false);
+                j.setErrorCode("10002");
+                j.setMsg("用户id不能为空!");
+                return j;
+            }
+            systemService.deleteLoginMcByUserid(params.get("userid").toString());
+            j.setSuccess(true);
+            j.setErrorCode("-1");
+            j.setMsg("退出成功!");
         } catch (Exception e) {
             e.printStackTrace();
             j.setSuccess(false);

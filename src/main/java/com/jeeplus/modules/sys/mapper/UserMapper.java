@@ -5,6 +5,7 @@ package com.jeeplus.modules.sys.mapper;
 
 import java.util.List;
 
+import com.jeeplus.modules.sys.entity.LoginMc;
 import org.apache.ibatis.annotations.Param;
 
 import com.jeeplus.core.persistence.BaseMapper;
@@ -116,4 +117,10 @@ public interface UserMapper extends BaseMapper<User> {
     List<User> findStudentListByOffice(@Param("officeid")String officeid);
 
     void updateScore(User user);
+
+    List<LoginMc> findLoginMcByUserid(String userid);
+
+    Integer deleteLoginMcByUserid(String userid);
+
+    Integer insertLoginMc(LoginMc loginMc);
 }
