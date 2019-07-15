@@ -10,6 +10,7 @@ import com.jeeplus.modules.sys.mapper.ClassesMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -20,6 +21,8 @@ import java.util.List;
 @Service
 @Transactional(readOnly = true)
 public class ClassesService extends CrudService<ClassesMapper, Classes> {
+    @Resource
+    private ClassesMapper classesMapper;
 
 	@Override
     public Classes get(String id) {
@@ -45,7 +48,10 @@ public class ClassesService extends CrudService<ClassesMapper, Classes> {
     @Override
 	@Transactional(readOnly = false)
 	public void delete(Classes classes) {
-		super.delete(classes);
+        classesMapper.delete(classes);
+        classesMapper.deleteUserOffice(classes.getId());
+        classesMapper.deleteCouresOffice(classes.getId());
+        classesMapper.deleteHomeworkOffice(classes.getId());
 	}
 
 }

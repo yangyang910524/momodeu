@@ -26,9 +26,9 @@
       left join (select officeid,userid from sys_user_office where user_type='1') suo on suo.officeid=a.id
       left join sys_user so on suo.userid=so.id
 	</sql>
-	
-    
-	<select id="get" resultType="Classes" >
+
+
+    <select id="get" resultType="Classes" >
 		SELECT 
 			<include refid="classesColumns"/>
 		FROM sys_office a
@@ -139,5 +139,16 @@
 	<select id="findUniqueByProperty" resultType="Classes" statementType="STATEMENT">
 		select * FROM sys_office  where ${propertyName} = '${value}'
 	</select>
-	
+
+
+    <delete id="deleteUserOffice">
+        delete from sys_user_office where officeid=#{officeid}
+    </delete>
+    <delete id="deleteCouresOffice">
+        delete from sys_coures_office where officeid=#{officeid}
+    </delete>
+    <delete id="deleteHomeworkOffice">
+        delete from sys_homework_office where officeid=#{officeid}
+    </delete>
+
 </mapper>

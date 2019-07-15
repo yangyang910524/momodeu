@@ -394,7 +394,7 @@ public class momo {
     }
 
     /**
-     * @Description 我的课程
+     * @Description 我的课程（用户所在班级绑定课程内容，一个课程内容一条数据）
      **/
     @ResponseBody
     @RequestMapping(value= "/momo/myCourseInfo" , method = RequestMethod.POST)
@@ -1614,6 +1614,76 @@ public class momo {
                 j.put("list",pages.getList());
             }else{
                 List<CourseInfo> list=courseInfoService.findChapterList(ci);
+                j.put("count",list.size());
+                j.put("list",list);
+                j.put("pageNo","");
+                j.put("pageSize","");
+            }
+            j.setSuccess(true);
+            j.setErrorCode("-1");
+            j.setMsg("查询成功!");
+        } catch (Exception e) {
+            e.printStackTrace();
+            j.setSuccess(false);
+            j.setErrorCode("10001");
+            j.setMsg("数据异常!");
+        }
+        return j;
+    }
+
+    /**
+     * @Description 我的课程（用户所在班级绑定课程，一个课程一条数据）
+     **/
+    @ResponseBody
+    @RequestMapping(value= "/momo/findCourseList" , method = RequestMethod.POST)
+    public AjaxUserJson findCourseList(@RequestBody Map<String,String> params)  {
+        AjaxUserJson j = new AjaxUserJson();
+        try {
+            j=systemService.checkUser(params.get("userid"),j);
+            //校验用户信息
+            if(!j.isSuccess()){
+                return j;
+            }
+            User user=j.getUser();
+            //组装参数
+            CourseInfo courseInfo=new CourseInfo();
+            if(user==null||user.getOffice()==null||StringUtils.isEmpty(user.getOffice().getId())){
+                j.setSuccess(false);
+                j.setErrorCode("10002");
+                j.setMsg("学生未指定班级!");
+                return j;
+            }else{
+                courseInfo.setOffice(user.getOffice());
+            }
+
+            courseInfo.setState("1");
+            //非必须参数
+            courseInfo.setLevel(params.get("level"));
+
+            if(params.get("isPage")==null||StringUtils.isEmpty(params.get("isPage").toString())){
+                params.put("isPage","0");
+            }
+
+            if("1".equals(params.get("isPage").toString())){
+                Page<CourseInfo> p=new Page<CourseInfo>();
+                if(params.get("pageNo")==null||StringUtils.isEmpty(params.get("pageNo").toString())){
+                    p.setPageNo(1);
+                }else{
+                    p.setPageNo(Integer.valueOf(params.get("pageNo").toString()));
+                }
+                if(params.get("pageSize")==null||StringUtils.isEmpty(params.get("pageSize").toString())){
+                    p.setPageSize(10);
+                }else{
+                    p.setPageSize(Integer.valueOf(params.get("pageSize").toString()));
+                }
+
+                Page<CourseInfo> pages = courseInfoService.findCourseList(p,courseInfo);
+                j.put("count",pages.getCount());
+                j.put("pageNo",pages.getPageNo());
+                j.put("pageSize",pages.getPageSize());
+                j.put("list",pages.getList());
+            }else{
+                List<CourseInfo> list=courseInfoService.findCourseList(courseInfo);
                 j.put("count",list.size());
                 j.put("list",list);
                 j.put("pageNo","");

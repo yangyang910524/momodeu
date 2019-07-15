@@ -19,6 +19,7 @@ public interface CourseInfoMapper extends TreeMapper<CourseInfo> {
 
 
     List<CourseInfo> findChapterList(CourseInfo courseInfo);
+    List<CourseInfo> findCourseList(CourseInfo courseInfo);
 
     void release(CourseInfo courseInfo);
 }

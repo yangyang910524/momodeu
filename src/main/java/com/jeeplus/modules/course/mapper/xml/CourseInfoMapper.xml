@@ -189,24 +189,24 @@
 
 	<select id="findChapterList" resultType="com.jeeplus.modules.course.entity.CourseInfo">
 		SELECT
-			a.id AS "id",
-			a.create_by AS "createBy.id",
-			a.create_date AS "createDate",
-			a.update_by AS "updateBy.id",
-			a.update_date AS "updateDate",
-			a.remarks AS "remarks",
-			a.del_flag AS "delFlag",
-			a.parent_ids AS "parentIds",
-			a.name AS "name",
-			a.sort AS "sort",
-			a.title_type AS "titleType",
-			a.parent_id AS "father.id",
-			p.name AS "father.name",
-			p.cover AS "father.cover",
-			p.level AS "father.level",
-			p.state AS "father.state",
-			p.title_type AS "father.titleType",
-			p.sort AS "father.sort"
+            ifnull(a.id,'') AS "id",
+            ifnull(a.create_by,'') AS "createBy.id",
+            a.create_date AS "createDate",
+            ifnull(a.update_by,'') AS "updateBy.id",
+            a.update_date AS "updateDate",
+            ifnull(a.remarks,'') AS "remarks",
+            ifnull(a.del_flag,'') AS "delFlag",
+            ifnull(a.parent_ids,'') AS "parentIds",
+            ifnull(a.name,'') AS "name",
+            ifnull(a.sort,'') AS "sort",
+            ifnull(a.title_type,'') AS "titleType",
+            ifnull(a.parent_id,'') AS "father.id",
+            ifnull(p.name,'') AS "father.name",
+            ifnull(p.cover,'') AS "father.cover",
+            ifnull(p.level,'') AS "father.level",
+            ifnull(p.state,'') AS "father.state",
+            ifnull(p.title_type,'') AS "father.titleType",
+            ifnull(p.sort,'') AS "father.sort"
 		FROM course_info a
 		<include refid="courseInfoJoins"/>
 		<where>
@@ -245,4 +245,50 @@
 			state = #{state}
 		WHERE id = #{id}
 	</update>
+
+    <select id="findCourseList" resultType="com.jeeplus.modules.course.entity.CourseInfo">
+        SELECT
+        ifnull(a.id,'') AS "id",
+        ifnull(a.create_by,'') AS "createBy.id",
+        a.create_date AS "createDate",
+        ifnull(a.update_by,'') AS "updateBy.id",
+        a.update_date AS "updateDate",
+        ifnull(a.remarks,'') AS "remarks",
+        ifnull(a.del_flag,'') AS "delFlag",
+        ifnull(a.parent_ids,'') AS "parentIds",
+        ifnull(a.name,'') AS "name",
+        ifnull(a.sort,'') AS "sort",
+        ifnull(a.title_type,'') AS "titleType",
+        ifnull(a.cover,'') AS "cover",
+        ifnull(a.level,'') AS "level",
+        ifnull(a.state,'') AS "state",
+        ifnull(a.title_type,'') AS "titleType"
+        FROM course_info a
+        <where>
+            AND a.title_type='1'
+            <if test="office!=null and office.id != null and office.id != ''">
+                AND EXISTS (
+                select 1 from sys_coures_office sco
+                left join course_data cd on sco.couresid=cd.id
+                left join course_info ci on cd.courseid=ci.id
+                where ci.parent_id = a.id
+                and sco.officeid=#{office.id}
+                )
+            </if>
+            <if test="state != null and state != ''">
+                AND a.state =#{state}
+            </if>
+            <if test="level != null and level != ''">
+                AND a.level =#{level}
+            </if>
+
+            <if test="name != null and name != ''">
+                AND a.name LIKE
+                <if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+                <if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+                <if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+            </if>
+        </where>
+        ORDER BY cast( a.sort   as   SIGNED   INTEGER) ASC
+    </select>
 </mapper>

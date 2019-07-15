@@ -14,5 +14,8 @@ import com.jeeplus.modules.sys.entity.Classes;
  */
 @MyBatisMapper
 public interface ClassesMapper extends BaseMapper<Classes> {
-	
+
+    Integer deleteUserOffice(String officeid);
+    Integer deleteCouresOffice(String officeid);
+    Integer deleteHomeworkOffice(String officeid);
 }

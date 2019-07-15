@@ -70,4 +70,16 @@ public class CourseInfoService extends TreeService<CourseInfoMapper, CourseInfo>
 	}
 
 
+    public Page<CourseInfo> findCourseList(Page<CourseInfo> page, CourseInfo courseInfo) {
+        dataRuleFilter(courseInfo);
+        // 设置分页参数
+        courseInfo.setPage(page);
+        // 执行分页查询
+        page.setList(courseInfoMapper.findCourseList(courseInfo));
+        return page;
+    }
+
+    public List<CourseInfo> findCourseList(CourseInfo courseInfo) {
+        return courseInfoMapper.findCourseList(courseInfo);
+    }
 }
