@@ -33,6 +33,11 @@
             $("#file2").click();
         }
 
+        function openFileDialog3()
+        {
+            $("#file3").click();
+        }
+
         function fileSelected(obj){
             var index =jp.loading("文件上传中……")
             var file=obj.files[0];//获取文件流
@@ -70,6 +75,25 @@
                 jp.info("上传失败");
             });
         }
+
+        function fileSelected3(obj){
+            var index =jp.loading("文件上传中……")
+            var file=obj.files[0];//获取文件流
+            var filename= obj.value;
+            var suffix=(filename.substr(filename.lastIndexOf("."))).toLowerCase();
+            if(suffix!=".mp3"&&suffix!=".mp4") {
+                jp.info("您上传视频的类型不符合(.ma3|.mp4)！");
+                return false;
+            }
+            var path = "advertisement_video/${fns:getUser()}/"+timestamp()+suffix;
+            fileUpload(file,path,function (data) {
+                $("#video").val(data);
+                $("#video").blur();
+                jp.close(index);
+            },function () {
+                jp.info("上传失败");
+            });
+        }
 	</script>
 </head>
 <body>
@@ -77,6 +101,7 @@
 <form id= "uploadForm" action= "" method= "post" enctype ="multipart/form-data">
     <input type="file" id="file" name="file" style="display: none;"  onchange='fileSelected(this)'>
     <input type="file" id="file2" name="file2" style="display: none;"  onchange='fileSelected2(this)'>
+    <input type="file" id="file3" name="file3" style="display: none;"  onchange='fileSelected3(this)'>
 </form>
 <!-- 文件上传form end-->
 <div class="wrapper wrapper-content">				
@@ -117,6 +142,23 @@
                                 <button type="button"  onclick="openFileDialog2()" class="btn btn-primary "><i class="fa fa-cloud-upload"></i></button>
                             </span>
                         </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label"><font color="red">*</font>视频：</label>
+                    <div class="col-sm-10">
+                        <div class="input-group input-append" style="width:100%">
+                            <input type="text" id="video" name="video"  class="form-control required" readonly="readonly" aria-invalid="false" value="${advertisement.video}">
+                            <span class="input-group-btn">
+                                    <button type="button"  onclick="openFileDialog3()" class="btn btn-primary "><i class="fa fa-cloud-upload"></i></button>
+                                </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label"><font color="red">*</font>链接：</label>
+                    <div class="col-sm-10">
+                        <form:input path="link" htmlEscape="false"    class="form-control required"/>
                     </div>
                 </div>
                 <div class="form-group">

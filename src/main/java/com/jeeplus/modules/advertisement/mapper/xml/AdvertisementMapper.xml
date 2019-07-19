@@ -15,7 +15,9 @@
 		ifnull(a.title,'') AS "title",
 		ifnull(a.type,'') AS "type",
 		ifnull(a.state,'') AS "state",
-		a.issue_time AS "issueTime"
+		a.issue_time AS "issueTime",
+		ifnull(a.video,'') AS "video",
+		ifnull(a.link,'') AS "link"
 	</sql>
 	
 	<sql id="advertisementJoins">
@@ -95,7 +97,9 @@
 			content,
 			state,
 			issue_time,
-			title
+			title,
+			video,
+			link
 		) VALUES (
 			#{id},
 			#{createBy.id},
@@ -109,7 +113,9 @@
 			#{content},
 			#{state},
 			#{issueTime},
-			#{title}
+			#{title},
+			#{video},
+			#{link}
 		)
 	</insert>
 	
@@ -123,7 +129,9 @@
 			type = #{type},
 			state = #{state},
 			issue_time = #{issueTime},
-			title = #{title}
+			title = #{title},
+			video = #{video},
+			link = #{link}
 		WHERE id = #{id}
 	</update>
 	
