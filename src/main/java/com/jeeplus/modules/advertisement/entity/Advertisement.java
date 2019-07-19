@@ -24,9 +24,11 @@ public class Advertisement extends DataEntity<Advertisement> {
 	private Date beginIssueTime;		// 开始 发布时间
 	private Date endIssueTime;		// 结束 发布时间
     private String type;//广告类型
-    private String content;//内容图片
+    private String content;//内容图片1
+    private String content2;//内容图片2
     private String video;//视频
-    private String link;//链接
+    private String link;//链接1
+    private String link2;//链接2
 
     public String getTitle() {
         return title;
@@ -118,5 +120,21 @@ public class Advertisement extends DataEntity<Advertisement> {
 
     public void setLink(String link) {
         this.link = link;
+    }
+
+    public String getContent2() {
+        return content2;
+    }
+
+    public void setContent2(String content2) {
+        this.content2 = content2;
+    }
+
+    public String getLink2() {
+        return link2;
+    }
+
+    public void setLink2(String link2) {
+        this.link2 = link2;
     }
 }

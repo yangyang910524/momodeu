@@ -37,6 +37,10 @@
         {
             $("#file3").click();
         }
+        function openFileDialog4()
+        {
+            $("#file4").click();
+        }
 
         function fileSelected(obj){
             var index =jp.loading("文件上传中……")
@@ -94,6 +98,25 @@
                 jp.info("上传失败");
             });
         }
+
+        function fileSelected4(obj){
+            var index =jp.loading("文件上传中……")
+            var file=obj.files[0];//获取文件流
+            var filename= obj.value;
+            var suffix=(filename.substr(filename.lastIndexOf("."))).toLowerCase();
+            if(suffix!=".jpg"&&suffix!=".gif"&&suffix!=".jpeg"&& suffix!=".png") {
+                jp.info("您上传图片的类型不符合(.jpg|.jpeg|.gif|.png)！");
+                return false;
+            }
+            var path = "advertisement_content2/${fns:getUser()}/"+timestamp()+suffix;
+            fileUpload(file,path,function (data) {
+                $("#content2").val(data);
+                $("#content2").blur();
+                jp.close(index);
+            },function () {
+                jp.info("上传失败");
+            });
+        }
 	</script>
 </head>
 <body>
@@ -102,6 +125,7 @@
     <input type="file" id="file" name="file" style="display: none;"  onchange='fileSelected(this)'>
     <input type="file" id="file2" name="file2" style="display: none;"  onchange='fileSelected2(this)'>
     <input type="file" id="file3" name="file3" style="display: none;"  onchange='fileSelected3(this)'>
+    <input type="file" id="file4" name="file4" style="display: none;"  onchange='fileSelected4(this)'>
 </form>
 <!-- 文件上传form end-->
 <div class="wrapper wrapper-content">				
@@ -123,7 +147,7 @@
                     </div>
                 </div>
 				<div class="form-group">
-					<label class="col-sm-2 control-label"><font color="red">*</font>图片：</label>
+					<label class="col-sm-2 control-label"><font color="red">*</font>封面：</label>
 					<div class="col-sm-10">
                         <div class="input-group input-append" style="width:100%">
                             <input type="text" id="picture" name="picture"  class="form-control required" readonly="readonly" aria-invalid="false" value="${advertisement.picture}">
@@ -134,13 +158,24 @@
                     </div>
 				</div>
                 <div class="form-group">
-                    <label class="col-sm-2 control-label"><font color="red">*</font>内容：</label>
+                    <label class="col-sm-2 control-label"><font color="red">*</font>内容一：</label>
                     <div class="col-sm-10">
                         <div class="input-group input-append" style="width:100%">
                             <input type="text" id="content" name="content"  class="form-control required" readonly="readonly" aria-invalid="false" value="${advertisement.content}">
                             <span class="input-group-btn">
                                 <button type="button"  onclick="openFileDialog2()" class="btn btn-primary "><i class="fa fa-cloud-upload"></i></button>
                             </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label"><font color="red">*</font>内容二：</label>
+                    <div class="col-sm-10">
+                        <div class="input-group input-append" style="width:100%">
+                            <input type="text" id="content2" name="content2"  class="form-control required" readonly="readonly" aria-invalid="false" value="${advertisement.content2}">
+                            <span class="input-group-btn">
+                                            <button type="button"  onclick="openFileDialog4()" class="btn btn-primary "><i class="fa fa-cloud-upload"></i></button>
+                                        </span>
                         </div>
                     </div>
                 </div>
@@ -156,9 +191,15 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-2 control-label"><font color="red">*</font>链接：</label>
+                    <label class="col-sm-2 control-label"><font color="red">*</font>链接一：</label>
                     <div class="col-sm-10">
                         <form:input path="link" htmlEscape="false"    class="form-control required"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label"><font color="red">*</font>链接二：</label>
+                    <div class="col-sm-10">
+                        <form:input path="link2" htmlEscape="false"    class="form-control required"/>
                     </div>
                 </div>
                 <div class="form-group">

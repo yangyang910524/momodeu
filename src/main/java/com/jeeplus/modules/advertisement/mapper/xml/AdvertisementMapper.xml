@@ -12,12 +12,14 @@
 		ifnull(a.del_flag,'') AS "delFlag",
 		ifnull(a.picture,'') AS "picture",
 		ifnull(a.content,'') AS "content",
+		ifnull(a.content2,'') AS "content2",
 		ifnull(a.title,'') AS "title",
 		ifnull(a.type,'') AS "type",
 		ifnull(a.state,'') AS "state",
 		a.issue_time AS "issueTime",
 		ifnull(a.video,'') AS "video",
-		ifnull(a.link,'') AS "link"
+		ifnull(a.link,'') AS "link",
+		ifnull(a.link2,'') AS "link2"
 	</sql>
 	
 	<sql id="advertisementJoins">
@@ -95,11 +97,13 @@
 			picture,
 			type,
 			content,
+			content2,
 			state,
 			issue_time,
 			title,
 			video,
-			link
+			link,
+			link2
 		) VALUES (
 			#{id},
 			#{createBy.id},
@@ -111,11 +115,13 @@
 			#{picture},
 			#{type},
 			#{content},
+			#{content2},
 			#{state},
 			#{issueTime},
 			#{title},
 			#{video},
-			#{link}
+			#{link},
+			#{link2}
 		)
 	</insert>
 	
@@ -126,12 +132,14 @@
 			remarks = #{remarks},
 			picture = #{picture},
 			content = #{content},
+			content2 = #{content2},
 			type = #{type},
 			state = #{state},
 			issue_time = #{issueTime},
 			title = #{title},
 			video = #{video},
-			link = #{link}
+			link = #{link},
+			link2 = #{link2}
 		WHERE id = #{id}
 	</update>
 	
