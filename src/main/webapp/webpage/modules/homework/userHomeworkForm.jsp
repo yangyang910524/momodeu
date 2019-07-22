@@ -91,7 +91,9 @@
                 <div class="form-group">
                     <label class="col-sm-2 control-label">学生音频：</label>
                     <div class="col-sm-10">
-                        <a onclick="jp.playVideo('${userHomework.file}')">播放音频</a>
+                        <c:if test="${not empty userHomework.file}">
+                            <a href="${ctx}/userhomework/userHomework/playStudentVideo?id=${userHomework.id}" target="_blank">播放音频</a>
+                        </c:if>
                     </div>
                 </div>
 				<div class="form-group">

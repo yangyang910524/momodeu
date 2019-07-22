@@ -55,6 +55,9 @@
             <if test="type != null and type != ''">
                 AND a.type = #{type}
             </if>
+            <if test="id != null and id != ''">
+                AND a.id = #{id}
+            </if>
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">

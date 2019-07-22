@@ -273,4 +273,14 @@ public class UserHomeworkController extends BaseController {
     	Page<UserHomework> page = userHomeworkService.findPage(new Page<UserHomework>(request, response), userHomework);
         return getBootstrapData(page);
     }
+
+
+    /**
+     * 查看，增加，编辑信息表单页面
+     */
+    @RequestMapping(value = "playStudentVideo")
+    public String playStudentVideo(UserHomework userHomework, Model model) {
+        model.addAttribute("userHomework", userHomework);
+        return "modules/homework/playStudentVideo";
+    }
 }

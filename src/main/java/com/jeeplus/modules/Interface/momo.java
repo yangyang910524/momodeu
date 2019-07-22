@@ -1011,6 +1011,10 @@ public class momo {
             //广告类型，选填
             advertisement.setType(params.get("type"));
 
+            if(StringUtils.isNotEmpty(params.get("id"))){
+                advertisement.setId(params.get("id"));
+            }
+
             if("1".equals(params.get("isPage").toString())){
                 Page<Advertisement> p=new Page<Advertisement>();
                 if(params.get("pageNo")==null||StringUtils.isEmpty(params.get("pageNo").toString())){
