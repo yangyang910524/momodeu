@@ -113,12 +113,12 @@ public class momo {
                 j.setMsg("密码不能为空!");
                 return j;
             }
-            if(params.get("mc")==null||StringUtils.isEmpty(params.get("mc").toString())){
+            /*if(params.get("mc")==null||StringUtils.isEmpty(params.get("mc").toString())){
                 j.setSuccess(false);
                 j.setErrorCode("10002");
                 j.setMsg("机器码不能为空!");
                 return j;
-            }
+            }*/
 
             User user = userMapper.getByLoginName(new User(null, params.get("username")));
             if(user==null){
@@ -139,7 +139,7 @@ public class momo {
                 j.setMsg("无权限访问!");
                 return j;
             }
-            //根据userid与机器码判断是否多次登录：该账号已在其他机器上登录，请先注销！
+            /*//根据userid与机器码判断是否多次登录：该账号已在其他机器上登录，请先注销！
             LoginMc loginMc=systemService.getLoginMcByUserid(user.getId());
             if(loginMc==null){
                 loginMc=new LoginMc();
@@ -151,7 +151,7 @@ public class momo {
                 j.setErrorCode("10003");
                 j.setMsg("该账号已在其他机器上登录，请先注销！");
                 return j;
-            }
+            }*/
 
             j.setSuccess(true);
             j.setErrorCode("-1");

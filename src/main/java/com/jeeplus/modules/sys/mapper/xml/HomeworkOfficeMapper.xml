@@ -45,9 +45,12 @@
 			<if test="officeid != null and officeid != ''">
 				AND a.officeid = #{officeid}
 			</if>
-			<if test="homeworkid != null and homeworkid != ''">
-				AND a.homeworkid = #{homeworkid}
-			</if>
+            <if test="homeworkid != null and homeworkid != ''">
+                AND a.homeworkid = #{homeworkid}
+            </if>
+            <if test="homework!=null and homework.type != null and homework.type != ''">
+                AND h.type = #{homework.type}
+            </if>
             <if test="statue != null and statue != ''">
                 AND a.statue = #{statue}
             </if>
