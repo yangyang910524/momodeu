@@ -571,6 +571,11 @@ public class SystemService extends BaseService implements InitializingBean {
 		userMapper.updateScore(user);
     }
 
+    @Transactional(readOnly = false)
+    public void updateHours(User user) {
+        userMapper.updateHours(user);
+    }
+
     ///////////////// Synchronized to the Activiti end //////////////////
 
     public AjaxUserJson checkUser(Object userid, AjaxUserJson j){
@@ -623,5 +628,14 @@ public class SystemService extends BaseService implements InitializingBean {
     @Transactional(readOnly = false)
     public Integer insertLoginMc(LoginMc loginMc){
         return userMapper.insertLoginMc(loginMc);
+    }
+
+    public Page<User> findUserByTeacher(Page<User> page, User user) {
+        dataRuleFilter(user);
+        // 设置分页参数
+        user.setPage(page);
+        // 执行分页查询
+        page.setList(userMapper.findUserByTeacher(user));
+        return page;
     }
 }

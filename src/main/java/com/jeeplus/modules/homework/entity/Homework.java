@@ -19,6 +19,7 @@ public class Homework extends DataEntity<Homework> {
 	private String name;		// 名称
 	private String data1;		// 材料1
 	private String data2;		// 材料2
+    private String silentVideo;//无声视频
 	private String cover;		// 封面
 	private Office office;//班级
     private String courseLevel;		// 课程级别
@@ -100,5 +101,13 @@ public class Homework extends DataEntity<Homework> {
 
     public void setCourseLevel(String courseLevel) {
         this.courseLevel = courseLevel;
+    }
+
+    public String getSilentVideo() {
+        return silentVideo;
+    }
+
+    public void setSilentVideo(String silentVideo) {
+        this.silentVideo = silentVideo;
     }
 }

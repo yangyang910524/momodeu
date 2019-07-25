@@ -15,12 +15,11 @@ import com.jeeplus.common.utils.excel.ExportExcel;
 import com.jeeplus.common.utils.excel.ImportExcel;
 import com.jeeplus.core.persistence.Page;
 import com.jeeplus.core.web.BaseController;
+import com.jeeplus.modules.hourrecord.entity.HourRecord;
+import com.jeeplus.modules.hourrecord.service.HourRecordService;
 import com.jeeplus.modules.scorerecord.entity.ScoreRecord;
 import com.jeeplus.modules.scorerecord.service.ScoreRecordService;
-import com.jeeplus.modules.sys.entity.Office;
-import com.jeeplus.modules.sys.entity.Role;
-import com.jeeplus.modules.sys.entity.SystemConfig;
-import com.jeeplus.modules.sys.entity.User;
+import com.jeeplus.modules.sys.entity.*;
 import com.jeeplus.modules.sys.mapper.UserMapper;
 import com.jeeplus.modules.sys.service.OfficeService;
 import com.jeeplus.modules.sys.service.SystemConfigService;
@@ -62,8 +61,10 @@ public class UserController extends BaseController {
 	private UserMapper userMapper;
 	@Autowired
 	private OfficeService officeService;
-	@Autowired
-	private ScoreRecordService ccoreRecordService;
+    @Autowired
+    private ScoreRecordService ccoreRecordService;
+    @Autowired
+    private HourRecordService hourRecordService;
 	
 	@ModelAttribute
 	public User get(@RequestParam(required=false) String id) {
@@ -655,31 +656,106 @@ public class UserController extends BaseController {
 		return j;
 	}
 
-	@RequestMapping(value = "updateScoreForm")
-	public String updateScoreForm(User user, Model model) {
-		model.addAttribute("user", userMapper.get(user.getId()));
-		return "modules/sys/user/updateScore";
-	}
+    @RequestMapping(value = "updateScoreForm")
+    public String updateScoreForm(User user, Model model) {
+        model.addAttribute("user", userMapper.get(user.getId()));
+        return "modules/sys/user/updateScore";
+    }
 
-	@ResponseBody
-	@RequestMapping(value = "updateScore")
-	public AjaxJson updateScore(User user, HttpServletRequest request, Model model) {
-		AjaxJson j = new AjaxJson();
-		User student=userMapper.get(user.getId());
-		if(student.getScore()==user.getScore()){
-			j.setSuccess(false);
-			j.setMsg("积分未调整!");
-			return j;
-		}
-		systemService.updateScore(user);
-		ScoreRecord scoreRecord=new ScoreRecord();
-		scoreRecord.setOldScore(student.getScore().toString());
-		scoreRecord.setNewScore(user.getScore().toString());
-		scoreRecord.setUser(student);
-		scoreRecord.setRemarks(user.getRemarks());
-		ccoreRecordService.save(scoreRecord);
-		j.setSuccess(true);
-		j.setMsg("积分调整成功!");
-		return j;
-	}
+    @RequestMapping(value = "updateHoursForm")
+    public String updateHoursForm(User user, Model model) {
+        model.addAttribute("user", userMapper.get(user.getId()));
+        return "modules/sys/user/updateHours";
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "updateScore")
+    public AjaxJson updateScore(User user, HttpServletRequest request, Model model) {
+        AjaxJson j = new AjaxJson();
+        User student=userMapper.get(user.getId());
+        if(student.getScore()==user.getScore()){
+            j.setSuccess(false);
+            j.setMsg("积分未调整!");
+            return j;
+        }
+        systemService.updateScore(user);
+        ScoreRecord scoreRecord=new ScoreRecord();
+        scoreRecord.setOldScore(student.getScore().toString());
+        scoreRecord.setNewScore(user.getScore().toString());
+        scoreRecord.setUser(student);
+        scoreRecord.setRemarks(user.getRemarks());
+        ccoreRecordService.save(scoreRecord);
+        j.setSuccess(true);
+        j.setMsg("积分调整成功!");
+        return j;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "updateHours")
+    public AjaxJson updateHours(User user, HttpServletRequest request, Model model) {
+        AjaxJson j = new AjaxJson();
+        User student=userMapper.get(user.getId());
+        if(student.getHours()==user.getHours()){
+            j.setSuccess(false);
+            j.setMsg("课时未调整!");
+            return j;
+        }
+        systemService.updateHours(user);
+        HourRecord hourRecord=new HourRecord();
+        hourRecord.setOldHours(student.getHours().toString());
+        hourRecord.setNewHours(user.getHours().toString());
+        hourRecord.setUser(student);
+        hourRecord.setRemarks(user.getRemarks());
+        hourRecordService.save(hourRecord);
+        j.setSuccess(true);
+        j.setMsg("课时调整成功!");
+        return j;
+    }
+
+    /**
+     * 课时调整列表
+     */
+    @RequestMapping(value ="updateHoursList")
+    public String homeworkGradingList(User user, Model model) {
+        model.addAttribute("user", user);
+        return "modules/sys/user/updateHoursList";
+    }
+
+    /**
+     * 课时调整列表数据
+     */
+    @ResponseBody
+    @RequestMapping(value = "updateHoursListData")
+    public Map<String, Object> updateHoursListData(User user, HttpServletRequest request, HttpServletResponse response, Model model) {
+        User teacher=UserUtils.getUser();
+        if("2".equals(teacher.getUserType())){
+            user.setTeacherid(teacher.getId());
+        }
+        Page<User> page = systemService.findUserByTeacher(new Page<User>(request, response), user);
+        return getBootstrapData(page);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "reduceHours")
+    public AjaxJson reduceHours(String id) {
+        AjaxJson j = new AjaxJson();
+        User student=userMapper.get(id);
+        int oldHours=student.getHours();
+        int newHours=oldHours-2;
+        if(newHours<0){
+            j.setSuccess(false);
+            j.setMsg("课时不足!");
+            return j;
+        }
+        student.setHours(newHours);
+        systemService.updateHours(student);
+        HourRecord hourRecord=new HourRecord();
+        hourRecord.setOldHours(String.valueOf(oldHours));
+        hourRecord.setNewHours(String.valueOf(newHours));
+        hourRecord.setUser(student);
+        hourRecordService.save(hourRecord);
+        j.setSuccess(true);
+        j.setMsg("课时扣除成功!");
+        return j;
+    }
 }

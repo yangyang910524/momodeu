@@ -11,6 +11,7 @@
         <result property="name" column="name" />
         <result property="englishName" column="englishName" />
         <result property="score" column="score" />
+        <result property="hours" column="hours" />
 		<result property="email" column="email" />
 		<result property="phone" column="phone" />
 		<result property="mobile" column="mobile" />
@@ -45,6 +46,7 @@
 		ifnull(a.name,'') as name,
 		ifnull(a.english_name,'') AS "englishName",
 		ifnull(a.score,'') as score,
+		ifnull(a.hours,'') as hours,
 		ifnull(a.user_type,'') as "userType",
 		ifnull(a.email,'') as email,
 		ifnull(a.phone,'') as phone,
@@ -239,6 +241,7 @@
 			name,
 			english_name,
 			score,
+			hours,
 			user_type,
 			email, 
 			phone, 
@@ -262,6 +265,7 @@
 			#{name},
 			#{englishName},
 			#{score},
+			#{hours},
 			#{userType},
 			#{email}, 
 			#{phone}, 
@@ -289,6 +293,7 @@
 			name = #{name},
 			english_name = #{englishName},
 			score = #{score},
+			hours = #{hours},
 			email = #{email},
 			phone = #{phone}, 
 			mobile = #{mobile}, 
@@ -320,6 +325,7 @@
 			name = #{name},
 			english_name = #{englishName},
 			score = #{score},
+			hours = #{hours},
 			email = #{email}, 
 			phone = #{phone}, 
 			mobile = #{mobile}, 
@@ -487,6 +493,7 @@
         ifnull(su.name,'') as name,
         ifnull(su.english_name,'') AS "englishName",
         ifnull(su.score,'') as score,
+        ifnull(su.hours,'') as hours,
         ifnull(su.user_type,'') as "userType",
         ifnull(su.email,'') as email,
         ifnull(su.phone,'') as phone,
@@ -506,6 +513,12 @@
 			score = #{score}
 		WHERE id = #{id}
 	</update>
+
+    <update id="updateHours">
+        UPDATE sys_user SET
+        hours = #{hours}
+        WHERE id = #{id}
+    </update>
 
 
     <select id="findLoginMcByUserid" resultType="com.jeeplus.modules.sys.entity.LoginMc">
@@ -527,4 +540,57 @@
         INSERT INTO sys_login_mc (userid, mc)
         VALUES (#{userid}, #{mc})
     </insert>
+
+
+    <select id="findUserByTeacher" resultType="com.jeeplus.modules.sys.entity.User">
+       select
+        ifnull(a.id,'') as id,
+        ifnull(a.login_name,'') AS "loginName",
+        ifnull(a.password,'') as password,
+        ifnull(a.no,'') as no,
+        ifnull(a.name,'') as name,
+        ifnull(a.english_name,'') AS "englishName",
+        ifnull(a.score,'') as score,
+        ifnull(a.hours,'') as hours,
+        ifnull(a.user_type,'') as "userType",
+        ifnull(a.email,'') as email,
+        ifnull(a.phone,'') as phone,
+        ifnull(a.mobile,'') as mobile,
+        ifnull(a.login_ip,'') as "loginIp",
+        a.login_date as "loginDate",
+        ifnull(a.remarks,'') as remarks,
+        ifnull(a.login_flag,'') as "loginFlag",
+        ifnull(a.photo,'') as photo,
+        ifnull(a.qrcode,'') as qrcode,
+        ifnull(a.sign,'') as sign,
+        ifnull(a.create_by,'') AS "createBy.id",
+        a.create_date AS "createDate",
+        ifnull(a.update_by,'') AS "updateBy.id",
+        a.update_date AS "updateDate",
+        ifnull(a.del_flag,'') AS "delFlag"
+        from sys_user a
+        <where>
+            <if test="name != null and name != ''">
+                AND a.name like
+                <if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+                <if test="dbName == 'mysql'">CONCAT('%', #{name}, '%')</if>
+                <if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+            </if>
+            and a.user_type='3'
+            <if test="teacherid!=null and teacherid!=''">
+                and EXISTS
+                (
+                    select
+                    1
+                    from sys_user_office suo
+                    where
+                    a.user_type='3'
+                    and exists (
+                    select 1 from sys_user_office teacher where teacher.userid=#{teacherid} and teacher.officeid=suo.officeid
+                    )
+                    and suo.userid=a.id
+                )
+            </if>
+        </where>
+    </select>
 </mapper>

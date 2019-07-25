@@ -118,9 +118,13 @@ public interface UserMapper extends BaseMapper<User> {
 
     void updateScore(User user);
 
+    void updateHours(User user);
+
     List<LoginMc> findLoginMcByUserid(String userid);
 
     Integer deleteLoginMcByUserid(String userid);
 
     Integer insertLoginMc(LoginMc loginMc);
+
+    List<User> findUserByTeacher(User user);
 }

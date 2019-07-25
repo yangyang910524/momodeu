@@ -155,6 +155,7 @@
                             <shiro:hasPermission name="sys:user:updateScore">
 								if(row.userType=='3'){
                                     result+= "&nbsp;&nbsp;<a onclick='updateScore(\""+row.id+"\")'>积分调整</a>";
+                                    result+= "&nbsp;&nbsp;<a onclick='updateHours(\""+row.id+"\")'>课时调整</a>";
 								}
                             </shiro:hasPermission>
 							return result;
@@ -258,7 +259,10 @@
               $('#table').bootstrapTable('refresh');
           }
 
-          function updateScore(id) {
-              jp.openSaveDialog('编辑用户', "${ctx}/sys/user/updateScoreForm?id=" + id,'800px', '680px');
-          }
+            function updateScore(id) {
+                jp.openSaveDialog('积分调整', "${ctx}/sys/user/updateScoreForm?id=" + id,'800px', '680px');
+            }
+            function updateHours(id) {
+                jp.openSaveDialog('课时调整', "${ctx}/sys/user/updateHoursForm?id=" + id,'800px', '680px');
+            }
 	</script>

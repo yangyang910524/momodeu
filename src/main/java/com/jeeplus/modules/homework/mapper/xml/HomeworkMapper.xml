@@ -14,6 +14,7 @@
 		ifnull(a.type,'') AS "type",
 		ifnull(a.data1,'') AS "data1",
 		ifnull(a.data2,'') AS "data2",
+		ifnull(a.silent_video,'') AS "silentVideo",
 		ifnull(a.cover,'') AS "cover",
 		ifnull(a.course_level,'') AS "courseLevel",
 		ifnull(a.state,'') AS "state"
@@ -98,6 +99,7 @@
 			type,
 			data1,
 			data2,
+			silent_video,
 			cover,
 			course_level,
 			state
@@ -113,6 +115,7 @@
 			#{type},
 			#{data1},
 			#{data2},
+			#{silentVideo},
 			#{cover},
 			#{courseLevel},
 			#{state}
@@ -128,6 +131,7 @@
 			type = #{type},
 			data1 = #{data1},
 			data2 = #{data2},
+			silent_video = #{silentVideo},
 			cover = #{cover},
 			course_level = #{courseLevel},
 			state = #{state}

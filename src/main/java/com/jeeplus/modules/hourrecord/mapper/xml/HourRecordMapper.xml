@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.jeeplus.modules.scorerecord.mapper.ScoreRecordMapper">
+<mapper namespace="com.jeeplus.modules.hourrecord.mapper.HourRecordMapper">
     
-	<sql id="scoreRecordColumns">
+	<sql id="hourRecordColumns">
 		ifnull(a.id,'') AS "id",
 		ifnull(a.create_by,'') AS "createBy.id",
 		ifnull(opt.name,'') AS "createBy.name",
@@ -13,35 +13,35 @@
 		ifnull(a.del_flag,'') AS "delFlag",
 		ifnull(a.user,'') AS "user.id",
 		ifnull(stu.name,'') AS "user.name",
-		ifnull(a.old_score,'') AS "oldScore",
-		ifnull(a.new_score,'') AS "newScore"
+		ifnull(a.old_hours,'') AS "oldHours",
+		ifnull(a.new_hours,'') AS "newHours"
 	</sql>
 	
-	<sql id="scoreRecordJoins">
+	<sql id="hourRecordJoins">
         left join sys_user stu on stu.id=a.user
 		left join sys_user opt on opt.id=a.create_by
 	</sql>
 	
     
-	<select id="get" resultType="ScoreRecord" >
+	<select id="get" resultType="HourRecord" >
 		SELECT 
-			<include refid="scoreRecordColumns"/>
-		FROM score_record a
-		<include refid="scoreRecordJoins"/>
+			<include refid="hourRecordColumns"/>
+		FROM hour_record a
+		<include refid="hourRecordJoins"/>
 		WHERE a.id = #{id}
 	</select>
 	
-	<select id="findList" resultType="ScoreRecord" >
+	<select id="findList" resultType="HourRecord" >
 		SELECT 
-			<include refid="scoreRecordColumns"/>
-		FROM score_record a
-		<include refid="scoreRecordJoins"/>
+			<include refid="hourRecordColumns"/>
+		FROM hour_record a
+		<include refid="hourRecordJoins"/>
 		<where>
 			a.del_flag = #{DEL_FLAG_NORMAL}
 			${dataScope}
-            <if test="user != null and user.name != null and user.name != ''">
-                AND stu.name LIKE concat('%',#{user.name},'%')
-            </if>
+			<if test="user != null and user.name != null and user.name != ''">
+				AND stu.name LIKE concat('%',#{user.name},'%')
+			</if>
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
@@ -53,11 +53,11 @@
 		</choose>
 	</select>
 	
-	<select id="findAllList" resultType="ScoreRecord" >
+	<select id="findAllList" resultType="HourRecord" >
 		SELECT 
-			<include refid="scoreRecordColumns"/>
-		FROM score_record a
-		<include refid="scoreRecordJoins"/>
+			<include refid="hourRecordColumns"/>
+		FROM hour_record a
+		<include refid="hourRecordJoins"/>
 		<where>
 			a.del_flag = #{DEL_FLAG_NORMAL}
 			${dataScope}
@@ -73,7 +73,7 @@
 	</select>
 	
 	<insert id="insert">
-		INSERT INTO score_record(
+		INSERT INTO hour_record(
 			id,
 			create_by,
 			create_date,
@@ -82,8 +82,8 @@
 			remarks,
 			del_flag,
 			user,
-			old_score,
-			new_score
+			old_hours,
+			new_hours
 		) VALUES (
 			#{id},
 			#{createBy.id},
@@ -93,40 +93,40 @@
 			#{remarks},
 			#{delFlag},
 			#{user.id},
-			#{oldScore},
-			#{newScore}
+			#{oldHours},
+			#{newHours}
 		)
 	</insert>
 	
 	<update id="update">
-		UPDATE score_record SET 	
+		UPDATE hour_record SET 	
 			update_by = #{updateBy.id},
 			update_date = #{updateDate},
 			remarks = #{remarks},
 			user = #{user.id},
-			old_score = #{oldScore},
-			new_score = #{newScore}
+			old_hours = #{oldHours},
+			new_hours = #{newHours}
 		WHERE id = #{id}
 	</update>
 	
 	
 	<!--物理删除-->
 	<update id="delete">
-		DELETE FROM score_record
+		DELETE FROM hour_record
 		WHERE id = #{id}
 	</update>
 	
 	<!--逻辑删除-->
 	<update id="deleteByLogic">
-		UPDATE score_record SET 
+		UPDATE hour_record SET 
 			del_flag = #{DEL_FLAG_DELETE}
 		WHERE id = #{id}
 	</update>
 	
 	
 	<!-- 根据实体名称和字段名称和字段值获取唯一记录 -->
-	<select id="findUniqueByProperty" resultType="ScoreRecord" statementType="STATEMENT">
-		select * FROM score_record  where ${propertyName} = '${value}'
+	<select id="findUniqueByProperty" resultType="HourRecord" statementType="STATEMENT">
+		select * FROM hour_record  where ${propertyName} = '${value}'
 	</select>
 	
 </mapper>

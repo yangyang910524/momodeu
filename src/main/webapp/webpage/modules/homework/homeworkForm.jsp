@@ -44,9 +44,11 @@
                 $("#file1").click();
 			}else if(type=='2'){
                 $("#file2").click();
-            }else{
-            $("#file3").click();
-        }
+            }else if(type=='3'){
+                $("#file3").click();
+            }else if(type=='4'){
+                $("#file4").click();
+            }
 
         }
 
@@ -107,6 +109,24 @@
             });
         }
 
+        function fileSelected4(obj){
+            var index =jp.loading("文件上传中……")
+            var file=obj.files[0];//获取文件流
+            var filename= obj.value;
+            var suffix=(filename.substr(filename.lastIndexOf("."))).toLowerCase();
+            if(suffix!=".mp3"&&suffix!=".mp4") {
+                jp.info("您上传视频、音频的类型不符合(.mp3|.mp4)！");
+                return false;
+            }
+            var path = "homework_silent_video/${fns:getUser()}/"+timestamp()+suffix;
+            fileUpload(file,path,function (data) {
+                $("#silentVideo").val(data);
+                $("#silentVideo").blur();
+                jp.close(index);
+            },function (err) {
+                jp.info("上传失败");
+            });
+        }
 	</script>
 </head>
 <body>
@@ -118,7 +138,10 @@
 	<input type="file" id="file2" name="file" style="display: none;"  onchange="fileSelected2(this)">
 </form>
 <form id= "uploadForm3" action= "" method= "post" enctype ="multipart/form-data">
-	<input type="file" id="file3" name="file" style="display: none;"  onchange="fileSelected3(this)">
+    <input type="file" id="file3" name="file" style="display: none;"  onchange="fileSelected3(this)">
+</form>
+<form id= "uploadForm4" action= "" method= "post" enctype ="multipart/form-data">
+    <input type="file" id="file4" name="file" style="display: none;"  onchange="fileSelected4(this)">
 </form>
 <!-- 文件上传form end-->
 <div class="wrapper wrapper-content">				
@@ -177,6 +200,17 @@
 						</div>
 					</div>
 				</div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label"><font color="red">*</font>无声视频：</label>
+                    <div class="col-sm-10">
+                        <div class="input-group input-append" style="width:100%">
+                            <input type="text" id="silentVideo" name="silentVideo"  class="form-control required" readonly="readonly" aria-invalid="false" value="${homework.silentVideo}">
+                            <span class="input-group-btn">
+                                        <button type="button" onclick="openFileDialog('4')" class="btn btn-primary "><i class="fa fa-cloud-upload"></i></button>
+                                    </span>
+                        </div>
+                    </div>
+                </div>
 				<div class="form-group">
 					<label class="col-sm-2 control-label"><font color="red">*</font>作业封面：</label>
 					<div class="col-sm-10">

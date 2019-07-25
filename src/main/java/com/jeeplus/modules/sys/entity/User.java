@@ -52,9 +52,10 @@ public class User extends DataEntity<User> {
 	private List<Role> roleList = Lists.newArrayList(); // 拥有角色列表
 
     private Integer score ; // 分数情况
+    private Integer hours ; // 课时情况
     private String englishName ; // 分数情况
     private String userType ; // 用户类型
-
+    private String teacherid;//仅用于课时管理
 	public User() {
 		super();
 		this.loginFlag = Global.YES;
@@ -352,5 +353,21 @@ public class User extends DataEntity<User> {
 
     public void setUserType(String userType) {
         this.userType = userType;
+    }
+
+    public Integer getHours() {
+        return hours;
+    }
+
+    public void setHours(Integer hours) {
+        this.hours = hours;
+    }
+
+    public String getTeacherid() {
+        return teacherid;
+    }
+
+    public void setTeacherid(String teacherid) {
+        this.teacherid = teacherid;
     }
 }
