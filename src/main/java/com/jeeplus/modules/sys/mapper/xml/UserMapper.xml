@@ -584,11 +584,11 @@
                     1
                     from sys_user_office suo
                     where
-                    a.user_type='3'
+                    suo.userid=a.id
+                    and suo.user_type='3'
                     and exists (
                     select 1 from sys_user_office teacher where teacher.userid=#{teacherid} and teacher.officeid=suo.officeid
                     )
-                    and suo.userid=a.id
                 )
             </if>
         </where>

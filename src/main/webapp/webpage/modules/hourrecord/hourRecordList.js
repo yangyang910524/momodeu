@@ -92,6 +92,12 @@ $(document).ready(function() {
                    sortable: true,
                    sortName: 'createBy.name'
 
+               },{
+                   field: 'createDate',
+                   title: '操作时间',
+                   sortable: true,
+                   sortName: 'createDate'
+
                }
 			,{
 		        field: 'oldHours',
