@@ -44,6 +44,11 @@
 		<where>
 			a.del_flag = #{DEL_FLAG_NORMAL}
 			${dataScope}
+			<if test="teacherid != null and teacherid != ''">
+				AND EXISTS (
+					select 1 from sys_user_office sto where a.id=sto.officeid and sto.userid=#{teacherid}
+				)
+			</if>
 			<if test="campus != null and campus != ''">
 				AND a.campus =#{campus}
 			</if>

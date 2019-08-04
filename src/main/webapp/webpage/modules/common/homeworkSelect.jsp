@@ -134,44 +134,7 @@
                         }
 
                     }
-                        ,{
-                            field: 'data1',
-                            title: '材料1',
-                            sortable: true,
-                            sortName: 'data1',
-                            formatter:function(value, row , index){
-                                if(value==null||value==undefined||value==""||value=="undefined"){
-                                    return "-";
-                                }else{
-                                    var valueArray = value.split("|");
-                                    var labelArray = [];
-                                    for(var i =0 ; i<valueArray.length; i++){
-                                        labelArray[i] = "<a href='${ctx}/sys/file/download?source="+valueArray[i]+"' >下载材料</a>"
-                                    }
-                                    return labelArray.join(" ");
-                                }
-                            }
 
-                        }
-                        ,{
-                            field: 'data2',
-                            title: '材料2',
-                            sortable: true,
-                            sortName: 'data2',
-                            formatter:function(value, row , index){
-                                if(value==null||value==undefined||value==""||value=="undefined"){
-                                    return "-";
-                                }else{
-                                    var valueArray = value.split("|");
-                                    var labelArray = [];
-                                    for(var i =0 ; i<valueArray.length; i++){
-                                        labelArray[i] = "<a href='${ctx}/sys/file/download?source="+valueArray[i]+"' >下载材料</a>"
-                                    }
-                                    return labelArray.join(" ");
-                                }
-                            }
-
-                        }
                         ,{
                             field: 'cover',
                             title: '封面',

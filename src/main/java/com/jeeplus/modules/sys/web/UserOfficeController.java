@@ -14,6 +14,7 @@ import com.jeeplus.core.web.BaseController;
 import com.jeeplus.modules.sys.entity.UserOffice;
 import com.jeeplus.modules.sys.service.UserHomeworkService;
 import com.jeeplus.modules.sys.service.UserOfficeService;
+import com.jeeplus.modules.sys.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -70,6 +71,9 @@ public class UserOfficeController extends BaseController {
 	@ResponseBody
 	@RequestMapping(value = "data")
 	public Map<String, Object> data(UserOffice userOffice, HttpServletRequest request, HttpServletResponse response, Model model) {
+		if("2".equals(UserUtils.getUser().getUserType())){
+			userOffice.setUserType("3");
+		}
 		Page<UserOffice> page = userOfficeService.findPage(new Page<UserOffice>(request, response), userOffice);
 		return getBootstrapData(page);
 	}

@@ -25,7 +25,25 @@ public class Statistics extends DataEntity<Statistics> {
     private String endTime;
     private String homeworkFinishToal;
     private String homeworkNotFinishToal;
+    private String courseDataPlayRecordToal;
+    private String finishToal;
     private String homeworkType;//作业类型
+
+    public String getCourseDataPlayRecordToal() {
+        return courseDataPlayRecordToal;
+    }
+
+    public void setCourseDataPlayRecordToal(String courseDataPlayRecordToal) {
+        this.courseDataPlayRecordToal = courseDataPlayRecordToal;
+    }
+
+    public String getFinishToal() {
+        return finishToal;
+    }
+
+    public void setFinishToal(String finishToal) {
+        this.finishToal = finishToal;
+    }
 
     public String getHomeworkType() {
         return homeworkType;

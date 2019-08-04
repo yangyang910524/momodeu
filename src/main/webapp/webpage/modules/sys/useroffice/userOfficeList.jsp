@@ -60,12 +60,14 @@
                 <a href="${ctx}/sys/classes/classes" class="btn btn-primary">
                     返回
                 </a>
-					<button class="btn btn-primary" onclick="add('1')">
-						<i class="glyphicon glyphicon-plus"></i>添加/变更班主任
-					</button>
-					<button class="btn btn-primary" onclick="add('2')">
-						<i class="glyphicon glyphicon-plus"></i>添加老师
-					</button>
+					<c:if test="${fns:getUser().userType ne '2'}">
+						<button class="btn btn-primary" onclick="add('1')">
+							<i class="glyphicon glyphicon-plus"></i>添加/变更班主任
+						</button>
+						<button class="btn btn-primary" onclick="add('2')">
+							<i class="glyphicon glyphicon-plus"></i>添加老师
+						</button>
+					</c:if>
 					<button class="btn btn-primary" onclick="add('3')">
 						<i class="glyphicon glyphicon-plus"></i>添加学生
 					</button>

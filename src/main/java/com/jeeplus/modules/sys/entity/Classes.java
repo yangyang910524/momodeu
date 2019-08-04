@@ -22,7 +22,15 @@ public class Classes extends DataEntity<Classes> {
     private String homeworkTotal;//作业总数
     private String campus;//校区
     private String level;//课程级别
+    private String teacherid;//教师id
 
+    public String getTeacherid() {
+        return teacherid;
+    }
+
+    public void setTeacherid(String teacherid) {
+        this.teacherid = teacherid;
+    }
 
     public String getName() {
         return name;

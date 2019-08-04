@@ -120,25 +120,7 @@
                             return jp.getDictLabel(${fns:toJson(fns:getDictList('bas_release_type'))}, value, "-");
                         }
 
-                    }
-                        ,{
-                            field: 'data',
-                            title: '资料',
-                            sortable: false,
-                            formatter:function(value, row , index){
-                                if(value==null||value==undefined||value==""||value=="undefined"){
-                                    return "-";
-                                }else{
-                                    var valueArray = value.split("|");
-                                    var labelArray = [];
-                                    for(var i =0 ; i<valueArray.length; i++){
-                                        labelArray[i] = "<a href='${ctx}/sys/file/download?source="+valueArray[i]+"' >下载材料</a>"
-                                    }
-                                    return labelArray.join(" ");
-                                }
-                            }
-
-                        }]
+                    }]
 				
 				});
 			

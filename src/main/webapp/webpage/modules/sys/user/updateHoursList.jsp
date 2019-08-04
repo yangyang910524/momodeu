@@ -125,7 +125,11 @@
                     title: '操作',
                     sortable: false,
 					formatter:function(value, row , index){
-                        return "<a onclick='reduceHours(\"" + value + "\")'>课时扣除</a>";
+                        var result="";
+                        result+="<a onclick='reduceHours(\"" + value + "\")'>课时扣除</a>";
+                        result+= "&nbsp;&nbsp;<a onclick='updateScore(\""+row.id+"\")'>积分调整</a>";
+                        result+= "&nbsp;&nbsp;<a onclick='updateHours(\""+row.id+"\")'>课时调整</a>";
+                        return result;
 					}
                 }
 
@@ -198,6 +202,12 @@
             })
         }
 
+        function updateScore(id) {
+            jp.openSaveDialog('积分调整', "${ctx}/sys/user/updateScoreForm?id=" + id,'800px', '680px');
+        }
+        function updateHours(id) {
+            jp.openSaveDialog('课时调整', "${ctx}/sys/user/updateHoursForm?id=" + id,'800px', '680px');
+        }
 	</script>
 </head>
 <body>

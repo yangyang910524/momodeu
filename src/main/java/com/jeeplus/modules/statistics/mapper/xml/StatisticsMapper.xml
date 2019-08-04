@@ -114,7 +114,9 @@
             ifnull(so.id,'') as "office.id",
             ifnull(so.name,'') as "office.name",
             ifnull(suh.homeworkFinishToal,0) as "homeworkFinishToal",
-            ifnull(suh.homeworkNotFinishToal,0) as "homeworkNotFinishToal"
+            ifnull(suh.homeworkNotFinishToal,0) as "homeworkNotFinishToal",
+            ifnull(cdpl.courseDataPlayRecordToal,0) as "courseDataPlayRecordToal",
+            ifnull(cdpl.courseDataPlayRecordToal,0)+ifnull(suh.homeworkFinishToal,0) as "finishToal"
         FROM
         sys_user a
         left join sys_user_office suo on a.id=suo.userid
@@ -135,6 +137,24 @@
             </where>
             group by userid
         ) suh on a.id=suh.userid
+        left join (
+            SELECT
+                create_by AS userid,
+                COUNT(*) AS courseDataPlayRecordToal
+            FROM (
+                SELECT
+                create_by,course_data_id
+                FROM
+                course_data_play_record
+                <where>
+                    <if test="beginTime != null and beginTime!='' and endTime != null and endTime!=''">
+                        and create_date between str_to_date(CONCAT(#{beginTime},' 00:00:00'),'%Y-%m-%d %H:%i:%s') and str_to_date(CONCAT(#{endTime},' 23:59:59'),'%Y-%m-%d %H:%i:%s')
+                    </if>
+                </where>
+                GROUP BY create_by,course_data_id
+            ) tc
+            GROUP BY create_by
+        ) cdpl on a.id=cdpl.userid
         where a.user_type='3'
         <if test="teacher !=null and teacher.id != null and teacher.id != ''">
             and exists (
@@ -152,7 +172,7 @@
                 ORDER BY ${page.orderBy}
             </when>
             <otherwise>
-                ORDER BY suh.homeworkFinishToal desc
+                ORDER BY finishToal desc
             </otherwise>
         </choose>
     </select>

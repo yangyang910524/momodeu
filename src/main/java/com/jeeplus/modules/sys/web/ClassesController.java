@@ -12,7 +12,9 @@ import com.jeeplus.common.utils.excel.ImportExcel;
 import com.jeeplus.core.persistence.Page;
 import com.jeeplus.core.web.BaseController;
 import com.jeeplus.modules.sys.entity.Classes;
+import com.jeeplus.modules.sys.entity.User;
 import com.jeeplus.modules.sys.service.ClassesService;
+import com.jeeplus.modules.sys.utils.UserUtils;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,6 +73,10 @@ public class ClassesController extends BaseController {
 	@RequiresPermissions("sys:classes:classes:list")
 	@RequestMapping(value = "data")
 	public Map<String, Object> data(Classes classes, HttpServletRequest request, HttpServletResponse response, Model model) {
+		User user=UserUtils.getUser();
+		if("2".equals(user.getUserType())){
+			classes.setTeacherid(user.getId());
+		}
 		Page<Classes> page = classesService.findPage(new Page<Classes>(request, response), classes); 
 		return getBootstrapData(page);
 	}
