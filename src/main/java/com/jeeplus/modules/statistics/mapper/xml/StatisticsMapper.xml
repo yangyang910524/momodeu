@@ -125,7 +125,7 @@
             select
             userid
             ,sum(case when state='0' then 1 else 0 end) as homeworkNotFinishToal
-            ,sum(case when state='1' then 1 else 0 end) as homeworkFinishToal
+            ,sum(case when state='1' or state='2' then 1 else 0 end) as homeworkFinishToal
             from sys_user_homework
             <where>
                 <if test="beginTime != null and beginTime!='' and endTime != null and endTime!=''">

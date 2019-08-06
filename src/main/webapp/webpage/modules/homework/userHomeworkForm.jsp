@@ -76,20 +76,20 @@
                 <div class="form-group">
                     <label class="col-sm-2 control-label">原音视频：</label>
                     <div class="col-sm-10">
-                        <a onclick="jp.playVideo('${userHomework.homework.data1}')" >播放视频</a>
+                        <a onclick="jp.playVideo('${ctx}/sys/file/playVideo?url=${userHomework.homework.data1}')" >播放视频</a>
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="col-sm-2 control-label">无声视频：</label>
                     <div class="col-sm-10">
-                        <a onclick="jp.playVideo('${userHomework.homework.silentVideo}')" >播放视频</a>
+                        <a onclick="jp.playVideo('${ctx}/sys/file/playVideo?url=${userHomework.homework.silentVideo}')" >播放视频</a>
                     </div>
                 </div>
                 <c:if test="${userHomework.homework.type eq '1'}">
                     <div class="form-group">
                         <label class="col-sm-2 control-label">配音视频：</label>
                         <div class="col-sm-10">
-                            <a onclick="jp.playVideo('${userHomework.homework.data2}')">播放视频</a>
+                            <a onclick="jp.playVideo('${ctx}/sys/file/playVideo?url=${userHomework.homework.data2}')">播放视频</a>
                         </div>
                     </div>
                 </c:if>
